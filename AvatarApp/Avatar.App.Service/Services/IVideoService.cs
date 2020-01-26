@@ -8,6 +8,6 @@ namespace Avatar.App.Service.Services
 {
     public interface IVideoService
     {
-        Task<string> Upload(byte[] videoBytes);
+        Task<string> Upload(Stream upploadedVideoFileStream);
     }
 }

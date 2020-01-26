@@ -11,12 +11,13 @@ namespace Avatar.App.Service.Services.Impl
     {
         private readonly string videoStoreDirection = "";
 
-        public async Task<string> Upload(byte[] videoBytes)
+        public async Task<string> Upload(Stream upploadedVideoFileStream)
         {
             string nameOfVideo = videoStoreDirection + "\\" + VideoFileNameGeneratorHelper.NameGenerator(videoStoreDirection);
-            var videoFile = new StreamWriter(nameOfVideo);
-            videoFile.Write(Encoding.Unicode.GetString(videoBytes));
-            videoFile.Close();
+            using (var videoFileStream = new FileStream(nameOfVideo, FileMode.Create))
+            {
+                await upploadedVideoFileStream.CopyToAsync(videoFileStream);
+            }
             return Path.GetFullPath(nameOfVideo);
         }
 

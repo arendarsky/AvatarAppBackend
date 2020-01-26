@@ -7,6 +7,7 @@ using Avatar.App.Entities.Models;
 using Avatar.App.Service.Constants;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
@@ -19,9 +20,9 @@ namespace Avatar.App.Api.Controllers
         private readonly IVideoService _videoService;
 
         [Route("upload")]
-        public async Task<ActionResult> Upload(byte[] videoBytes)
+        public async Task<IActionResult> Upload(IFormFile upploadedVideoFile)
         {
-            await _videoService.Upload(videoBytes);
+            await _videoService.Upload(upploadedVideoFile.OpenReadStream());
             return Ok();
         }
     }

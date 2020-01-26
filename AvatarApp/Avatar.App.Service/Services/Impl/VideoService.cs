@@ -17,6 +17,7 @@ namespace Avatar.App.Service.Services.Impl
             using (var videoFileStream = new FileStream(nameOfVideo, FileMode.Create))
             {
                 await upploadedVideoFileStream.CopyToAsync(videoFileStream);
+                //await blblbl
             }
             return Path.GetFullPath(nameOfVideo);
         }

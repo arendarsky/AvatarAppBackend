@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models;
+using Avatar.App.Api.Models.Impl;
 using Avatar.App.Entities.Models;
 using Avatar.App.Service.Constants;
 using Avatar.App.Service.Services;

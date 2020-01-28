@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Avatar.App.Api.Models
+namespace Avatar.App.Api.Models.Impl
 {
     public class ConfirmationResponseModel
     {

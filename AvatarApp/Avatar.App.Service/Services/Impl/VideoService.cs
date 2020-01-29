@@ -9,16 +9,21 @@ namespace Avatar.App.Service.Services.Impl
 {
     public class VideoService : IVideoService
     {
-        private readonly string _videoStoreDirection = "";
+        private readonly string _webRootPath;
+
+        public VideoService (string webRootPath)
+        {
+            _webRootPath = webRootPath;
+        }
 
         public async Task<string> Upload(Stream uploadedVideoFileStream)
         {
-            var nameOfVideo = _videoStoreDirection + "\\" + VideoFileHelper.NameGenerator(_videoStoreDirection);
-            await using (var videoFileStream = new FileStream(nameOfVideo, FileMode.Create))
+            var videoFileName = Path.GetRandomFileName();
+            await using (var videoFileStream = new FileStream(_webRootPath + videoFileName, FileMode.Create))
             {
                 await uploadedVideoFileStream.CopyToAsync(videoFileStream);
             }
-            return Path.GetFullPath(nameOfVideo);
+            return Path.GetFullPath(videoFileName);
         }
 
         

@@ -21,9 +21,10 @@ namespace Avatar.App.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration;
+            Configuration["webRootPath"] = webHostEnvironment.WebRootPath;
         }
 
         public IConfiguration Configuration { get; }
@@ -42,7 +43,7 @@ namespace Avatar.App.Api
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IVideoService, VideoService>(s => new VideoService(Configuration["webRootPath"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

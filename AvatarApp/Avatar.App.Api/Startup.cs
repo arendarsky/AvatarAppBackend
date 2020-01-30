@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Context;
+using Avatar.App.Entities;
 using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Services;
 using Avatar.App.Service.Services.Impl;
@@ -43,12 +44,24 @@ namespace Avatar.App.Api
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IVideoService, VideoService>(s => new VideoService(Configuration["webRootPath"]));
+            services.AddScoped<IVideoService, YoutubeVideoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
+            var log4NetProviderOptions = new Log4NetProviderOptions("log4net.config");
+
+            loggerFactory.AddLog4Net(log4NetProviderOptions);
+            Logger.RegisterLogger(loggerFactory.CreateLogger("LOGGER"));
+
+            applicationLifetime.ApplicationStarted.Register(
+                () =>
+                {
+                    Logger.Log.LogInformation("Сервис запущен");
+                    Logger.Log.LogInformation($"Настройки {env.EnvironmentName}");
+                });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

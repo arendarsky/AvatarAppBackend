@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -28,8 +29,15 @@ namespace Avatar.App.Api.Controllers
         public async Task<IActionResult> Upload(IFormFile uploadedVideoFile)
         {
             if (uploadedVideoFile == null) return BadRequest();
-            await _videoService.Upload(uploadedVideoFile.OpenReadStream());
-            return Ok();
+            try
+            {
+                await _videoService.Upload(uploadedVideoFile.OpenReadStream());
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

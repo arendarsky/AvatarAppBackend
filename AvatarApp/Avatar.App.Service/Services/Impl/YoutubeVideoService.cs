@@ -7,80 +7,73 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avatar.App.Entities;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.Util.Store;
-using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 using Microsoft.Extensions.Logging;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Avatar.App.Service.Services.Impl
 {
     public class YoutubeVideoService : IVideoService
     {
+        private readonly DriveService _driveService;
+
+        public YoutubeVideoService(DriveService driveService)
+        {
+            _driveService = driveService;
+        }
+
         public async Task<string> Upload(Stream uploadedVideoFileStream)
         {
             Logger.Log.LogInformation("Запрос пришел");
-            var serviceAccountEmail = "avatarapp@avatarapp.iam.gserviceaccount.com";
-            var certificate = new X509Certificate2(@"avatarapp-c02672388663.p12", "notasecret", X509KeyStorageFlags.Exportable);
-            //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-            //    new ClientSecrets
-            //    {
-            //        ClientId = "339863436345-9te83vu5l00ep17m8hcnivjq6r6gcrm3.apps.googleusercontent.com",
-            //        ClientSecret = "VVVyF6zgm4-fmcS9j4LCX_cv"
-            //    },
-            //    new[] {YouTubeService.Scope.Youtube},
-            //    "xcefactor",
-            //    CancellationToken.None);
-            var credential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(serviceAccountEmail)
-            {
-                Scopes = new[] {YouTubeService.Scope.Youtube}
-            }.FromCertificate(certificate));
-            var service = new YouTubeService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "AvatarApp",
-                ApiKey = ""
-            });
-            var video = new Video
-            {
-                Snippet = new VideoSnippet
+            UserCredential credential;
+
+            //await using (var stream =
+            //    new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            //{
+            //    // The file token.json stores the user's access and refresh tokens, and is created
+            //    // automatically when the authorization flow completes for the first time.
+            //    const string credPath = "token.json";
+            //    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+            //        GoogleClientSecrets.Load(stream).Secrets,
+            //        new string[] { DriveService.Scope.DriveReadonly},
+            //        "user",
+            //        CancellationToken.None,
+            //        new FileDataStore(credPath, true)).Result;
+            //    Logger.Log.LogInformation("Credential file saved to: " + credPath);
+            //}
+
+            // Create Drive API service.
+            Logger.Log.LogInformation("Service start");
+            Logger.Log.LogInformation("Service created");
+            var insertRequest = _driveService.Files.Create(
+                new File()
                 {
-                    Title = "Default Video Title",
-                    Description = "Default Video Description",
-                    Tags = new string[] { "tag1", "tag2" },
-                    CategoryId = "22"
+                    Name = "test"
                 },
-                Status = new VideoStatus
-                {
-                    PrivacyStatus = "unlisted"
-                }
-            };
-            var insertRequest = service.Videos.Insert(video, "snippet,status", uploadedVideoFileStream, "video/*");
-            insertRequest.ProgressChanged += VideosInsertRequest_ProgressChanged;
-            insertRequest.ResponseReceived += VideosInsertRequest_ResponseReceived;
-            Logger.Log.LogInformation("Видео готово к отправке");
-            await insertRequest.UploadAsync();
+                uploadedVideoFileStream,
+                "video/*");
+
+            // Add handlers which will be notified on progress changes and upload completion.
+            // Notification of progress changed will be invoked when the upload was started,
+            // on each upload chunk, and on success or failure.
+            insertRequest.ProgressChanged += Upload_ProgressChanged;
+            insertRequest.ResponseReceived += Upload_ResponseReceived;
+
+            var task = await insertRequest.UploadAsync();
             return "Ok";
         }
-
-        private static void VideosInsertRequest_ProgressChanged(IUploadProgress progress)
+        static void Upload_ProgressChanged(IUploadProgress progress)
         {
-            switch (progress.Status)
-            {
-                case UploadStatus.Uploading:
-                    Logger.Log.LogInformation("{0} bytes sent.", progress.BytesSent);
-                    break;
-
-                case UploadStatus.Failed:
-                    Logger.Log.LogWarning("An error prevented the upload from completing.\n{0}", progress.Exception);
-                    break;
-            }
+            Logger.Log.LogInformation(progress.Status + " " + progress.BytesSent + " " + progress.Exception);
         }
 
-        private static void VideosInsertRequest_ResponseReceived(Video video)
+        static void Upload_ResponseReceived(File file)
         {
-            Logger.Log.LogInformation("Video id '{0}' was successfully uploaded.", video.Id);
+            Logger.Log.LogInformation(file.Name + " was uploaded successfully");
         }
     }
 }

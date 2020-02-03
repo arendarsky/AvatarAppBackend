@@ -1,12 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities;
 using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Services;
 using Avatar.App.Service.Services.Impl;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,6 +49,23 @@ namespace Avatar.App.Api
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<UserContext>(options =>
                 options.UseSqlServer(connection));
+
+            var serviceAccountEmail = "avatarappdrive@quickstart-1580722309810.iam.gserviceaccount.com";
+
+            var certificate = new X509Certificate2(@"quickstart-1580722309810-66c81de5dcd0.p12", "notasecret", X509KeyStorageFlags.Exportable);
+
+            var credential = new ServiceAccountCredential(
+                new ServiceAccountCredential.Initializer(serviceAccountEmail)
+                {
+                    Scopes = new[] { DriveService.Scope.Drive }
+                }.FromCertificate(certificate));
+
+            services.AddScoped<DriveService>(s => new DriveService(new BaseClientService.Initializer()
+            {
+                ApplicationName = Configuration.GetSection("Google.Api.Settings")["ApplicationName"],
+                HttpClientInitializer = credential,
+                ApiKey = ""
+            }));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();

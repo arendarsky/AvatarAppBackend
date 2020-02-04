@@ -19,10 +19,25 @@ namespace Avatar.App.Api.Controllers
     {
         private readonly IVideoService _videoService;
 
-        [Route("upload")]
-        public async Task<IActionResult> Upload(IFormFile upploadedVideoFile)
+        public VideoController(IVideoService videoService)
         {
-            await _videoService.Upload(upploadedVideoFile.OpenReadStream());
+            _videoService = videoService;
+        }
+
+        [Route("upload")]
+        public async Task<IActionResult> Upload(IFormFile uploadedVideoFile)
+        {
+            await _videoService.Upload(uploadedVideoFile.OpenReadStream());
+            return Ok();
+        }
+
+        [Route("downloadCheck")]
+        public async Task<IActionResult> DownloadChecker(string path)
+        {
+            using (Stream SourceStream = new FileStream(path, FileMode.Open))
+            {
+                await _videoService.Upload(SourceStream);
+            }
             return Ok();
         }
     }

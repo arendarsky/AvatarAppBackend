@@ -39,6 +39,8 @@ namespace Avatar.App.Api
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<UserContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddDbContext<VideoContext>(options =>
+                options.UseSqlServer(connection));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();

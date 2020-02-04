@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Avatar.App.Service.Helpers
 {
-    public static class VideoFileNameGeneratorHelper
+    public static class VideoFileHelper
     {
         public static string NameGenerator(string videoStoreDirection)
         {

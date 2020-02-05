@@ -14,11 +14,11 @@ namespace Avatar.App.Service.Services.Impl
 {
     public class AuthenticationService: IAuthenticationService
     {
-        private readonly UserContext _userContext;
+        private readonly AvatarContext _userContext;
         private readonly IEmailService _mailService;
         private readonly IDistributedCache _distributedCache;
 
-        public AuthenticationService(UserContext userContext, IEmailService mailService, IDistributedCache distributedCache)
+        public AuthenticationService(AvatarContext userContext, IEmailService mailService, IDistributedCache distributedCache)
         {
             _userContext = userContext;
             _mailService = mailService;

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,10 +38,8 @@ namespace Avatar.App.Api
                     options.Configuration = Configuration.GetConnectionString("RedisCache");
                 });
             var connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(connection));
-            services.AddDbContext<VideoContext>(options =>
-                options.UseSqlServer(connection));
+            services.AddDbContext<AvatarContext>(options =>
+                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Api")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();

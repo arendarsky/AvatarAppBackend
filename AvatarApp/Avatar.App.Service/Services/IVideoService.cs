@@ -9,5 +9,6 @@ namespace Avatar.App.Service.Services
     public interface IVideoService
     {
         Task<string> Upload(Stream upploadedVideoFileStream);
+        Task<Stream> GetRandomVideoStream();
     }
 }

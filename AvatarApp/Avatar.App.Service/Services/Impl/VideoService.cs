@@ -11,14 +11,12 @@ namespace Avatar.App.Service.Services.Impl
 {
     public class VideoService : IVideoService
     {
-        private readonly VideoContext _videoContext;
+        private readonly AvatarContext _avatarContext;
         private readonly string _videoStoreDirection = @"C:\VideoDB";
-        public VideoService(VideoContext videoContext)
+        public VideoService(AvatarContext videoContext)
         {
-            _videoContext = videoContext;
+            _avatarContext = videoContext;
         }
-
-
         public async Task<string> Upload(Stream uploadedVideoFileStream)
         {
             var fullPathToVideo = _videoStoreDirection + "\\" + VideoFileHelper.NameGenerator(_videoStoreDirection);
@@ -32,9 +30,15 @@ namespace Avatar.App.Service.Services.Impl
             {
                 fullPath = fullPathToVideo
             };
-            _videoContext.Videos.Add(video);
-            _videoContext.SaveChangesAsync();
+            _avatarContext.Videos.Add(video);
+            await _avatarContext.SaveChangesAsync();
             return Path.GetFullPath(fullPathToVideo);
         }
+        public async Task<Stream> GetRandomVideoStream()
+        {
+            Stream VideoStream = new FileStream(_videoStoreDirection + VideoFileHelper.GetRandomPath(_videoStoreDirection), FileMode.Open);
+            return VideoStream;
+        }
+
     }
 }

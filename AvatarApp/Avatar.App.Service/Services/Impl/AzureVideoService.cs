@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Avatar.App.Context;
@@ -22,8 +23,11 @@ namespace Avatar.App.Service.Services.Impl
             _context = context;
         }
 
-        public async Task<string> UploadAsync(Stream fileStream, string fileExtension)
+        public async Task UploadAsync(Stream fileStream, string fileExtension, Guid userGuid)
         {
+            var user = _context.Users.FirstOrDefault(u => u.Guid == userGuid);
+            if (user == null) throw new NullReferenceException();
+
             var cloudBlobAccount = _cloudStorageAccount.CreateCloudBlobClient();
             var container = cloudBlobAccount.GetContainerReference("videos");
             await container.CreateIfNotExistsAsync();
@@ -31,6 +35,7 @@ namespace Avatar.App.Service.Services.Impl
             var newFilename = Path.GetRandomFileName();
             var video = new Video
             {
+                User = user,
                 Name = newFilename,
                 Extension = fileExtension
             };
@@ -38,10 +43,9 @@ namespace Avatar.App.Service.Services.Impl
             var newBlob = container.GetBlockBlobReference(newFilename);
             await newBlob.UploadFromStreamAsync(fileStream);
             await _context.SaveChangesAsync();
-            return "ok";
         }
 
-        public async Task<Stream> GetUncheckedVideoAsync()
+        public async Task<VideoStream> GetUncheckedVideoAsync()
         {
             var video = _context.Videos.FirstOrDefault(v => !v.IsApproved.HasValue);
             if (video == null) return null;
@@ -53,7 +57,13 @@ namespace Avatar.App.Service.Services.Impl
             var blob = container.GetBlockBlobReference(video.Name);
             if (!await blob.ExistsAsync()) return null;
 
-            return await blob.OpenReadAsync();
+            var stream = await blob.OpenReadAsync();
+
+            return new VideoStream
+            {
+                Name = video.Name,
+                Stream = stream
+            };
         }
     }
 }

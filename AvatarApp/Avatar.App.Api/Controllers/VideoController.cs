@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Security.Claims;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities.Models;
 using Avatar.App.Service.Constants;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Avatar.App.Api.Controllers
@@ -32,8 +34,23 @@ namespace Avatar.App.Api.Controllers
         {
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
-            await _videoService.UploadAsync(file.OpenReadStream(), fileExtension);
-            return Ok();
+            var nameIdentifier = this.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameIdentifier == null) return Unauthorized();
+
+            var userGuid = Guid.Parse(nameIdentifier.Value);
+            try
+            {
+                await _videoService.UploadAsync(file.OpenReadStream(), fileExtension, userGuid);
+                return Ok();
+            }
+            catch (NullReferenceException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception)
+            {
+                return Problem();
+            }
         }
     }
 }

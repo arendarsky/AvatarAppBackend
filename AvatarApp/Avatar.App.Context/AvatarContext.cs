@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Context
 {
-    public sealed class UserContext : DbContext
+    public sealed class AvatarContext : DbContext
     {
         public DbSet<User> Users { get; set; } 
-        public UserContext(DbContextOptions options) : base(options)
+        public DbSet<Video> Videos { get; set; }
+        public AvatarContext(DbContextOptions<AvatarContext> options) : base(options)
         {
             Database.EnsureCreated();
         }

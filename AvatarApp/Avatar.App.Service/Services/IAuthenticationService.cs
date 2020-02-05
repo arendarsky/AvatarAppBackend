@@ -10,5 +10,7 @@ namespace Avatar.App.Service.Services
     {
         Task SendEmailAsync(string email);
         Task<bool> ConfirmEmailAsync(string email, string confirmCode);
+
+        Task<Guid> GetUserGuidAsync(string email);
     }
 }

@@ -8,6 +8,7 @@ using Avatar.App.Entities.Models;
 using Avatar.App.Service.Constants;
 using Avatar.App.Service.Helpers;
 using MailKit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Avatar.App.Service.Services.Impl
@@ -41,16 +42,23 @@ namespace Avatar.App.Service.Services.Impl
             var correctCode = await _distributedCache.GetStringAsync(email);
             if (correctCode != confirmCode.ToUpper()) return false;
             await _distributedCache.RemoveAsync(email);
+            return true;
+        }
 
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
-            if (user != null) return true;
+        public async Task<Guid> GetUserGuidAsync(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null) return user.Guid;
+            var guid = Guid.NewGuid();
             user = new User()
             {
-                Email = email
+                Email = email,
+                Guid = guid
             };
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return true;
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            
+            return guid;
         }
     }
 }

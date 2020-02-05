@@ -7,6 +7,7 @@ using Avatar.App.Api.Models;
 using Avatar.App.Entities.Models;
 using Avatar.App.Service.Constants;
 using Avatar.App.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace Avatar.App.Api.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/video")]
     public class VideoController : ControllerBase
     {

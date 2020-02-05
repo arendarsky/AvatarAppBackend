@@ -26,7 +26,7 @@ namespace Avatar.App.Service.Services.Impl
             _driveService = driveService;
         }
 
-        public async Task<string> Upload(Stream uploadedVideoFileStream)
+        public async Task<string> UploadAsync(Stream fileStream, string fileExtension)
         {
             Logger.Log.LogInformation("Запрос пришел");
             UserCredential credential;
@@ -54,7 +54,7 @@ namespace Avatar.App.Service.Services.Impl
                 {
                     Name = "test"
                 },
-                uploadedVideoFileStream,
+                fileStream,
                 "video/*");
 
             // Add handlers which will be notified on progress changes and upload completion.
@@ -66,6 +66,12 @@ namespace Avatar.App.Service.Services.Impl
             var task = await insertRequest.UploadAsync();
             return "Ok";
         }
+
+        public Task<Stream> GetUncheckedVideoAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         static void Upload_ProgressChanged(IUploadProgress progress)
         {
             Logger.Log.LogInformation(progress.Status + " " + progress.BytesSent + " " + progress.Exception);

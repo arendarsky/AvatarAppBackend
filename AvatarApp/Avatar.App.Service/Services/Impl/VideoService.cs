@@ -16,16 +16,19 @@ namespace Avatar.App.Service.Services.Impl
             _webRootPath = webRootPath;
         }
 
-        public async Task<string> Upload(Stream uploadedVideoFileStream)
+        public async Task<string> UploadAsync(Stream fileStream, string fileExtension)
         {
             var videoFileName = Path.GetRandomFileName();
             await using (var videoFileStream = new FileStream(_webRootPath + videoFileName, FileMode.Create))
             {
-                await uploadedVideoFileStream.CopyToAsync(videoFileStream);
+                await fileStream.CopyToAsync(videoFileStream);
             }
             return Path.GetFullPath(videoFileName);
         }
 
-        
+        public Task<Stream> GetUncheckedVideoAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

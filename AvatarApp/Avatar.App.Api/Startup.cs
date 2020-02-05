@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,29 +50,15 @@ namespace Avatar.App.Api
                     options.Configuration = Configuration.GetConnectionString("RedisCache");
                 });
             var connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<UserContext>(options =>
+            services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection));
-
-            var serviceAccountEmail = "avatarappdrive@quickstart-1580722309810.iam.gserviceaccount.com";
-
-            var certificate = new X509Certificate2(@"quickstart-1580722309810-66c81de5dcd0.p12", "notasecret", X509KeyStorageFlags.Exportable);
-
-            var credential = new ServiceAccountCredential(
-                new ServiceAccountCredential.Initializer(serviceAccountEmail)
-                {
-                    Scopes = new[] { DriveService.Scope.Drive }
-                }.FromCertificate(certificate));
-
-            services.AddScoped<DriveService>(s => new DriveService(new BaseClientService.Initializer()
-            {
-                ApplicationName = Configuration.GetSection("Google.Api.Settings")["ApplicationName"],
-                HttpClientInitializer = credential,
-                ApiKey = ""
-            }));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
+            var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
+                Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);
+            services.AddScoped<CloudStorageAccount>(s => new CloudStorageAccount(credentials, true));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IVideoService, YoutubeVideoService>();
+            services.AddScoped<IVideoService, AzureVideoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

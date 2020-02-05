@@ -14,18 +14,18 @@ namespace Avatar.App.Service.Services.Impl
 {
     public class AuthenticationService: IAuthenticationService
     {
-        private readonly UserContext _userContext;
+        private readonly AvatarAppContext _context;
         private readonly IEmailService _mailService;
         private readonly IDistributedCache _distributedCache;
 
-        public AuthenticationService(UserContext userContext, IEmailService mailService, IDistributedCache distributedCache)
+        public AuthenticationService(AvatarAppContext context, IEmailService mailService, IDistributedCache distributedCache)
         {
-            _userContext = userContext;
+            _context = context;
             _mailService = mailService;
             _distributedCache = distributedCache;
         }
 
-        public async Task SendEmail(string email)
+        public async Task SendEmailAsync(string email)
         {
             var confirmCode = ConfirmCodeHelper.CreateRandomCode();
             var distributedCacheOptions = new DistributedCacheEntryOptions()
@@ -36,20 +36,20 @@ namespace Avatar.App.Service.Services.Impl
             await _mailService.SendConfirmCodeAsync(email, confirmCode);
         }
 
-        public async Task<bool> ConfirmEmail(string email, string confirmCode)
+        public async Task<bool> ConfirmEmailAsync(string email, string confirmCode)
         {
             var correctCode = await _distributedCache.GetStringAsync(email);
             if (correctCode != confirmCode.ToUpper()) return false;
             await _distributedCache.RemoveAsync(email);
 
-            var user = _userContext.Users.FirstOrDefault(u => u.Email == email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
             if (user != null) return true;
             user = new User()
             {
                 Email = email
             };
-            _userContext.Users.Add(user);
-            _userContext.SaveChanges();
+            _context.Users.Add(user);
+            _context.SaveChanges();
             return true;
         }
     }

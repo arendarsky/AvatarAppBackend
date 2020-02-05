@@ -26,18 +26,12 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("upload")]
-        public async Task<IActionResult> Upload(IFormFile uploadedVideoFile)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (uploadedVideoFile == null) return BadRequest();
-            try
-            {
-                await _videoService.Upload(uploadedVideoFile.OpenReadStream());
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            if (file == null) return BadRequest();
+            var fileExtension = Path.GetExtension(file.FileName);
+            await _videoService.UploadAsync(file.OpenReadStream(), fileExtension);
+            return Ok();
         }
     }
 }

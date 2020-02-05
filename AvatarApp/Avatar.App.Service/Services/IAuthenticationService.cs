@@ -8,7 +8,7 @@ namespace Avatar.App.Service.Services
 {
     public interface IAuthenticationService
     {
-        Task SendEmail(string email);
-        Task<bool> ConfirmEmail(string email, string confirmCode);
+        Task SendEmailAsync(string email);
+        Task<bool> ConfirmEmailAsync(string email, string confirmCode);
     }
 }

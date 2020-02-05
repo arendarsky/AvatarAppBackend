@@ -30,7 +30,7 @@ namespace Avatar.App.Api.Controllers
         [Route("send")]
         public async Task<OkResult> SendEmail(string email)
         {
-            await _authenticationService.SendEmail(email);
+            await _authenticationService.SendEmailAsync(email);
             return Ok();
         }
 
@@ -38,7 +38,7 @@ namespace Avatar.App.Api.Controllers
         public async Task<JsonResult> ConfirmEmail(string email, string confirmCode)
         {
             var response = new ConfirmationResponseModel();
-            if (!await _authenticationService.ConfirmEmail(email, confirmCode)) return new JsonResult(response);
+            if (!await _authenticationService.ConfirmEmailAsync(email, confirmCode)) return new JsonResult(response);
             response.SessionGuid = await _distributedCache.GetStringAsync(RP.Session + email);
             if (!string.IsNullOrWhiteSpace(response.SessionGuid)) return new JsonResult(response);
             response.SessionGuid = Guid.NewGuid().ToString();

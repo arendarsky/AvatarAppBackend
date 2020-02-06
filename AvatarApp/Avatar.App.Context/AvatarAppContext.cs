@@ -20,6 +20,9 @@ namespace Avatar.App.Context
             modelBuilder.Entity<User>()
                 .HasIndex(b => b.Guid)
                 .IsUnique();
+            modelBuilder.Entity<Video>()
+                .HasIndex(b => b.Name)
+                .IsUnique();
         }
     }
 }

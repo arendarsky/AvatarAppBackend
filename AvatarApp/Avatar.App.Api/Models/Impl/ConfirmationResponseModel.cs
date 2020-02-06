@@ -8,7 +8,7 @@ namespace Avatar.App.Api.Models.Impl
 {
     public class ConfirmationResponseModel
     {
-        [JsonPropertyName("session_guid")]
-        public string SessionGuid { get; set; }
+        [JsonPropertyName("token")]
+        public string Token { get; set; }
     }
 }

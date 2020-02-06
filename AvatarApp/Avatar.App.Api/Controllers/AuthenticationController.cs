@@ -71,7 +71,7 @@ namespace Avatar.App.Api.Controllers
                         _signingEncodingKey.GetKey(),
                         _signingEncodingKey.SigningAlgorithm));
                 var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-                response.SessionGuid = jwtToken;
+                response.Token = jwtToken;
 
                 return new JsonResult(response);
             }

@@ -25,10 +25,17 @@ namespace Avatar.App.Api.Controllers
         [Route("get_video")]
         public async Task<ActionResult> GetVideo()
         {
-            var videoStream = await _videoService.GetUncheckedVideoAsync();
-            if (videoStream == null) return NoContent();
+            try
+            {
+                var videoStream = await _videoService.GetUncheckedVideoAsync();
+                if (videoStream == null) return Ok();
 
-            return File(videoStream.Stream, "video/*", videoStream.Name);
+                return File(videoStream.Stream, "video/*", videoStream.Name);
+            }
+            catch (Exception)
+            {
+                return Problem();
+            }
         }
 
     }

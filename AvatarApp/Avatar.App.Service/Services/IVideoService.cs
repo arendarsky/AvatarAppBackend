@@ -9,7 +9,10 @@ namespace Avatar.App.Service.Services
 {
     public interface IVideoService
     {
-        Task UploadAsync(Stream fileStream, string fileExtension, Guid userGuid);
+        Task UploadAsync(Stream fileStream, Guid userGuid, string fileExtension = null);
+
+        Task<VideoStream> GetModeratedVideoAsync();
+
         Task<VideoStream> GetUncheckedVideoAsync();
     }
 }

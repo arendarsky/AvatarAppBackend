@@ -23,7 +23,7 @@ namespace Avatar.App.Service.Services.Impl
             _context = context;
         }
 
-        public async Task UploadAsync(Stream fileStream, string fileExtension, Guid userGuid)
+        public async Task UploadAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
         {
             var user = _context.Users.FirstOrDefault(u => u.Guid == userGuid);
             if (user == null) throw new NullReferenceException();
@@ -43,6 +43,11 @@ namespace Avatar.App.Service.Services.Impl
             var newBlob = container.GetBlockBlobReference(newFilename);
             await newBlob.UploadFromStreamAsync(fileStream);
             await _context.SaveChangesAsync();
+        }
+
+        public Task<VideoStream> GetModeratedVideoAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<VideoStream> GetUncheckedVideoAsync()

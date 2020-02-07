@@ -40,7 +40,7 @@ namespace Avatar.App.Api.Controllers
             var userGuid = Guid.Parse(nameIdentifier.Value);
             try
             {
-                await _videoService.UploadAsync(file.OpenReadStream(), fileExtension, userGuid);
+                await _videoService.UploadAsync(file.OpenReadStream(), userGuid, fileExtension);
                 return Ok();
             }
             catch (NullReferenceException)
@@ -53,11 +53,20 @@ namespace Avatar.App.Api.Controllers
             }
         }
         
-        [Route("getRandomVideo.mp4")]
-        public async Task<Stream> GetRandomVideo()
+        [Route("get_video")]
+        public async Task<ActionResult> GetModeratedVideo()
         {
-            Stream SourceStream = await _videoService.GetRandomVideoStream();
-                return SourceStream;
+            try
+            {
+                var videoStream = await _videoService.GetModeratedVideoAsync();
+                if (videoStream == null) return Ok();
+
+                return File(videoStream.Stream, "video/*", videoStream.Name);
+            }
+            catch (Exception)
+            {
+                return Problem();
+            }
         }
     }
 }

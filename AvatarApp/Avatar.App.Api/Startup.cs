@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,7 +64,7 @@ namespace Avatar.App.Api
                 });
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AvatarAppContext>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Api")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
                 Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);

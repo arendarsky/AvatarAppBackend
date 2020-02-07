@@ -52,5 +52,12 @@ namespace Avatar.App.Api.Controllers
                 return Problem();
             }
         }
+        
+        [Route("getRandomVideo.mp4")]
+        public async Task<Stream> GetRandomVideo()
+        {
+            Stream SourceStream = await _videoService.GetRandomVideoStream();
+                return SourceStream;
+        }
     }
 }

@@ -4,14 +4,16 @@ using Avatar.App.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avatar.App.Context.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    partial class AvatarAppContextModelSnapshot : ModelSnapshot
+    [Migration("20200207131042_ChangeSomeObjects")]
+    partial class ChangeSomeObjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,10 +34,15 @@ namespace Avatar.App.Context.Migrations
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("WatchedVideoId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Guid")
                         .IsUnique();
+
+                    b.HasIndex("WatchedVideoId");
 
                     b.ToTable("Users");
                 });
@@ -59,6 +66,9 @@ namespace Avatar.App.Context.Migrations
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("WatchedUserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
@@ -67,29 +77,16 @@ namespace Avatar.App.Context.Migrations
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("WatchedUserId");
+
                     b.ToTable("Videos");
                 });
 
-            modelBuilder.Entity("Avatar.App.Entities.Models.WatchedVideo", b =>
+            modelBuilder.Entity("Avatar.App.Entities.Models.User", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("VideoId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("VideoId");
-
-                    b.ToTable("WatchedVideo");
+                    b.HasOne("Avatar.App.Entities.Models.Video", "WatchedVideo")
+                        .WithMany("WatchedBy")
+                        .HasForeignKey("WatchedVideoId");
                 });
 
             modelBuilder.Entity("Avatar.App.Entities.Models.Video", b =>
@@ -97,17 +94,10 @@ namespace Avatar.App.Context.Migrations
                     b.HasOne("Avatar.App.Entities.Models.User", "User")
                         .WithMany("LoadedVideos")
                         .HasForeignKey("UserId");
-                });
 
-            modelBuilder.Entity("Avatar.App.Entities.Models.WatchedVideo", b =>
-                {
-                    b.HasOne("Avatar.App.Entities.Models.User", "User")
+                    b.HasOne("Avatar.App.Entities.Models.User", "WatchedUser")
                         .WithMany("WatchedVideos")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Avatar.App.Entities.Models.Video", "Video")
-                        .WithMany("WatchedBy")
-                        .HasForeignKey("VideoId");
+                        .HasForeignKey("WatchedUserId");
                 });
 #pragma warning restore 612, 618
         }

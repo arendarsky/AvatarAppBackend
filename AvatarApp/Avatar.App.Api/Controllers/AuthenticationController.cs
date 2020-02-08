@@ -35,6 +35,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("send")]
+        [HttpGet]
         public async Task<ActionResult> SendEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) return BadRequest("Parameter 'email' is null or empty");
@@ -51,6 +52,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("confirm")]
+        [HttpGet]
         public async Task<ActionResult> ConfirmEmail(string email, string confirmCode)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();

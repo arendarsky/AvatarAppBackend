@@ -22,15 +22,14 @@ namespace Avatar.App.Api.Controllers
             _videoService = videoService;
         }
 
-        [Route("get_video")]
-        public async Task<ActionResult> GetVideo()
+        [Route("get_videos")]
+        [HttpGet]
+        public ActionResult GetUncheckedVideoList(int number = 1)
         {
             try
             {
-                var videoStream = await _videoService.GetUncheckedVideoAsync();
-                if (videoStream == null) return Ok();
-
-                return File(videoStream.Stream, "video/*", videoStream.Name);
+                var videoList = _videoService.GetUncheckedVideoList(number);
+                return new JsonResult(videoList.Select(v => v.Name));
             }
             catch (Exception)
             {

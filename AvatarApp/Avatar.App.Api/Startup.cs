@@ -17,6 +17,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Avatar.App.Api
 {
@@ -64,19 +66,31 @@ namespace Avatar.App.Api
                 });
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AvatarAppContext>(options =>
-                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Api")));
+                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
             var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
                 Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);
             services.AddScoped<CloudStorageAccount>(s => new CloudStorageAccount(credentials, true));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IVideoService, AzureVideoService>();
+            services.AddScoped<IStorageService, AzureStorageService>();
+            services.AddScoped<IVideoService, VideoService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo()
+                {
+                    Title = "AvatarApp",
+                    Version = "v1",
+                    Description = "ASP.NET Core Web API"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
         {
+
             var log4NetProviderOptions = new Log4NetProviderOptions("log4net.config");
 
             loggerFactory.AddLog4Net(log4NetProviderOptions);
@@ -88,6 +102,16 @@ namespace Avatar.App.Api
                     Logger.Log.LogInformation("Сервис запущен");
                     Logger.Log.LogInformation($"Настройки {env.EnvironmentName}");
                 });
+
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avatar App V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             if (env.IsDevelopment())
             {

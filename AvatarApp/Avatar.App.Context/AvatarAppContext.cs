@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Avatar.App.Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace Avatar.App.Context
 {

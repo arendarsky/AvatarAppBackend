@@ -10,6 +10,8 @@ namespace Avatar.App.Entities.Models
 
         public Guid Guid { get; set; }
         public string Email { get; set; }
-        public IEnumerable<Video> Videos { get; set; }
+        public ICollection<Video> LoadedVideos { get; set; }
+
+        public ICollection<WatchedVideo> WatchedVideos { get; set; }
     }
 }

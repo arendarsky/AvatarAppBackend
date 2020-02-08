@@ -16,5 +16,7 @@ namespace Avatar.App.Entities.Models
         public bool? IsApproved { get; set; }
 
         [NotMapped] public string FileName => Name + Extension;
+
+        public ICollection<WatchedVideo> WatchedBy { get; set; }
     }
 }

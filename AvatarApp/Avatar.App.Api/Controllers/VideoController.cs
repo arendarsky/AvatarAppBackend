@@ -30,6 +30,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("upload")]
+        [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
             if (file == null) return BadRequest();
@@ -40,7 +41,7 @@ namespace Avatar.App.Api.Controllers
             var userGuid = Guid.Parse(nameIdentifier.Value);
             try
             {
-                await _videoService.UploadAsync(file.OpenReadStream(), userGuid, fileExtension);
+                await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid, fileExtension);
                 return Ok();
             }
             catch (NullReferenceException)
@@ -53,15 +54,36 @@ namespace Avatar.App.Api.Controllers
             }
         }
         
-        [Route("get_video")]
-        public async Task<ActionResult> GetModeratedVideo()
+        [Route("get_unwatched")]
+        [HttpGet]
+        public async Task<ActionResult> GetUnwatchedVideos(int number)
         {
+            var nameIdentifier = this.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameIdentifier == null) return Unauthorized();
+
+            var userGuid = Guid.Parse(nameIdentifier.Value);
             try
             {
-                var videoStream = await _videoService.GetModeratedVideoAsync();
-                if (videoStream == null) return Ok();
+                var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid, number);
+                return new JsonResult(unwatchedVideos.Select(v => v.Name));
+            }
+            catch (Exception)
+            {
+                return Problem();
+            }
+        }
 
-                return File(videoStream.Stream, "video/*", videoStream.Name);
+        [Route("get")]
+        [HttpGet]
+        public async Task<ActionResult> GetVideoByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest();
+            try
+            {
+                var videoStream = await _videoService.GetVideoStreamAsync(name);
+                if (videoStream == null) return NotFound();
+
+                return File(videoStream, "video/*");
             }
             catch (Exception)
             {

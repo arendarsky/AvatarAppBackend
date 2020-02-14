@@ -1,0 +1,4 @@
+//Запуск redis с ограничениями
+docker run --name avatarappredis --cpus="1" --memory=1024m -d redis
+
+docker run --name avatar_app_api --cpus="1" --memory=1024m arendarsky/avatar_app:avatarappapi

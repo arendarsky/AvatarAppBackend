@@ -73,7 +73,7 @@ namespace Avatar.App.Api
             services.AddScoped<CloudStorageAccount>(s => new CloudStorageAccount(credentials, true));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IStorageService, AzureStorageService>();
+            services.AddScoped<IStorageService, LocalStorageService>();
             services.AddScoped<IVideoService, VideoService>();
 
             services.AddSwaggerGen(c =>
@@ -120,7 +120,6 @@ namespace Avatar.App.Api
 
             app.UseAuthentication();
 
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

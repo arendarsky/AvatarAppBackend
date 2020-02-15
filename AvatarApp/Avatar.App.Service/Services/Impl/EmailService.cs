@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Constants;
-using Avatar.App.Service.Helpers;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;

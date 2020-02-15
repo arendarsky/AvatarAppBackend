@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Avatar.App.Entities.Models;
 
 namespace Avatar.App.Service.Services
 {

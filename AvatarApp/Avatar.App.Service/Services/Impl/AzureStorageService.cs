@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Avatar.App.Context;
-using Avatar.App.Entities.Models;
-using Google.Apis.Drive.v3.Data;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.EntityFrameworkCore;
-using File = System.IO.File;
-using User = Avatar.App.Entities.Models.User;
 
 namespace Avatar.App.Service.Services.Impl
 {
@@ -27,7 +17,7 @@ namespace Avatar.App.Service.Services.Impl
             _context = context;
         }
 
-        public async Task UploadAsync(Stream fileStream, string fileName, string fileExtension = null)
+        public async Task UploadAsync(Stream fileStream, string fileName)
         {
             var cloudBlobAccount = _cloudStorageAccount.CreateCloudBlobClient();
             var container = cloudBlobAccount.GetContainerReference("videos");

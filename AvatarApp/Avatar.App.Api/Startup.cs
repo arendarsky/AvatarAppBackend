@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Avatar.App.Api.Models;
 using Avatar.App.Api.Models.Impl;
 using Avatar.App.Context;
@@ -10,15 +14,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Auth;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace Avatar.App.Api
 {
@@ -26,8 +27,10 @@ namespace Avatar.App.Api
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            Configuration = configuration;
-            Configuration["webRootPath"] = webHostEnvironment.WebRootPath;
+            Configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -62,12 +65,13 @@ namespace Avatar.App.Api
             });
             services.AddStackExchangeRedisCache(options =>
                 {
-                    options.Configuration = Configuration.GetConnectionString("RedisCache");
+                    options.Configuration = Configuration["REDIS_CONNECTION"];
                 });
-            var connection = Configuration.GetConnectionString("DefaultConnection");
+            var connection = Configuration["DB_CONNECTION"];
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
+            services.Configure<EnvironmentConfig>(Configuration);
             var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
                 Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);
             services.AddScoped<CloudStorageAccount>(s => new CloudStorageAccount(credentials, true));
@@ -84,6 +88,39 @@ namespace Avatar.App.Api
                     Version = "v1",
                     Description = "ASP.NET Core Web API"
                 });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -119,7 +156,6 @@ namespace Avatar.App.Api
             }
 
             app.UseAuthentication();
-
 
             app.UseRouting();
 

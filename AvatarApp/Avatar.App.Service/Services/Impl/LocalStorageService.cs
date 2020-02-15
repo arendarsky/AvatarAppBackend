@@ -1,31 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Avatar.App.Service.Helpers;
-using Avatar.App.Context;
-using Avatar.App.Entities.Models;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Avatar.App.Entities.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Service.Services.Impl
 {
     public class LocalStorageService : IStorageService
     {
-        private readonly AvatarAppContext _avatarContext;
-        private readonly string _videoStoreDirection = @"C:\VideoDB";
-        public LocalStorageService(AvatarAppContext videoContext)
+        private readonly EnvironmentConfig _environmentConfig;
+
+        public LocalStorageService(IOptions<EnvironmentConfig> environmentConfig)
         {
-            _avatarContext = videoContext;
-        }
-        public async Task UploadAsync(Stream uploadedVideoFileStream, string fileName, string fileExtension)
-        {
-            var fullPathToVideo = _videoStoreDirection + "\\" + fileName + fileExtension;
-            await using var videoFileStream = new FileStream(@fullPathToVideo, FileMode.Create);
-            await uploadedVideoFileStream.CopyToAsync(videoFileStream);
+            _environmentConfig = environmentConfig.Value;
         }
 
-        public Task<Stream> GetFileStreamAsync(string fileName)
+        public async Task UploadAsync(Stream fileStream, string fileName)
         {
-            throw new NotImplementedException();
+            var fullVideoPath = _environmentConfig.STORAGE_PATH + fileName;
+            await using var videoFileStream = new FileStream(fullVideoPath, FileMode.Create);
+            await fileStream.CopyToAsync(videoFileStream);
         }
+
+        public async Task<Stream> GetFileStreamAsync(string fileName)
+        {
+            var fileStream = await Task.Run(() =>
+            {
+                var fullVideoPath = _environmentConfig.STORAGE_PATH + fileName;
+                return new FileStream(fullVideoPath, FileMode.Open, FileAccess.Read);
+            });
+            return fileStream;
+        }
+
     }
 }

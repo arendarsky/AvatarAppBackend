@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
@@ -25,15 +24,14 @@ namespace Avatar.App.Service.Services.Impl
         {
             var user = await GetUserAsync(userGuid);
 
-            var newFilename = Path.GetRandomFileName();
+            var newFilename = Path.GetRandomFileName() + fileExtension;
             var video = new Video
             {
                 User = user,
-                Name = newFilename,
-                Extension = fileExtension
+                Name = newFilename
             };
 
-            await _storageService.UploadAsync(fileStream, newFilename, fileExtension);
+            await _storageService.UploadAsync(fileStream, newFilename);
 
             await _context.Videos.AddAsync(video);
 

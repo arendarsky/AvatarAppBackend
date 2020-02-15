@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Avatar.App.Entities.Settings
+﻿namespace Avatar.App.Entities.Settings
 {
     public class EmailSettings
     {

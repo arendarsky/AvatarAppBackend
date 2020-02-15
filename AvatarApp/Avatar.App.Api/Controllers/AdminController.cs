@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Avatar.App.Entities;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -22,6 +22,16 @@ namespace Avatar.App.Api.Controllers
             _videoService = videoService;
         }
 
+        /// <summary>
+        /// Get list of unmoderated video names
+        /// </summary>
+        /// <param name="number">Number of requested video names</param>
+        /// <response code="200">Returns video names</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetUncheckedVideoList")]
+        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<string>), description: "List of video names")]
         [Route("get_videos")]
         [HttpGet]
         public ActionResult GetUncheckedVideoList(int number = 1)
@@ -31,8 +41,9 @@ namespace Avatar.App.Api.Controllers
                 var videoList = _videoService.GetUncheckedVideoList(number);
                 return new JsonResult(videoList.Select(v => v.Name));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }

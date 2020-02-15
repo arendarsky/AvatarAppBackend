@@ -1,19 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Claims;
-using Avatar.App.Api.Models;
-using Avatar.App.Entities.Models;
-using Avatar.App.Service.Constants;
+using Avatar.App.Entities;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -29,6 +26,15 @@ namespace Avatar.App.Api.Controllers
             _videoService = videoService;
         }
 
+        /// <summary>
+        /// Upload file on server
+        /// </summary>
+        /// <param name="file"></param>
+        /// <response code="200">File successfully uploaded</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("Upload")]
         [Route("upload")]
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
@@ -48,12 +54,23 @@ namespace Avatar.App.Api.Controllers
             {
                 return Unauthorized();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }
-        
+
+        /// <summary>
+        /// Get list of video names that are unwatched by current user
+        /// </summary>
+        /// <param name="number">Number of requested video names</param>
+        /// <response code="200">Returns video names</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetUnwatchedVideos")]
+        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<string>), description: "List of video names")]
         [Route("get_unwatched")]
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
@@ -67,13 +84,24 @@ namespace Avatar.App.Api.Controllers
                 var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid, number);
                 return new JsonResult(unwatchedVideos.Select(v => v.Name));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }
 
-        [Route("get")]
+        /// <summary>
+        /// Get video stream by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <response code="200">Returns video stream</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetVideoByName")]
+        [SwaggerResponse(statusCode: 200, type: typeof(FileStreamResult), description: "File stream")]
+        [Route("{name}")]
         [HttpGet]
         public async Task<ActionResult> GetVideoByName(string name)
         {
@@ -85,8 +113,9 @@ namespace Avatar.App.Api.Controllers
 
                 return File(videoStream, "video/*");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }

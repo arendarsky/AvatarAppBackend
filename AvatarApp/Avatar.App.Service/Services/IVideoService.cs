@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Avatar.App.Entities.Models;
@@ -14,5 +13,6 @@ namespace Avatar.App.Service.Services
         IEnumerable<Video> GetUncheckedVideoList(int number);
 
         Task<Stream> GetVideoStreamAsync(string fileName);
+
     }
 }

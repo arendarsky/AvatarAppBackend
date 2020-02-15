@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Avatar.App.Service.Constants
+﻿namespace Avatar.App.Service.Constants
 {
     public static class EmailMessages
     {

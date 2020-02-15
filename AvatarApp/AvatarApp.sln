@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Api", "Avatar.App.Api\Avatar.App.Api.csproj", "{A81BA41C-BD53-40A7-B634-B91175082F68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Api", "Avatar.App.Api\Avatar.App.Api.csproj", "{A81BA41C-BD53-40A7-B634-B91175082F68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Context", "Avatar.App.Context\Avatar.App.Context.csproj", "{EB389796-115E-4205-9753-F50E6BB788D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Context", "Avatar.App.Context\Avatar.App.Context.csproj", "{EB389796-115E-4205-9753-F50E6BB788D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Service", "Avatar.App.Service\Avatar.App.Service.csproj", "{B8345CDC-249A-4347-B788-941794D16110}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Service", "Avatar.App.Service\Avatar.App.Service.csproj", "{B8345CDC-249A-4347-B788-941794D16110}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Entities", "Avatar.App.Entities\Avatar.App.Entities.csproj", "{12E6B885-2CEB-47C9-803A-D0B26B3B4853}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Entities", "Avatar.App.Entities\Avatar.App.Entities.csproj", "{12E6B885-2CEB-47C9-803A-D0B26B3B4853}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

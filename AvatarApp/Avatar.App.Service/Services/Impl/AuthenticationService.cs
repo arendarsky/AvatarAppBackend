@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
-using Avatar.App.Service.Constants;
 using Avatar.App.Service.Helpers;
-using MailKit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 

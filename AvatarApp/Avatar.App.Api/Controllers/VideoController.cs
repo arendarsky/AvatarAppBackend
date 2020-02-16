@@ -41,13 +41,12 @@ namespace Avatar.App.Api.Controllers
         {
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
-            var nameIdentifier = this.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifier == null) return Unauthorized();
+            var userGuid = GetUserGuid();
+            if (userGuid == null) return Unauthorized();
 
-            var userGuid = Guid.Parse(nameIdentifier.Value);
             try
             {
-                await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid, fileExtension);
+                await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid.Value, fileExtension);
                 return Ok();
             }
             catch (NullReferenceException)
@@ -75,7 +74,7 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
         {
-            var nameIdentifier = this.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (nameIdentifier == null) return Unauthorized();
 
             var userGuid = Guid.Parse(nameIdentifier.Value);
@@ -98,6 +97,7 @@ namespace Avatar.App.Api.Controllers
         /// <response code="200">Returns video stream</response>
         /// <response code="400">If some of the parameters are null</response>
         /// <response code="401">Unauthorized</response>
+        /// <response code="404">If the video doesn't exist on server</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetVideoByName")]
         [SwaggerResponse(statusCode: 200, type: typeof(FileStreamResult), description: "File stream")]
@@ -113,11 +113,59 @@ namespace Avatar.App.Api.Controllers
 
                 return File(videoStream, "video/*");
             }
+            catch (DirectoryNotFoundException)
+            {
+                return NotFound();
+            }
             catch (Exception ex)
             {
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }
+
+        /// <summary>
+        /// Set video like
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="isLike"></param>
+        /// <response code="200">If video like successfully set</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SetLike")]
+        [Route("set_like")]
+        [HttpGet]
+        public async Task<ActionResult> SetLike(string name, bool isLike)
+        {
+            var userGuid = GetUserGuid();
+            if (userGuid == null) return Unauthorized();
+
+            try
+            {
+                await _videoService.SetLikeAsync(userGuid.Value, name, isLike);
+                return Ok();
+            }
+            catch (NullReferenceException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        #region Private Methods
+
+        private Guid? GetUserGuid()
+        {
+            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameIdentifier == null) return null;
+            return Guid.Parse(nameIdentifier.Value);
+        }
+
+        #endregion
     }
 }

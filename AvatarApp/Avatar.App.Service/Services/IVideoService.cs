@@ -10,9 +10,13 @@ namespace Avatar.App.Service.Services
     {
         Task UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null);
         Task<IEnumerable<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number);
-        IEnumerable<Video> GetUncheckedVideoList(int number);
+        Task<IEnumerable<Video>> GetUncheckedVideoListAsync(int number);
 
         Task<Stream> GetVideoStreamAsync(string fileName);
+
+        Task SetLikeAsync(Guid userGuid, string fileName, bool isLike);
+
+        Task SetApproveStatusAsync(string fileName, bool isApproved);
 
     }
 }

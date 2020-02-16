@@ -8,6 +8,8 @@ namespace Avatar.App.Context
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<WatchedVideo> WatchedVideos { get; set; }
+        public DbSet<LikedVideo> LikedVideos { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();

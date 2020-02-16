@@ -12,5 +12,7 @@ namespace Avatar.App.Entities.Models
         public ICollection<Video> LoadedVideos { get; set; }
 
         public ICollection<WatchedVideo> WatchedVideos { get; set; }
+
+        public ICollection<LikedVideo> LikedVideos { get; set; }
     }
 }

@@ -13,8 +13,7 @@ namespace Avatar.App.Entities.Models
         public string Extension { get; set; }
         public bool? IsApproved { get; set; }
 
-        [NotMapped] public string FileName => Name + Extension;
-
         public ICollection<WatchedVideo> WatchedBy { get; set; }
+        public ICollection<LikedVideo> LikedBy { get; set; }
     }
 }

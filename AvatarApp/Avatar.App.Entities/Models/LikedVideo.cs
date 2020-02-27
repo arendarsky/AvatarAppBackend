@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Avatar.App.Entities.Models
+﻿namespace Avatar.App.Entities.Models
 {
     public class LikedVideo
     {

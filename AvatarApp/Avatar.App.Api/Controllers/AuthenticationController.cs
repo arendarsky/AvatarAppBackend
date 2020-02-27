@@ -2,11 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Avatar.App.Api.Models;
 using Avatar.App.Api.Models.Impl;
 using Avatar.App.Entities;
+using Avatar.App.Service.Security;
 using Avatar.App.Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;

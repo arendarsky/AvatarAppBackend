@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Avatar.App.Api.Models.Impl
+namespace Avatar.App.Service.Security.Impl
 {
     public class SigningSymmetricKey: IJwtSigningEncodingKey, IJwtSigningDecodingKey
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace Avatar.App.Api.Models
+namespace Avatar.App.Service.Security
 {
     public interface IJwtSigningEncodingKey
     {

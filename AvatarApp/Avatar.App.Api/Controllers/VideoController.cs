@@ -42,7 +42,7 @@ namespace Avatar.App.Api.Controllers
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
             var userGuid = GetUserGuid();
-            if (userGuid == null) return Unauthorized();
+            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
@@ -74,14 +74,17 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
         {
-            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifier == null) return Unauthorized();
+            var userGuid = GetUserGuid();
+            if (!userGuid.HasValue) return Unauthorized();
 
-            var userGuid = Guid.Parse(nameIdentifier.Value);
             try
             {
-                var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid, number);
+                var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid.Value, number);
                 return new JsonResult(unwatchedVideos.Select(v => v.Name));
+            }
+            catch (NullReferenceException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -101,6 +104,7 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetVideoByName")]
         [SwaggerResponse(statusCode: 200, type: typeof(FileStreamResult), description: "File stream")]
+        [AllowAnonymous]
         [Route("{name}")]
         [HttpGet]
         public async Task<ActionResult> GetVideoByName(string name)
@@ -111,7 +115,7 @@ namespace Avatar.App.Api.Controllers
                 var videoStream = await _videoService.GetVideoStreamAsync(name);
                 if (videoStream == null) return NotFound();
 
-                return File(videoStream, "video/*");
+                return File(videoStream, "video/*", true);
             }
             catch (DirectoryNotFoundException)
             {

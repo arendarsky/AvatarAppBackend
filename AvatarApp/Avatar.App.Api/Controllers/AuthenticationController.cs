@@ -30,18 +30,69 @@ namespace Avatar.App.Api.Controllers
             _signingEncodingKey = signingEncodingKey;
         }
 
+        /// <summary>
+        /// Register new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /register
+        ///     {
+        ///        "Name": "Ivan",
+        ///        "Email": "example@ex.ru",
+        ///        "Password": "asdaswqer123"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">User (not)successfully registered</response>
+        /// <response code="400">If some of the required fields are null</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("Register")]
+        [Route("register")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is register successful")]
         [HttpPost]
-        public async Task<ActionResult> Register(UserDto userDto)
+        public async Task<ActionResult> Register(UserDto user)
         {
-            if (string.IsNullOrWhiteSpace(userDto.Email) || string.IsNullOrWhiteSpace(userDto.Password))
+            if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
                 return BadRequest();
             try
             {
-                await _authenticationService.RegisterAsync(userDto);
+                return new JsonResult(await _authenticationService.RegisterAsync(user));
             }
             catch(Exception ex)
             {
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        /// <summary>
+        /// Get authorization token
+        /// </summary>
+        /// <remarks>
+        ///     Token = null means password or email is incorrect
+        /// </remarks>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <response code="200">Token sent</response>
+        /// <response code="400">If some of the required parameters are null</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetAuthorizationToken")]
+        [SwaggerResponse(statusCode: 200, type: typeof(AuthorizationResponseModel), description: "Authorization token")]
+        [Route("authorize")]
+        [HttpPost]
+        public async Task<ActionResult> GetAuthorizationToken(string email, string password)
+        {
+            var response = new AuthorizationResponseModel();
+            try
+            {
+                var token = await _authenticationService.GetAuthorizationTokenAsync(email, password);
+                response.Token = token;
+                return new JsonResult(response);
+            }
+            catch (Exception)
+            {
                 return Problem();
             }
         }
@@ -72,41 +123,23 @@ namespace Avatar.App.Api.Controllers
         }
 
         /// <summary>
-        /// Check confirmation code and register user.
+        /// Check confirmation code and so validate email
         /// </summary>
         /// <param name="email"></param>
         /// <param name="confirmCode"></param>
-        /// <response code="200">Confirmation codes are equal, the user successfully registered</response>
+        /// <response code="200">Confirmation codes are equal/not equal</response>
         /// <response code="400">If some of the parameters are null</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("ConfirmEmail")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ConfirmationResponseModel), description: "User token")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is confirmation successful")]
         [Route("confirm")]
         [HttpGet]
         public async Task<ActionResult> ConfirmEmail(string email, string confirmCode)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();
-            var response = new ConfirmationResponseModel();
             try
             {
-                if (!await _authenticationService.ConfirmEmailAsync(email, confirmCode))
-                    return new JsonResult(response);
-                var userGuid = await _authenticationService.GetUserGuidAsync(email);
-                var claims = new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userGuid.ToString())
-                };
-                var token = new JwtSecurityToken(
-                    "AvatarApp",
-                    "AvatarAppClient",
-                    claims,
-                    signingCredentials: new SigningCredentials(
-                        _signingEncodingKey.GetKey(),
-                        _signingEncodingKey.SigningAlgorithm));
-                var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-                response.Token = jwtToken;
-
-                return new JsonResult(response);
+                return new JsonResult(await _authenticationService.ConfirmEmailAsync(email, confirmCode));
             }
             catch(Exception ex)
             {

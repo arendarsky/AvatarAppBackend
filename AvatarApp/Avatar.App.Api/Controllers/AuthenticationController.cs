@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models.Impl;
 using Avatar.App.Entities;
+using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,22 @@ namespace Avatar.App.Api.Controllers
             _authenticationService = authenticationService;
             _distributedCache = distributedCache;
             _signingEncodingKey = signingEncodingKey;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Register(UserDto userDto)
+        {
+            if (string.IsNullOrWhiteSpace(userDto.Email) || string.IsNullOrWhiteSpace(userDto.Password))
+                return BadRequest();
+            try
+            {
+                await _authenticationService.RegisterAsync(userDto);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
         }
 
         /// <summary>

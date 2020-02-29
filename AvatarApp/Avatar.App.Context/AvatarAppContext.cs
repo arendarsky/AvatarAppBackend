@@ -12,7 +12,7 @@ namespace Avatar.App.Context
         public DbSet<LikedVideo> LikedVideos { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

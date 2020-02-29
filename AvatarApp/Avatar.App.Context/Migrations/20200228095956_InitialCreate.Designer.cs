@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Avatar.App.Context.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    [Migration("20200207131811_SomeChanges")]
-    partial class SomeChanges
+    [Migration("20200228095956_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,28 @@ namespace Avatar.App.Context.Migrations
                 .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Avatar.App.Entities.Models.LikedVideo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("VideoId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("LikedVideos");
+                });
 
             modelBuilder.Entity("Avatar.App.Entities.Models.User", b =>
                 {
@@ -33,6 +55,12 @@ namespace Avatar.App.Context.Migrations
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -91,7 +119,18 @@ namespace Avatar.App.Context.Migrations
 
                     b.HasIndex("VideoId");
 
-                    b.ToTable("WatchedVideo");
+                    b.ToTable("WatchedVideos");
+                });
+
+            modelBuilder.Entity("Avatar.App.Entities.Models.LikedVideo", b =>
+                {
+                    b.HasOne("Avatar.App.Entities.Models.User", "User")
+                        .WithMany("LikedVideos")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Avatar.App.Entities.Models.Video", "Video")
+                        .WithMany("LikedBy")
+                        .HasForeignKey("VideoId");
                 });
 
             modelBuilder.Entity("Avatar.App.Entities.Models.Video", b =>

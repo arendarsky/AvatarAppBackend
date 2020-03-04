@@ -63,10 +63,6 @@ namespace Avatar.App.Api
                     ValidateLifetime = false
                 };
             });
-            services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = Configuration["REDIS_CONNECTION"];
-                });
             var connection = Configuration["DB_CONNECTION"];
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));

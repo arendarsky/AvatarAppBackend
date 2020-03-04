@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -11,6 +12,7 @@ using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Avatar.App.Service.Services.Impl
@@ -19,15 +21,15 @@ namespace Avatar.App.Service.Services.Impl
     {
         private readonly AvatarAppContext _context;
         private readonly IEmailService _mailService;
-        private readonly IDistributedCache _distributedCache;
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
+        private readonly IMemoryCache _cache;
 
-        public AuthenticationService(AvatarAppContext context, IEmailService mailService, IDistributedCache distributedCache, IJwtSigningEncodingKey signingEncodingKey)
+        public AuthenticationService(AvatarAppContext context, IEmailService mailService, IDistributedCache distributedCache, IJwtSigningEncodingKey signingEncodingKey, IMemoryCache memoryCache)
         {
             _context = context;
             _mailService = mailService;
-            _distributedCache = distributedCache;
             _signingEncodingKey = signingEncodingKey;
+            _cache = memoryCache;
         }
 
         public async Task<bool> RegisterAsync(UserDto userDto)
@@ -66,20 +68,22 @@ namespace Avatar.App.Service.Services.Impl
         public async Task SendEmailAsync(string email)
         {
             var confirmCode = ConfirmCodeHelper.CreateRandomCode();
-            var distributedCacheOptions = new DistributedCacheEntryOptions()
-            {
-                AbsoluteExpirationRelativeToNow = new TimeSpan(0, 5, 0)
-            };
-            await _distributedCache.SetStringAsync(email, confirmCode, distributedCacheOptions);
+            var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+            _cache.Set(email, confirmCode, cacheEntryOptions);
             await _mailService.SendConfirmCodeAsync(email, confirmCode);
         }
 
         public async Task<bool> ConfirmEmailAsync(string email, string confirmCode)
         {
-            var correctCode = await _distributedCache.GetStringAsync(email);
-            if (correctCode != confirmCode.ToUpper()) return false;
-            await _distributedCache.RemoveAsync(email);
-            return true;
+            var result = await Task.Run(() =>
+            {
+                if (!_cache.TryGetValue(email, out string cacheEntry)) return false;
+                if (!string.Equals(cacheEntry, confirmCode, StringComparison.CurrentCultureIgnoreCase)) return false;
+                _cache.Remove(email);
+                return true;
+            });
+            return result;
         }
 
         public async Task<Guid> GetUserGuidAsync(string email)

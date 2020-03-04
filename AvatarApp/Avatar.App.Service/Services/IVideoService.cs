@@ -18,5 +18,7 @@ namespace Avatar.App.Service.Services
 
         Task SetApproveStatusAsync(string fileName, bool isApproved);
 
+        Task<User> GetVideoOwnerAsync(string filename);
+
     }
 }

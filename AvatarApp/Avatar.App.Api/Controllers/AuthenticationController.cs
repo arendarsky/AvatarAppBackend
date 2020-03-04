@@ -20,13 +20,11 @@ namespace Avatar.App.Api.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
-        private readonly IDistributedCache _distributedCache;
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
 
-        public AuthenticationController(IAuthenticationService authenticationService, IDistributedCache distributedCache, IJwtSigningEncodingKey signingEncodingKey)
+        public AuthenticationController(IAuthenticationService authenticationService, IJwtSigningEncodingKey signingEncodingKey)
         {
             _authenticationService = authenticationService;
-            _distributedCache = distributedCache;
             _signingEncodingKey = signingEncodingKey;
         }
 
@@ -91,8 +89,9 @@ namespace Avatar.App.Api.Controllers
                 response.Token = token;
                 return new JsonResult(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Claims;
 using Avatar.App.Entities;
+using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ namespace Avatar.App.Api.Controllers
                 await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid.Value, fileExtension);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (UserNotFoundException)
             {
                 return Unauthorized();
             }
@@ -82,7 +83,7 @@ namespace Avatar.App.Api.Controllers
                 var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid.Value, number);
                 return new JsonResult(unwatchedVideos.Select(v => v.Name));
             }
-            catch (NullReferenceException)
+            catch (UserNotFoundException)
             {
                 return Unauthorized();
             }
@@ -150,9 +151,13 @@ namespace Avatar.App.Api.Controllers
                 await _videoService.SetLikeAsync(userGuid.Value, name, isLike);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (UserNotFoundException)
             {
                 return Unauthorized();
+            }
+            catch (VideoNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Avatar.App.Entities.Models
 {
@@ -6,11 +7,14 @@ namespace Avatar.App.Entities.Models
     {
         public long Id { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         public string Name { get; set; }
         public string Extension { get; set; }
         public bool? IsApproved { get; set; }
+
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         public ICollection<WatchedVideo> WatchedBy { get; set; }
         public ICollection<LikedVideo> LikedBy { get; set; }

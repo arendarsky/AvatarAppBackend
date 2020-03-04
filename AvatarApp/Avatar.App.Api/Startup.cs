@@ -39,6 +39,7 @@ namespace Avatar.App.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMemoryCache();
 
             var signingSecurityKey = Configuration["SigningSecurityKey"];
             var signingKey = new SigningSymmetricKey(signingSecurityKey);
@@ -75,6 +76,7 @@ namespace Avatar.App.Api
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStorageService, LocalStorageService>();
             services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddSwaggerGen(c =>
             {

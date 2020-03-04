@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Avatar.App.Service.Exceptions;
 
 namespace Avatar.App.Service.Services.Impl
 {
@@ -93,19 +94,26 @@ namespace Avatar.App.Service.Services.Impl
             await _context.SaveChangesAsync();
         }
 
+        public async Task<User> GetVideoOwnerAsync(string filename)
+        {
+            var video = await _context.Videos.Include(v => v.User).FirstOrDefaultAsync(v => v.Name == filename);
+            if (video == null) throw new VideoNotFoundException();
+            return video.User;
+        }
+
         #region Private Methods
 
         private async Task<User> GetUserAsync(Guid userGuid)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Guid == userGuid);
-            if (user == null) throw new NullReferenceException();
+            if (user == null) throw new UserNotFoundException();
             return user;
         }
 
         private async Task<Video> GetVideoAsync(string name)
         {
             var video = await _context.Videos.FirstOrDefaultAsync(v => v.Name == name);
-            if (video == null) throw new NullReferenceException();
+            if (video == null) throw new VideoNotFoundException();
             return video;
         }
 

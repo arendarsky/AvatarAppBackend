@@ -4,14 +4,16 @@ using Avatar.App.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avatar.App.Context.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    partial class AvatarAppContextModelSnapshot : ModelSnapshot
+    [Migration("20200304064046_AddMessage")]
+    partial class AddMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,7 @@ namespace Avatar.App.Context.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool?>("Accepted")
+                    b.Property<bool?>("Confirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("Contact")
@@ -72,7 +74,7 @@ namespace Avatar.App.Context.Migrations
 
                     b.HasIndex("ToId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Avatar.App.Entities.Models.User", b =>
@@ -81,12 +83,6 @@ namespace Avatar.App.Context.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Contact")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");

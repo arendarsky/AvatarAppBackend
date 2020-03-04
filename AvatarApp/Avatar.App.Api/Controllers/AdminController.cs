@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Entities;
+using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -69,7 +70,7 @@ namespace Avatar.App.Api.Controllers
                 await _videoService.SetApproveStatusAsync(name, isApproved);
                 return Ok();
             }
-            catch (NullReferenceException)
+            catch (VideoNotFoundException)
             {
                 return NotFound();
             }

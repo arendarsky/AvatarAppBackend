@@ -24,7 +24,7 @@ namespace Avatar.App.Service.Services.Impl
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
         private readonly IMemoryCache _cache;
 
-        public AuthenticationService(AvatarAppContext context, IEmailService mailService, IDistributedCache distributedCache, IJwtSigningEncodingKey signingEncodingKey, IMemoryCache memoryCache)
+        public AuthenticationService(AvatarAppContext context, IEmailService mailService, IJwtSigningEncodingKey signingEncodingKey, IMemoryCache memoryCache)
         {
             _context = context;
             _mailService = mailService;

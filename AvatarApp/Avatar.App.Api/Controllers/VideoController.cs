@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Claims;
+using Avatar.App.Api.Models;
 using Avatar.App.Entities;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
@@ -36,6 +37,7 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Upload")]
+        [SwaggerResponse(statusCode: 200, type: typeof(VideoModel), description: "Video data")]
         [Route("upload")]
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
@@ -47,8 +49,11 @@ namespace Avatar.App.Api.Controllers
 
             try
             {
-                await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid.Value, fileExtension);
-                return Ok();
+                var video = await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid.Value, fileExtension);
+                return new JsonResult(new VideoModel
+                {
+                    Name = video.Name
+                });
             }
             catch (UserNotFoundException)
             {
@@ -156,6 +161,33 @@ namespace Avatar.App.Api.Controllers
                 return Unauthorized();
             }
             catch (VideoNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        [Route("set_interval")]
+        [HttpGet]
+        public async Task<ActionResult> SetVideoFragmentInterval(string fileName, double startTime, double endTime)
+        {
+            var userGuid = GetUserGuid();
+            if (userGuid == null) return Unauthorized();
+
+            try
+            {
+                await _videoService.SetVideoFragmentInterval(userGuid.Value, fileName, startTime, endTime);
+                return Ok();
+            }
+            catch (IncorrectFragmentIntervalException)
+            {
+                return BadRequest();
+            }
+            catch(VideoNotFoundException)
             {
                 return NotFound();
             }

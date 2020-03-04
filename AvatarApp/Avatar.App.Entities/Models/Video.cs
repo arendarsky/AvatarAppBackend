@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Avatar.App.Entities.Models
 {
@@ -13,8 +12,8 @@ namespace Avatar.App.Entities.Models
         public string Extension { get; set; }
         public bool? IsApproved { get; set; }
 
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public double StartTime { get; set; }
+        public double EndTime { get; set; }
 
         public ICollection<WatchedVideo> WatchedBy { get; set; }
         public ICollection<LikedVideo> LikedBy { get; set; }

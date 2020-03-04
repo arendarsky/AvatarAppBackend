@@ -68,6 +68,7 @@ namespace Avatar.App.Api
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
+            services.Configure<VideoSettings>(Configuration.GetSection("Video.Settings"));
             services.Configure<EnvironmentConfig>(Configuration);
             var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
                 Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);

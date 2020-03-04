@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models.Impl;
 using Avatar.App.Entities;
@@ -8,9 +6,7 @@ using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers

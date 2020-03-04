@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -11,7 +10,6 @@ using Avatar.App.Service.Helpers;
 using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Avatar.App.Service.Exceptions
 {
@@ -15,6 +12,11 @@ namespace Avatar.App.Service.Exceptions
     }
 
     public class MessageNotFoundException : Exception
+    {
+
+    }
+
+    public class IncorrectFragmentIntervalException : Exception
     {
 
     }

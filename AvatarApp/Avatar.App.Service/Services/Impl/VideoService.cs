@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
+using Avatar.App.Entities.Settings;
 using Microsoft.EntityFrameworkCore;
 using Avatar.App.Service.Exceptions;
+using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Service.Services.Impl
 {
@@ -14,14 +16,16 @@ namespace Avatar.App.Service.Services.Impl
     {
         private readonly AvatarAppContext _context;
         private readonly IStorageService _storageService;
+        private readonly VideoSettings _videoSettings;
 
-        public VideoService(AvatarAppContext context, IStorageService storageService)
+        public VideoService(AvatarAppContext context, IStorageService storageService, IOptions<VideoSettings> videoSOptions)
         {
             _context = context;
             _storageService = storageService;
+            _videoSettings = videoSOptions.Value;
         }
 
-        public async Task UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
+        public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
         {
             var user = await GetUserAsync(userGuid);
 
@@ -29,7 +33,9 @@ namespace Avatar.App.Service.Services.Impl
             var video = new Video
             {
                 User = user,
-                Name = newFilename
+                Name = newFilename,
+                StartTime = 0,
+                EndTime = _videoSettings.FragmentMaxLength
             };
 
             await _storageService.UploadAsync(fileStream, newFilename);
@@ -37,6 +43,8 @@ namespace Avatar.App.Service.Services.Impl
             await _context.Videos.AddAsync(video);
 
             await _context.SaveChangesAsync();
+
+            return video;
         }
 
         public async Task<IEnumerable<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number)
@@ -58,6 +66,24 @@ namespace Avatar.App.Service.Services.Impl
                 return _context.Videos.Where(v => !v.IsApproved.HasValue).Take(number).ToList();
             });
             return uncheckedVideos;
+        }
+
+        public async Task SetVideoFragmentInterval(Guid userGuid, string fileName, double startTime, double endTime)
+        {
+            if (startTime < 0 || endTime < 0 || endTime <= startTime ||
+                endTime - startTime > _videoSettings.FragmentMaxLength) throw new IncorrectFragmentIntervalException();
+            var video = await GetVideoAsync(fileName);
+            _context.Entry(video).Reference(v => v.User).Load();
+            if (video.User.Guid != userGuid) throw new VideoNotFoundException();
+            video.StartTime = startTime;
+            video.EndTime = endTime;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Video> GetVideoData(string fileName)
+        {
+            var video = await GetVideoAsync(fileName);
+            return video;
         }
 
         public async Task<Stream> GetVideoStreamAsync(string fileName)

@@ -50,8 +50,7 @@ namespace Avatar.App.Service.Services.Impl
         public async Task<IEnumerable<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number)
         {
             var user = await GetUserAsync(userGuid);
-            _context.Entry(user).Collection(u => u.WatchedVideos).Load();
-            var watchedVideos = user.WatchedVideos.Select(v => v.Video.Id);
+            var watchedVideos = _context.WatchedVideos.Where(v => v.UserId == user.Id).Select(c => c.VideoId).ToList();
             var unwatchedVideos = _context.Videos
                 .Where(v => v.IsApproved.HasValue && v.IsApproved == true && !watchedVideos.Contains(v.Id))
                 .OrderBy(x => Guid.NewGuid())

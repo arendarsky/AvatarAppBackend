@@ -95,6 +95,9 @@ namespace Avatar.App.Service.Services.Impl
         {
             var user = await GetUserAsync(userGuid);
             var video = await GetVideoAsync(fileName);
+            var like = await _context.WatchedVideos.FirstOrDefaultAsync(l =>
+                l.VideoId == video.Id && l.UserId == user.Id);
+            if (like != null) return;
             await _context.WatchedVideos.AddAsync(new WatchedVideo
             {
                 User = user,

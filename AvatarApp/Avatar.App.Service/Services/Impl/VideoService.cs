@@ -52,7 +52,8 @@ namespace Avatar.App.Service.Services.Impl
             var user = await GetUserAsync(userGuid);
             var watchedVideos = _context.WatchedVideos.Where(v => v.UserId == user.Id).Select(c => c.VideoId).ToList();
             var unwatchedVideos = _context.Videos
-                .Where(v => v.IsApproved.HasValue && v.IsApproved == true && !watchedVideos.Contains(v.Id))
+                .Where(v => v.IsApproved.HasValue && v.IsApproved == true && v.IsActive == true &&
+                            !watchedVideos.Contains(v.Id))
                 .OrderBy(x => Guid.NewGuid())
                 .Take(number).ToList();
             return unwatchedVideos;

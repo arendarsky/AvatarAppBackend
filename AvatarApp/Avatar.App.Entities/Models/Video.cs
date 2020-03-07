@@ -11,6 +11,7 @@ namespace Avatar.App.Entities.Models
         public string Name { get; set; }
         public string Extension { get; set; }
         public bool? IsApproved { get; set; }
+        public bool IsActive { get; set; }
 
         public double StartTime { get; set; }
         public double EndTime { get; set; }

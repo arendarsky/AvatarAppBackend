@@ -9,8 +9,8 @@ namespace Avatar.App.Service.Services
     public interface IVideoService
     {
         Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null);
-        Task<IEnumerable<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number);
-        Task<IEnumerable<Video>> GetUncheckedVideoListAsync(int number);
+        Task<ICollection<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number);
+        Task<ICollection<Video>> GetUncheckedVideoListAsync(int number);
         Task SetVideoFragmentInterval(Guid userGuid, string fileName, double startTime, double endTime);
 
         Task<Stream> GetVideoStreamAsync(string fileName);

@@ -6,6 +6,7 @@ using System.IO;
 using System.Security.Claims;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities;
+using Avatar.App.Entities.Models;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -75,7 +76,7 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetUnwatchedVideos")]
-        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<string>), description: "List of video names")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<UserModel>), description: "List of video names")]
         [Route("get_unwatched")]
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
@@ -86,7 +87,22 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid.Value, number);
-                return new JsonResult(unwatchedVideos.Select(v => v.Name));
+                var userModels = (from video in unwatchedVideos
+                    let loadedVideoModels = video.User.LoadedVideos.Select(v => new VideoModel
+                    {
+                        Name = v.Name,
+                        StartTime = v.StartTime,
+                        EndTime = v.EndTime,
+                        IsActive = v.IsActive
+                    }).ToList()
+                    select new UserModel
+                    {
+                        Name = video.User.Name,
+                        Description = video.User.Description,
+                        Videos = loadedVideoModels,
+                        Guid = video.User.Guid.ToString()
+                    }).ToList();
+                return new JsonResult(userModels);
             }
             catch (UserNotFoundException)
             {

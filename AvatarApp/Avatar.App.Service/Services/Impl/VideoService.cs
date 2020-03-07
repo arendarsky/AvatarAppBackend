@@ -47,11 +47,11 @@ namespace Avatar.App.Service.Services.Impl
             return video;
         }
 
-        public async Task<IEnumerable<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number)
+        public async Task<ICollection<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number)
         {
             var user = await GetUserAsync(userGuid);
             var watchedVideos = _context.WatchedVideos.Where(v => v.UserId == user.Id).Select(c => c.VideoId).ToList();
-            var unwatchedVideos = _context.Videos
+            var unwatchedVideos = _context.Videos.Include(c => c.User).ThenInclude(u => u.LoadedVideos)
                 .Where(v => v.IsApproved.HasValue && v.IsApproved == true && v.IsActive == true &&
                             !watchedVideos.Contains(v.Id))
                 .OrderBy(x => Guid.NewGuid())
@@ -59,7 +59,7 @@ namespace Avatar.App.Service.Services.Impl
             return unwatchedVideos;
         }
 
-        public async Task<IEnumerable<Video>> GetUncheckedVideoListAsync(int number)
+        public async Task<ICollection<Video>> GetUncheckedVideoListAsync(int number)
         {
             var uncheckedVideos = await Task.Run(()=>
             {

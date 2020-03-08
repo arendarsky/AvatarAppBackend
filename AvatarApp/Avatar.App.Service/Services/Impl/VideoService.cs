@@ -109,7 +109,8 @@ namespace Avatar.App.Service.Services.Impl
                 await _context.LikedVideos.AddAsync(new LikedVideo
                 {
                     User = user,
-                    Video = video
+                    Video = video,
+                    Date = DateTime.Now
                 });
             }
 

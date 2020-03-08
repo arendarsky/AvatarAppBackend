@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.Claims;
+using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities;
 using Avatar.App.Entities.Models;
@@ -87,22 +88,7 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid.Value, number);
-                var userModels = (from video in unwatchedVideos
-                    let loadedVideoModels = video.User.LoadedVideos.Select(v => new VideoModel
-                    {
-                        Name = v.Name,
-                        StartTime = v.StartTime,
-                        EndTime = v.EndTime,
-                        IsActive = v.IsActive
-                    }).ToList()
-                    select new UserModel
-                    {
-                        Name = video.User.Name,
-                        Description = video.User.Description,
-                        Videos = loadedVideoModels,
-                        Guid = video.User.Guid.ToString()
-                    }).ToList();
-                return new JsonResult(userModels);
+                return new JsonResult(ConvertModelHandler.VideosToUserModels(unwatchedVideos));
             }
             catch (UserNotFoundException)
             {

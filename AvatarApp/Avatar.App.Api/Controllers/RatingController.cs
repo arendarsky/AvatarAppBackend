@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities;
+using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,27 +35,9 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
-                var ratingItems = await _ratingService.GetAsync(number);
-                var ratingItemModels = (from ratingItem in ratingItems
-                    let videoModels = ratingItem.User.LoadedVideos.Select(v => new VideoModel
-                    {
-                        Name = v.Name,
-                        StartTime = v.StartTime,
-                        EndTime = v.EndTime,
-                        IsActive = v.IsActive
-                    }).ToList()
-                    select new RatingItemModel
-                    {
-                        LikesNumber = ratingItem.LikesNumber,
-                        User = new UserModel
-                        {
-                            Name = ratingItem.User.Name,
-                            Description = ratingItem.User.Description,
-                            Guid = ratingItem.User.Guid.ToString(),
-                            Videos = videoModels
-                        }
-                    }).ToList();
-                return new JsonResult(ratingItemModels);
+                var ratingItems = await _ratingService.GetRatingAsync(number);
+                
+                return new JsonResult(ConvertModelHandler.RatingItemsToRatingItemModels(ratingItems));
             }
             catch(Exception ex)
             {
@@ -60,5 +45,40 @@ namespace Avatar.App.Api.Controllers
                 return Problem();
             }
         }
+
+        [Route("likes/get")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<LikedVideoModel>), description: "Rating Json")]
+        [HttpGet]
+        public async Task<ActionResult> GetLikes(int number, int skip)
+        {
+            var userGuid = GetUserGuid();
+            if (!userGuid.HasValue) return Unauthorized();
+            try
+            {
+                var userLikes = await _ratingService.GetLikesAsync(userGuid.Value, number, skip);
+                
+                return new JsonResult(ConvertModelHandler.LikedVideosToLikedVideoModels(userLikes));
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        #region Private Methods
+
+        private Guid? GetUserGuid()
+        {
+            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameIdentifier == null) return null;
+            return Guid.Parse(nameIdentifier.Value);
+        }
+
+        #endregion
     }
 }

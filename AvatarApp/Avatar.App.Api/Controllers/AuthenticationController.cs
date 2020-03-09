@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Avatar.App.Api.Models.Impl;
 using Avatar.App.Entities;
+using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
 using Avatar.App.Service.Services;
@@ -83,6 +84,14 @@ namespace Avatar.App.Api.Controllers
             {
                 var token = await _authenticationService.GetAuthorizationTokenAsync(email, password);
                 response.Token = token;
+                return new JsonResult(response);
+            }
+            catch (UserNotFoundException)
+            {
+                return new JsonResult(response);
+            }
+            catch (InvalidPasswordException)
+            {
                 return new JsonResult(response);
             }
             catch (Exception ex)

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Avatar.App.Api.Models
 {
-    public class RatingItemModel
+    public class UserProfileModel
     {
         public int LikesNumber { get; set; }
         public UserModel User { get; set; }

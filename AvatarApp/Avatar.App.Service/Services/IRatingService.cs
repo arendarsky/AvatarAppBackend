@@ -9,7 +9,7 @@ namespace Avatar.App.Service.Services
 {
     public interface IRatingService
     {
-        Task<ICollection<RatingItem>> GetRatingAsync(int number);
+        Task<ICollection<UserProfile>> GetRatingAsync(int number);
         Task<ICollection<LikedVideo>> GetLikesAsync(Guid userGuid, int number, int skip);
     }
 }

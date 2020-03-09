@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
+using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Helpers;
 using Avatar.App.Service.Models;
 using Avatar.App.Service.Security;
@@ -34,19 +35,14 @@ namespace Avatar.App.Service.Services.Impl
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
             if (user != null) return false;
-            var salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(salt);
-            }
 
-            var hashed = HashPassword(userDto.Password);
+            var hashed = PasswordHelper.HashPassword(userDto.Password);
             var guid = Guid.NewGuid();
 
             user = new User
             {
                 Name = userDto.Name,
-                Password = userDto.Password,
+                Password = hashed,
                 Email = userDto.Email,
                 Guid = guid
             };
@@ -58,9 +54,10 @@ namespace Avatar.App.Service.Services.Impl
         public async Task<string> GetAuthorizationTokenAsync(string email, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return null;
-            var hashed = HashPassword(password);
-            return password != user.Password ? null : CreateJwtToken(user);
+            if (user == null) throw new UserNotFoundException();
+            var hashed = PasswordHelper.HashPassword(password);
+            if (hashed != user.Password) throw  new InvalidPasswordException();
+            return CreateJwtToken(user);
         }
 
         public async Task SendEmailAsync(string email)
@@ -101,21 +98,6 @@ namespace Avatar.App.Service.Services.Impl
         }
 
         #region Private Methods
-
-        private static string HashPassword(string password)
-        {
-            var salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(salt);
-            }
-            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password,
-                salt,
-                KeyDerivationPrf.HMACSHA1,
-                10000,
-                256 / 8));
-        }
 
         private string CreateJwtToken(User user)
         {

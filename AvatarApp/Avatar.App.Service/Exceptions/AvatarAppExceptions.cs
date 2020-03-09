@@ -20,4 +20,9 @@ namespace Avatar.App.Service.Exceptions
     {
 
     }
+
+    public class InvalidPasswordException : Exception
+    {
+
+    }
 }

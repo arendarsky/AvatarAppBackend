@@ -29,15 +29,15 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<RatingItemModel>), description: "Rating Json")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<UserProfileModel>), description: "Rating Json")]
         [HttpGet]
         public async Task<ActionResult> Get(int number)
         {
             try
             {
-                var ratingItems = await _ratingService.GetRatingAsync(number);
+                var userProfiles = await _ratingService.GetRatingAsync(number);
                 
-                return new JsonResult(ConvertModelHandler.RatingItemsToRatingItemModels(ratingItems));
+                return new JsonResult(ConvertModelHandler.UserProfilesToUserProfileModels(userProfiles));
             }
             catch(Exception ex)
             {

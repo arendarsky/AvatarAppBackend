@@ -14,24 +14,25 @@ namespace Avatar.App.Service.Services.Impl
     public class RatingService : IRatingService
     {
         private readonly AvatarAppContext _context;
+        private readonly IProfileService _profileService;
 
-        public RatingService(AvatarAppContext context)
+        public RatingService(AvatarAppContext context, IProfileService profileService)
         {
             _context = context;
+            _profileService = profileService;
         }
 
-        public async Task<ICollection<RatingItem>> GetRatingAsync(int number)
+
+        public async Task<ICollection<UserProfile>> GetRatingAsync(int number)
         {
             var users = _context.Users.Include(u => u.LoadedVideos).ToList();
-            var ratingItems = new List<RatingItem>();
+            var userProfiles = new List<UserProfile>();
             await Task.Run(() =>
-                {
-                    ratingItems.AddRange(from user in users
-                        let likesNumber =
-                            user.LoadedVideos.Sum(video => _context.LikedVideos.Count(v => v.VideoId == video.Id))
-                        select new RatingItem {LikesNumber = likesNumber, User = user});
-                });
-            return ratingItems.OrderByDescending(r => r.LikesNumber).Take(number).ToList();
+            {
+                userProfiles.AddRange(from user in users
+                    select new UserProfile { LikesNumber = _profileService.GetLikesNumber(user), User = user});
+            });
+            return userProfiles.OrderByDescending(r => r.LikesNumber).Take(number).ToList();
         }
 
         public async Task<ICollection<LikedVideo>> GetLikesAsync(Guid userGuid, int number, int skip)

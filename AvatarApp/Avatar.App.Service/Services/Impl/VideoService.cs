@@ -17,6 +17,7 @@ namespace Avatar.App.Service.Services.Impl
         private readonly AvatarAppContext _context;
         private readonly IStorageService _storageService;
         private readonly VideoSettings _videoSettings;
+        private const string StoragePrefix = "/video/";
 
         public VideoService(AvatarAppContext context, IStorageService storageService, IOptions<VideoSettings> videoSOptions)
         {
@@ -28,6 +29,7 @@ namespace Avatar.App.Service.Services.Impl
         public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
         {
             var user = await GetUserAsync(userGuid);
+            await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
 
             var newFilename = Path.GetRandomFileName() + fileExtension;
             var video = new Video
@@ -35,10 +37,11 @@ namespace Avatar.App.Service.Services.Impl
                 User = user,
                 Name = newFilename,
                 StartTime = 0,
-                EndTime = _videoSettings.FragmentMaxLength
+                EndTime = _videoSettings.FragmentMaxLength,
+                IsActive = !user.LoadedVideos.Any()
             };
 
-            await _storageService.UploadAsync(fileStream, newFilename);
+            await _storageService.UploadAsync(fileStream, newFilename, StoragePrefix);
 
             await _context.Videos.AddAsync(video);
 
@@ -88,7 +91,7 @@ namespace Avatar.App.Service.Services.Impl
 
         public async Task<Stream> GetVideoStreamAsync(string fileName)
         {
-            return await _storageService.GetFileStreamAsync(fileName);
+            return await _storageService.GetFileStreamAsync(fileName, StoragePrefix);
         }
 
         public async Task SetLikeAsync(Guid userGuid, string fileName, bool isLike)

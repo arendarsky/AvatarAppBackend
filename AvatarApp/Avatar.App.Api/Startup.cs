@@ -78,6 +78,7 @@ namespace Avatar.App.Api
             services.AddScoped<IStorageService, LocalStorageService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IRatingService, RatingService>();
 
             services.AddSwaggerGen(c =>

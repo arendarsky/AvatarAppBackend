@@ -9,6 +9,7 @@ namespace Avatar.App.Entities.Models
         public string Name { get; set; }
         public Guid Guid { get; set; }
         public string Email { get; set; }
+        public string ProfilePhoto { get; set; }
         public string Password { get; set; }
         public string Contact { get; set; }
         public string Description { get; set; }

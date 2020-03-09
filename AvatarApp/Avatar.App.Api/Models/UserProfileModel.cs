@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Avatar.App.Api.Models
+﻿namespace Avatar.App.Api.Models
 {
     public class UserProfileModel
     {

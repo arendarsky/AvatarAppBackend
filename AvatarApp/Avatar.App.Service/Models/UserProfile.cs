@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Avatar.App.Entities.Models;
+﻿using Avatar.App.Entities.Models;
 
 namespace Avatar.App.Service.Models
 {

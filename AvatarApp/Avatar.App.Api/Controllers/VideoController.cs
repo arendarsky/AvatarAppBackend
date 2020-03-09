@@ -7,7 +7,6 @@ using System.Security.Claims;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities;
-using Avatar.App.Entities.Models;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;

@@ -96,7 +96,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("set_password")]
-        [HttpGet]
+        [HttpPost]
         public async Task<ActionResult> SetPassword(string oldPassword, string newPassword)
         {
             var userGuid = GetUserGuid();

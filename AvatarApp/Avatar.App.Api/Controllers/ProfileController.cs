@@ -127,10 +127,11 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("photo/upload")]
+        [RequestSizeLimit(1048576)]
         [HttpPost]
         public async Task<ActionResult> UploadPhoto(IFormFile file)
         {
-            if (file == null || file.Length > _avatarAppSettings.MaxImageSize) return BadRequest();
+            if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
             var userGuid = GetUserGuid();
             if (!userGuid.HasValue) return Unauthorized();

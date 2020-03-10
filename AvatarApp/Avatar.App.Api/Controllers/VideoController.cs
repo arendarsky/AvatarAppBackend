@@ -43,11 +43,12 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Upload")]
         [SwaggerResponse(statusCode: 200, type: typeof(VideoModel), description: "Video data")]
+        [RequestSizeLimit(209715200)]
         [Route("upload")]
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file == null || file.Length > _avatarAppSettings.MaxVideoSize) return BadRequest();
+            if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
             var userGuid = GetUserGuid();
             if (!userGuid.HasValue) return Unauthorized();

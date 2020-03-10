@@ -7,12 +7,14 @@ using System.Security.Claims;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
 using Avatar.App.Entities;
+using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
@@ -23,10 +25,12 @@ namespace Avatar.App.Api.Controllers
     public class VideoController : ControllerBase
     {
         private readonly IVideoService _videoService;
+        private readonly AvatarAppSettings _avatarAppSettings;
 
-        public VideoController(IVideoService videoService)
+        public VideoController(IVideoService videoService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _videoService = videoService;
+            _avatarAppSettings = avatarAppOptions.Value;
         }
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file == null) return BadRequest();
+            if (file == null || file.Length > _avatarAppSettings.MaxVideoSize) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
             var userGuid = GetUserGuid();
             if (!userGuid.HasValue) return Unauthorized();
@@ -59,6 +63,10 @@ namespace Avatar.App.Api.Controllers
             catch (UserNotFoundException)
             {
                 return Unauthorized();
+            }
+            catch (ReachedVideoLimitException)
+            {
+                return new JsonResult(false);
             }
             catch (Exception ex)
             {
@@ -184,6 +192,10 @@ namespace Avatar.App.Api.Controllers
                 await _videoService.SetVideoFragmentInterval(userGuid.Value, fileName, startTime, endTime);
                 return Ok();
             }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
             catch (IncorrectFragmentIntervalException)
             {
                 return BadRequest();
@@ -197,6 +209,56 @@ namespace Avatar.App.Api.Controllers
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
+        }
+
+        [Route("set_active")]
+        [HttpGet]
+        public async Task<ActionResult> SetActive(string fileName)
+        {
+            var userGuid = GetUserGuid();
+            if (userGuid == null) return Unauthorized();
+
+            try
+            {
+                await _videoService.SetActiveAsync(userGuid.Value, fileName);
+                return Ok();
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (VideoNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        [Route("remove/{name}")]
+        [HttpGet]
+        public async Task<ActionResult> Remove(string name)
+        {
+            var userGuid = GetUserGuid();
+            if (userGuid == null) return Unauthorized();
+
+            try
+            {
+                await _videoService.RemoveVideoAsync(userGuid.Value, name);
+                return Ok();
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (VideoNotFoundException)
+            {
+                return NotFound();
+            }
+            
         }
 
         #region Private Methods

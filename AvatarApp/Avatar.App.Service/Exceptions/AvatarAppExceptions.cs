@@ -25,4 +25,9 @@ namespace Avatar.App.Service.Exceptions
     {
 
     }
+
+    public class ReachedVideoLimitException : Exception
+    {
+
+    }
 }

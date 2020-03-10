@@ -31,10 +31,10 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
-                var userGuid = GetUserGuid();
-                if (userGuid == null) return Unauthorized();
-                var toUser = await _videoService.GetVideoOwnerAsync(fileName);
-                await _messageService.SendMessageAsync(text, userGuid.Value, toUser);
+                //var userGuid = GetUserGuid();
+                //if (userGuid == null) return Unauthorized();
+                //var toUser = await _videoService.GetVideoOwnerAsync(fileName);
+                //await _messageService.SendMessageAsync(text, userGuid.Value, toUser);
                 return Ok();
             }
             catch (UserNotFoundException)

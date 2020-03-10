@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Context;
 using Avatar.App.Entities.Models;
+using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Helpers;
 using Avatar.App.Service.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Service.Services.Impl
 {
@@ -15,12 +17,13 @@ namespace Avatar.App.Service.Services.Impl
     {
         private readonly AvatarAppContext _context;
         private readonly IStorageService _storageService;
-        private const string StoragePrefix = "/images/";
+        private readonly AvatarAppSettings _avatarAppSettings;
 
-        public ProfileService(AvatarAppContext context, IStorageService storageService)
+        public ProfileService(AvatarAppContext context, IStorageService storageService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _context = context;
             _storageService = storageService;
+            _avatarAppSettings = avatarAppOptions.Value;
         }
 
         public async Task<UserProfile> GetAsync(Guid userGuid)
@@ -55,7 +58,7 @@ namespace Avatar.App.Service.Services.Impl
 
             var newFilename = Path.GetRandomFileName() + fileExtension;
 
-            await _storageService.UploadAsync(fileStream, newFilename, StoragePrefix);
+            await _storageService.UploadAsync(fileStream, newFilename, _avatarAppSettings.ImageStoragePrefix);
 
             user.ProfilePhoto = newFilename;
 
@@ -66,7 +69,7 @@ namespace Avatar.App.Service.Services.Impl
 
         public async Task<Stream> GetPhotoStreamAsync(string fileName)
         {
-            return await _storageService.GetFileStreamAsync(fileName, StoragePrefix);
+            return await _storageService.GetFileStreamAsync(fileName, _avatarAppSettings.ImageStoragePrefix);
         }
 
         public async Task SetDescriptionAsync(Guid userGuid, string description)

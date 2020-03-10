@@ -12,20 +12,20 @@ namespace Avatar.App.Api.Handlers
         {
             return (from video in videos
                 let loadedVideoModels = video.User.LoadedVideos
-                    .Where(v => v.IsApproved.HasValue && v.IsApproved == true).Select(v => new VideoModel
+                    .Select(v => new VideoModel
                     {
                         Name = v.Name,
                         StartTime = v.StartTime,
                         EndTime = v.EndTime,
-                        IsActive = v.IsActive
+                        IsActive = v.IsActive,
+                        IsApproved = v.IsApproved
                     }).ToList()
                 select new UserModel
                 {
                     Name = video.User.Name,
                     Description = video.User.Description,
                     ProfilePhoto = video.User.ProfilePhoto,
-                    Videos = loadedVideoModels,
-                    Guid = video.User.Guid.ToString()
+                    Videos = loadedVideoModels
                 }).ToList();
         }
 
@@ -38,13 +38,14 @@ namespace Avatar.App.Api.Handlers
 
         public static UserProfileModel UserProfileToUserProfileModel(UserProfile userProfile)
         {
-            var videoModels = userProfile.User.LoadedVideos.Where(v => v.IsApproved.HasValue && v.IsApproved == true)
+            var videoModels = userProfile.User.LoadedVideos
                 .Select(v => new VideoModel
                 {
                     Name = v.Name,
                     StartTime = v.StartTime,
                     EndTime = v.EndTime,
-                    IsActive = v.IsActive
+                    IsActive = v.IsActive,
+                    IsApproved = v.IsApproved
                 }).ToList();
             return new UserProfileModel
             {
@@ -54,7 +55,6 @@ namespace Avatar.App.Api.Handlers
                     Name = userProfile.User.Name,
                     Description = userProfile.User.Description,
                     ProfilePhoto = userProfile.User.ProfilePhoto,
-                    Guid = userProfile.User.Guid.ToString(),
                     Videos = videoModels
                 }
             };
@@ -63,13 +63,14 @@ namespace Avatar.App.Api.Handlers
         public static ICollection<LikedVideoModel> LikedVideosToLikedVideoModels(ICollection<LikedVideo> likedVideos)
         {
             return (from likedVideo in likedVideos
-                let videoModels = likedVideo.User.LoadedVideos.Where(v => v.IsApproved.HasValue && v.IsApproved == true)
+                let videoModels = likedVideo.User.LoadedVideos
                     .Select(v => new VideoModel
                     {
                         Name = v.Name,
                         StartTime = v.StartTime,
                         EndTime = v.EndTime,
-                        IsActive = v.IsActive
+                        IsActive = v.IsActive,
+                        IsApproved = v.IsApproved
                     }).ToList()
                 select new LikedVideoModel()
                 {
@@ -79,7 +80,6 @@ namespace Avatar.App.Api.Handlers
                         Name = likedVideo.User.Name,
                         ProfilePhoto = likedVideo.User.ProfilePhoto,
                         Description = likedVideo.User.Description,
-                        Guid = likedVideo.User.Guid.ToString(),
                         Videos = videoModels
                     }
                 }).ToList();

@@ -5,12 +5,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Entities;
+using Avatar.App.Entities.Settings;
 using Avatar.App.Service.Exceptions;
 using Avatar.App.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -20,10 +22,12 @@ namespace Avatar.App.Api.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IProfileService _profileService;
+        private readonly AvatarAppSettings _avatarAppSettings;
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(IProfileService profileService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _profileService = profileService;
+            _avatarAppSettings = avatarAppOptions.Value;
         }
 
         [Route("get")]
@@ -126,7 +130,7 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> UploadPhoto(IFormFile file)
         {
-            if (file == null) return BadRequest();
+            if (file == null || file.Length > _avatarAppSettings.MaxImageSize) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
             var userGuid = GetUserGuid();
             if (!userGuid.HasValue) return Unauthorized();

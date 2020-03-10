@@ -4,14 +4,16 @@ using Avatar.App.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Avatar.App.Context.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    partial class AvatarAppContextModelSnapshot : ModelSnapshot
+    [Migration("20200310083002_UpdateVideoIsRemoved")]
+    partial class UpdateVideoIsRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,6 +133,9 @@ namespace Avatar.App.Context.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRemoved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

@@ -16,20 +16,20 @@ namespace Avatar.App.Service.Services.Impl
     {
         private readonly AvatarAppContext _context;
         private readonly IStorageService _storageService;
-        private readonly VideoSettings _videoSettings;
-        private const string StoragePrefix = "/video/";
+        private readonly AvatarAppSettings _avatarAppSettings;
 
-        public VideoService(AvatarAppContext context, IStorageService storageService, IOptions<VideoSettings> videoSOptions)
+        public VideoService(AvatarAppContext context, IStorageService storageService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _context = context;
             _storageService = storageService;
-            _videoSettings = videoSOptions.Value;
+            _avatarAppSettings = avatarAppOptions.Value;
         }
 
         public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
         {
             var user = await GetUserAsync(userGuid);
             await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
+            if (user.LoadedVideos.Count() >= _avatarAppSettings.MaxVideoNumber) throw new ReachedVideoLimitException();
 
             var newFilename = Path.GetRandomFileName() + fileExtension;
             var video = new Video
@@ -37,11 +37,11 @@ namespace Avatar.App.Service.Services.Impl
                 User = user,
                 Name = newFilename,
                 StartTime = 0,
-                EndTime = _videoSettings.FragmentMaxLength,
+                EndTime = _avatarAppSettings.ShortVideoMaxLength,
                 IsActive = !user.LoadedVideos.Any()
             };
 
-            await _storageService.UploadAsync(fileStream, newFilename, StoragePrefix);
+            await _storageService.UploadAsync(fileStream, newFilename, _avatarAppSettings.VideoStoragePrefix);
 
             await _context.Videos.AddAsync(video);
 
@@ -74,7 +74,7 @@ namespace Avatar.App.Service.Services.Impl
         public async Task SetVideoFragmentInterval(Guid userGuid, string fileName, double startTime, double endTime)
         {
             if (startTime < 0 || endTime < 0 || endTime <= startTime ||
-                endTime - startTime > _videoSettings.FragmentMaxLength) throw new IncorrectFragmentIntervalException();
+                endTime - startTime > _avatarAppSettings.ShortVideoMaxLength) throw new IncorrectFragmentIntervalException();
             var video = await GetVideoAsync(fileName);
             _context.Entry(video).Reference(v => v.User).Load();
             if (video.User.Guid != userGuid) throw new VideoNotFoundException();
@@ -83,21 +83,18 @@ namespace Avatar.App.Service.Services.Impl
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Video> GetVideoData(string fileName)
-        {
-            var video = await GetVideoAsync(fileName);
-            return video;
-        }
-
         public async Task<Stream> GetVideoStreamAsync(string fileName)
         {
-            return await _storageService.GetFileStreamAsync(fileName, StoragePrefix);
+            return await _storageService.GetFileStreamAsync(fileName, _avatarAppSettings.VideoStoragePrefix);
         }
 
         public async Task SetLikeAsync(Guid userGuid, string fileName, bool isLike)
         {
             var user = await GetUserAsync(userGuid);
             var video = await GetVideoAsync(fileName);
+
+            if(!video.IsApproved.HasValue || video.IsApproved == false || video.IsActive == false) throw new VideoNotFoundException();
+
             var like = await _context.WatchedVideos.FirstOrDefaultAsync(l =>
                 l.VideoId == video.Id && l.UserId == user.Id);
             if (like != null) return;
@@ -127,11 +124,31 @@ namespace Avatar.App.Service.Services.Impl
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User> GetVideoOwnerAsync(string filename)
+        public async Task SetActiveAsync(Guid userGuid, string fileName)
         {
-            var video = await _context.Videos.Include(v => v.User).FirstOrDefaultAsync(v => v.Name == filename);
+            var videos = _context.Videos
+                .Where(c => c.User.Guid == userGuid && c.IsApproved.HasValue && c.IsApproved == true).ToList();
+            
+            if (videos.FirstOrDefault(v => v.Name == fileName) == null) throw new VideoNotFoundException();
+
+            videos.ForEach(v => v.IsActive = v.Name == fileName);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveVideoAsync(Guid userGuid, string fileName)
+        {
+            var video = await _context.Videos.Include(v => v.User)
+                .FirstOrDefaultAsync(c => c.Name == fileName && c.User.Guid == userGuid);
             if (video == null) throw new VideoNotFoundException();
-            return video.User;
+            var watchedVideos = _context.WatchedVideos.Where(v => v.VideoId == video.Id);
+            var likedVideos = _context.LikedVideos.Where(v => v.VideoId == video.Id);
+
+            _context.RemoveRange(watchedVideos);
+            _context.RemoveRange(likedVideos);
+            _context.Remove(video);
+
+            await _context.SaveChangesAsync();
         }
 
         #region Private Methods

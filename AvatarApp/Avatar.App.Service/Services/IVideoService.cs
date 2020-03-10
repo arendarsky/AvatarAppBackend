@@ -12,14 +12,11 @@ namespace Avatar.App.Service.Services
         Task<ICollection<Video>> GetUnwatchedVideoListAsync(Guid userGuid, int number);
         Task<ICollection<Video>> GetUncheckedVideoListAsync(int number);
         Task SetVideoFragmentInterval(Guid userGuid, string fileName, double startTime, double endTime);
-
         Task<Stream> GetVideoStreamAsync(string fileName);
-
         Task SetLikeAsync(Guid userGuid, string fileName, bool isLike);
-
         Task SetApproveStatusAsync(string fileName, bool isApproved);
-
-        Task<User> GetVideoOwnerAsync(string filename);
+        Task SetActiveAsync(Guid userGuid, string fileName);
+        Task RemoveVideoAsync(Guid userGuid, string fileName);
 
     }
 }

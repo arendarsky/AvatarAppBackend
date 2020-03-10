@@ -11,8 +11,6 @@ using Avatar.App.Service.Services;
 using Avatar.App.Service.Services.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,11 +66,8 @@ namespace Avatar.App.Api
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
-            services.Configure<VideoSettings>(Configuration.GetSection("Video.Settings"));
+            services.Configure<AvatarAppSettings>(Configuration.GetSection("Avatar.App.Settings"));
             services.Configure<EnvironmentConfig>(Configuration);
-            var credentials = new StorageCredentials(Configuration.GetSection("AzureBlob.Settings")["AccountName"],
-                Configuration.GetSection("AzureBlob.Settings")["AccountKey"]);
-            services.AddScoped<CloudStorageAccount>(s => new CloudStorageAccount(credentials, true));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStorageService, LocalStorageService>();
@@ -137,8 +132,8 @@ namespace Avatar.App.Api
             applicationLifetime.ApplicationStarted.Register(
                 () =>
                 {
-                    Logger.Log.LogInformation("Сервис запущен");
-                    Logger.Log.LogInformation($"Настройки {env.EnvironmentName}");
+                    Logger.Log.LogInformation("Service started");
+                    Logger.Log.LogInformation($"Settings {env.EnvironmentName}");
                 });
 
             app.UseSwagger();

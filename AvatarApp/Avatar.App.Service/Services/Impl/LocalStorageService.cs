@@ -31,7 +31,7 @@ namespace Avatar.App.Service.Services.Impl
         public async Task UploadWithConvertingAsync(Stream fileStream, string inputFileName, string outputFileName,
             string storagePrefix)
         {
-            var fullInputVideoPath = Path.Combine(Path.GetTempPath(), inputFileName);
+            var fullInputVideoPath = _environmentConfig.STORAGE_PATH + _avatarAppSettings.TemporaryStoragePrefix + inputFileName;
             await using var videoFileStream = new FileStream(fullInputVideoPath, FileMode.Create);
             await fileStream.CopyToAsync(videoFileStream);
 

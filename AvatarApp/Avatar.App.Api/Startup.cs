@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Xabe.FFmpeg;
 
 namespace Avatar.App.Api
 {
@@ -135,6 +136,17 @@ namespace Avatar.App.Api
                     Logger.Log.LogInformation("Service started");
                     Logger.Log.LogInformation($"Settings {env.EnvironmentName}");
                 });
+
+            try
+            {
+                FFmpeg.ExecutablesPath =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
+                FFmpeg.GetLatestVersion();
+            }
+            catch(Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+            }
 
             app.UseSwagger();
 

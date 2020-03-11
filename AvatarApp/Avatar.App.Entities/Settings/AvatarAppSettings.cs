@@ -8,5 +8,6 @@
         public int MaxVideoNumber { get; set; }
         public int MaxVideoSize { get; set; }
         public int MaxImageSize { get; set; }
+        public string AcceptedVideoExtension { get; set; }
     }
 }

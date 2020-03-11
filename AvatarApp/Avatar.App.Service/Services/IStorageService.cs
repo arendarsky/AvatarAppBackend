@@ -7,5 +7,8 @@ namespace Avatar.App.Service.Services
     {
         Task UploadAsync(Stream fileStream, string fileName, string storagePrefix);
         Task<Stream> GetFileStreamAsync(string fileName, string storagePrefix);
+
+        Task UploadWithConvertingAsync(Stream fileStream, string inputFileName, string outputFileName,
+            string storagePrefix);
     }
 }

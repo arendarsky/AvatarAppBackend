@@ -81,6 +81,5 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
-        
     }
 }

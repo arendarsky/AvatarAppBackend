@@ -24,7 +24,8 @@ namespace Avatar.App.Service.Services.Impl
 
         public async Task<ICollection<UserProfile>> GetRatingAsync(int number)
         {
-            var users = _context.Users.Include(u => u.LoadedVideos).ToList();
+            var users = _context.Users
+                .Include(u => u.LoadedVideos).ToList();
             var userProfiles = new List<UserProfile>();
             await Task.Run(() =>
             {
@@ -37,7 +38,8 @@ namespace Avatar.App.Service.Services.Impl
         public async Task<ICollection<LikedVideo>> GetLikesAsync(Guid userGuid, int number, int skip)
         {
             var user = await GetUserAsync(userGuid);
-            await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
+            await _context.Entry(user).Collection(u => u.LoadedVideos).Query()
+                .Where(v => v.IsApproved.HasValue && v.IsApproved == true).LoadAsync();
             var likes = new List<LikedVideo>();
             foreach (var video in user.LoadedVideos)
             {

@@ -42,14 +42,15 @@ namespace Avatar.App.Service.Services.Impl
         public async Task<int> GetLikesNumberAsync(Guid userGuid)
         {
             var user = await GetUserAsync(userGuid);
-            await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
+            await _context.Entry(user).Collection(u => u.LoadedVideos).Query()
+                .Where(v => v.IsApproved.HasValue && v.IsApproved == true).LoadAsync();
 
             return GetLikesNumber(user);
         }
 
         public int GetLikesNumber(User user)
         {
-            return user.LoadedVideos.Sum(v => _context.LikedVideos.Count(c => c.VideoId == v.Id));
+            return user.LoadedVideos.Where(v => v.IsApproved.HasValue && v.IsApproved == true).Sum(v => _context.LikedVideos.Count(c => c.VideoId == v.Id));
         }
 
         public async Task<string> UploadPhotoAsync(Guid userGuid, Stream fileStream, string fileExtension)

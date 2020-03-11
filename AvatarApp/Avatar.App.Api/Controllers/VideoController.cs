@@ -133,7 +133,7 @@ namespace Avatar.App.Api.Controllers
 
                 return File(videoStream, "video/*", true);
             }
-            catch (DirectoryNotFoundException)
+            catch (IOException)
             {
                 return NotFound();
             }

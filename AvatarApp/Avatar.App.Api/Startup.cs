@@ -165,6 +165,8 @@ namespace Avatar.App.Api
 
             app.UseAuthentication();
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
 
             app.UseAuthorization();

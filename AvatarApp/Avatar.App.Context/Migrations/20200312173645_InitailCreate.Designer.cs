@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Avatar.App.Context.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    [Migration("20200310083002_UpdateVideoIsRemoved")]
-    partial class UpdateVideoIsRemoved
+    [Migration("20200312173645_InitailCreate")]
+    partial class InitailCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -133,9 +133,6 @@ namespace Avatar.App.Context.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRemoved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

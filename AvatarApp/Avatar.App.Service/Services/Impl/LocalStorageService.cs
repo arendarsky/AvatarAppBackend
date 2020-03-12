@@ -37,21 +37,7 @@ namespace Avatar.App.Service.Services.Impl
 
             var fullOutputFileName = _environmentConfig.STORAGE_PATH + storagePrefix + outputFileName;
 
-            var mediaInfo = await MediaInfo.Get(fullInputVideoPath);
-            var videoStream = mediaInfo.VideoStreams.First();
-            var audioStream = mediaInfo.AudioStreams.First();
-
-            videoStream.SetSize(VideoSize.Hd720);
-
-            var conversion = Conversion.New()
-                //Add video stream to output file
-                .AddStream(videoStream)
-                //Add audio stream to output file
-                .AddStream(audioStream)
-                //Set output file path
-                .SetOutput(fullOutputFileName)
-                //SetOverwriteOutput to overwrite files. It's useful when we already run application before
-                .SetOverwriteOutput(true);
+            var conversion = Conversion.ToMp4(fullInputVideoPath, fullOutputFileName).SetOverwriteOutput(true).SetPreset(ConversionPreset.VerySlow);
 
             //Add log to OnProgress
             conversion.OnProgress += async (sender, args) =>

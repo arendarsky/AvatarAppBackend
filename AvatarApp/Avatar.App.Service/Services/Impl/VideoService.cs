@@ -31,21 +31,12 @@ namespace Avatar.App.Service.Services.Impl
             await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
             if (user.LoadedVideos.Count() >= _avatarAppSettings.MaxVideoNumber) throw new ReachedVideoLimitException();
 
-            var outputFileName = Path.GetRandomFileName() + fileExtension;
+            var inputFileName = Path.GetRandomFileName() + fileExtension;
+            var outputFileName = Path.ChangeExtension(inputFileName, _avatarAppSettings.AcceptedVideoExtension);
 
-            if (fileExtension != _avatarAppSettings.AcceptedVideoExtension)
-            {
-                var inputFileName = outputFileName;
-                outputFileName = Path.ChangeExtension(inputFileName, _avatarAppSettings.AcceptedVideoExtension);
+            await _storageService.UploadWithConvertingAsync(fileStream, inputFileName, outputFileName,
+                _avatarAppSettings.VideoStoragePrefix);
 
-                await _storageService.UploadWithConvertingAsync(fileStream, inputFileName, outputFileName,
-                    _avatarAppSettings.VideoStoragePrefix);
-            }
-            else
-            {
-                await _storageService.UploadAsync(fileStream, outputFileName, _avatarAppSettings.VideoStoragePrefix);
-            }
-            
             var video = new Video
             {
                 User = user,

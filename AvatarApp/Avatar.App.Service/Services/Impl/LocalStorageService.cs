@@ -1,12 +1,7 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Entities;
 using Avatar.App.Entities.Settings;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Xabe.FFmpeg;
-using Xabe.FFmpeg.Enums;
 
 namespace Avatar.App.Service.Services.Impl
 {

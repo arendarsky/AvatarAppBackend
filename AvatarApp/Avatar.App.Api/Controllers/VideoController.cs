@@ -49,7 +49,11 @@ namespace Avatar.App.Api.Controllers
         public async Task<IActionResult> Upload(IFormFile file)
         {
             if (file == null) return BadRequest();
+
             var fileExtension = Path.GetExtension(file.FileName);
+
+            if (!CheckFileExtension(fileExtension)) return BadRequest();
+
             var userGuid = GetUserGuid();
             if (!userGuid.HasValue) return Unauthorized();
 
@@ -269,6 +273,11 @@ namespace Avatar.App.Api.Controllers
             var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (nameIdentifier == null) return null;
             return Guid.Parse(nameIdentifier.Value);
+        }
+
+        private bool CheckFileExtension(string fileExtension)
+        {
+            return fileExtension == _avatarAppSettings.AcceptedVideoExtension;
         }
 
         #endregion

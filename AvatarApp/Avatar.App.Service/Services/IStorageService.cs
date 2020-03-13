@@ -5,10 +5,22 @@ namespace Avatar.App.Service.Services
 {
     public interface IStorageService
     {
+        /// <summary>
+        /// Save file from stream to local disk
+        /// </summary>
+        /// <param name="fileStream"></param>
+        /// <param name="fileName"></param>
+        /// <param name="storagePrefix"></param>
+        /// <returns></returns>
         Task UploadAsync(Stream fileStream, string fileName, string storagePrefix);
+
+        /// <summary>
+        /// Get stream from file on local disk
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="storagePrefix"></param>
+        /// <returns></returns>
         Task<Stream> GetFileStreamAsync(string fileName, string storagePrefix);
 
-        Task UploadWithConvertingAsync(Stream fileStream, string inputFileName, string outputFileName,
-            string storagePrefix);
     }
 }

@@ -25,22 +25,21 @@ namespace Avatar.App.Service.Services.Impl
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
-        public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null)
+        public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension)
         {
             var user = await GetUserAsync(userGuid);
             await _context.Entry(user).Collection(u => u.LoadedVideos).LoadAsync();
-            if (user.LoadedVideos.Count() >= _avatarAppSettings.MaxVideoNumber) throw new ReachedVideoLimitException();
 
-            var inputFileName = Path.GetRandomFileName() + fileExtension;
-            var outputFileName = Path.ChangeExtension(inputFileName, _avatarAppSettings.AcceptedVideoExtension);
+            if (!CheckForAvailableVideoSlots(user)) throw new ReachedVideoLimitException();
 
-            await _storageService.UploadWithConvertingAsync(fileStream, inputFileName, outputFileName,
-                _avatarAppSettings.VideoStoragePrefix);
+            var fileName = CreateFileName(fileExtension); 
+
+            await _storageService.UploadAsync(fileStream, fileName, _avatarAppSettings.VideoStoragePrefix);
 
             var video = new Video
             {
                 User = user,
-                Name = outputFileName,
+                Name = fileName,
                 StartTime = 0,
                 EndTime = _avatarAppSettings.ShortVideoMaxLength,
                 IsActive = !user.LoadedVideos.Any()
@@ -58,7 +57,7 @@ namespace Avatar.App.Service.Services.Impl
             var user = await GetUserAsync(userGuid);
             var watchedVideos = _context.WatchedVideos.Where(v => v.UserId == user.Id).Select(c => c.VideoId).ToList();
             var unwatchedVideos = _context.Videos.Include(c => c.User).ThenInclude(u => u.LoadedVideos)
-                .Where(v => v.IsApproved.HasValue && v.IsApproved == true && v.IsActive == true &&
+                .Where(v => v.IsApproved.HasValue && v.IsApproved == true && v.IsActive &&
                             !watchedVideos.Contains(v.Id))
                 .OrderBy(x => Guid.NewGuid())
                 .Take(number).ToList();
@@ -168,6 +167,16 @@ namespace Avatar.App.Service.Services.Impl
             var video = await _context.Videos.FirstOrDefaultAsync(v => v.Name == name);
             if (video == null) throw new VideoNotFoundException();
             return video;
+        }
+
+        private bool CheckForAvailableVideoSlots(User user)
+        {
+            return user.LoadedVideos.Count() < _avatarAppSettings.MaxVideoNumber;
+        }
+
+        private static string CreateFileName(string fileExtension)
+        {
+            return Path.GetRandomFileName() + fileExtension;
         }
 
         #endregion

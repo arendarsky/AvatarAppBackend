@@ -18,7 +18,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Xabe.FFmpeg;
 
 namespace Avatar.App.Api
 {
@@ -38,14 +37,57 @@ namespace Avatar.App.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddMemoryCache();
 
+            AddJwtAuthentication(services);
+
+            AddDbConnection(services);
+
+            AddSwagger(services);
+
+            AddSettings(services);
+
+            AddServices(services);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+        {
+
+            RegisterLogger(env, loggerFactory, applicationLifetime);
+
+            EnableSwagger(app);
+            
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseAuthentication();
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+
+        #region Private ConfigureServices Methods
+
+        private void AddJwtAuthentication(IServiceCollection services)
+        {
             var signingSecurityKey = Configuration["SigningSecurityKey"];
             var signingKey = new SigningSymmetricKey(signingSecurityKey);
             services.AddSingleton<IJwtSigningEncodingKey>(signingKey);
 
             const string jwtSchemeName = "JwtBearer";
-            var signingDecodingKey = (IJwtSigningDecodingKey) signingKey;
+            var signingDecodingKey = (IJwtSigningDecodingKey)signingKey;
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = jwtSchemeName;
@@ -63,20 +105,17 @@ namespace Avatar.App.Api
                     ValidateLifetime = false
                 };
             });
+        }
+
+        private void AddDbConnection(IServiceCollection services)
+        {
             var connection = Configuration["DB_CONNECTION"];
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
-            services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
-            services.Configure<AvatarAppSettings>(Configuration.GetSection("Avatar.App.Settings"));
-            services.Configure<EnvironmentConfig>(Configuration);
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IStorageService, LocalStorageService>();
-            services.AddScoped<IVideoService, VideoService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IProfileService, ProfileService>();
-            services.AddScoped<IRatingService, RatingService>();
+        }
 
+        private static void AddSwagger(IServiceCollection services)
+        {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo()
@@ -121,10 +160,30 @@ namespace Avatar.App.Api
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+        private void AddSettings(IServiceCollection services)
         {
+            services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
+            services.Configure<AvatarAppSettings>(Configuration.GetSection("Avatar.App.Settings"));
+            services.Configure<EnvironmentConfig>(Configuration);
+        }
 
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IStorageService, LocalStorageService>();
+            services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IRatingService, RatingService>();
+        }
+
+        #endregion
+
+        #region Private Configure Methods
+
+        private static void RegisterLogger(IHostEnvironment env, ILoggerFactory loggerFactory, IHostApplicationLifetime applicationLifetime)
+        {
             var log4NetProviderOptions = new Log4NetProviderOptions("log4net.config");
 
             loggerFactory.AddLog4Net(log4NetProviderOptions);
@@ -136,18 +195,10 @@ namespace Avatar.App.Api
                     Logger.Log.LogInformation("Service started");
                     Logger.Log.LogInformation($"Settings {env.EnvironmentName}");
                 });
+        }
 
-            try
-            {
-                FFmpeg.ExecutablesPath =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
-                FFmpeg.GetLatestVersion();
-            }
-            catch(Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-            }
-
+        private static void EnableSwagger(IApplicationBuilder app)
+        {
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
@@ -157,24 +208,8 @@ namespace Avatar.App.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avatar App V1");
                 c.RoutePrefix = string.Empty;
             });
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseAuthentication();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
+
+        #endregion
     }
 }

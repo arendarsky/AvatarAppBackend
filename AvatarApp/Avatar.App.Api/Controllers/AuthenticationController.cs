@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models.Impl;
-using Avatar.App.Entities;
-using Avatar.App.Service.Exceptions;
-using Avatar.App.Service.Models;
-using Avatar.App.Service.Security;
-using Avatar.App.Service.Services;
+using Avatar.App.SharedKernel;
+using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Models;
+using Avatar.App.Core.Security;
+using Avatar.App.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -51,15 +51,20 @@ namespace Avatar.App.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
                 return BadRequest();
-            try
-            {
-                return new JsonResult(await _authenticationService.RegisterAsync(user));
-            }
-            catch(Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            //try
+            //{
+                await _authenticationService.RegisterAsync(user);
+                return new JsonResult(true);
+            //}
+            //catch (UserAlreadyExistsException)
+            //{
+            //    return new JsonResult(false);
+            //}
+            //catch(Exception ex)
+            //{
+            //    Logger.Log.LogError(ex.Message + ex.StackTrace);
+            //    return Problem();
+            //}
         }
 
         /// <summary>

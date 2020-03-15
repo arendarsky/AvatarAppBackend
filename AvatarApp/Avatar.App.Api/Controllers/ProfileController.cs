@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
-using Avatar.App.Entities;
-using Avatar.App.Entities.Settings;
-using Avatar.App.Service.Exceptions;
-using Avatar.App.Service.Services;
+using Avatar.App.Api.Models;
+using Avatar.App.SharedKernel;
+using Avatar.App.SharedKernel.Settings;
+using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -41,6 +44,30 @@ namespace Avatar.App.Api.Controllers
             {
                 var userProfile = await _profileService.GetAsync(userGuid.Value);
                 return new JsonResult(ConvertModelHandler.UserProfileToUserProfileModel(userProfile));
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        [Route("notifications")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<LikedVideoModel>), description: "Notifications json")]
+        [HttpGet]
+        public async Task<ActionResult> GetNotifications(int number, int skip)
+        {
+            var userGuid = GetUserGuid();
+            if (!userGuid.HasValue) return Unauthorized();
+            try
+            {
+                var userLikes = await _profileService.GetNotificationsAsync(userGuid.Value, number, skip);
+
+                return new JsonResult(ConvertModelHandler.LikedVideosToLikedVideoModels(userLikes));
             }
             catch (UserNotFoundException)
             {

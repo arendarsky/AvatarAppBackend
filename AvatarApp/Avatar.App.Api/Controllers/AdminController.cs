@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Entities;
-using Avatar.App.Service.Exceptions;
-using Avatar.App.Service.Services;
+using Avatar.App.SharedKernel;
+using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -40,7 +40,7 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
-                var videoList = await _videoService.GetUncheckedVideoListAsync(number);
+                var videoList = await _videoService.GetUncheckedVideosAsync(number);
                 return new JsonResult(videoList.Select(v => v.Name));
             }
             catch (Exception ex)

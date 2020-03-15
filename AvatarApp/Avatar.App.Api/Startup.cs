@@ -2,13 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Avatar.App.Context;
-using Avatar.App.Entities;
-using Avatar.App.Entities.Settings;
-using Avatar.App.Service.Security;
-using Avatar.App.Service.Security.Impl;
-using Avatar.App.Service.Services;
-using Avatar.App.Service.Services.Impl;
+using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure;
+using Avatar.App.SharedKernel;
+using Avatar.App.SharedKernel.Settings;
+using Avatar.App.Core.Security;
+using Avatar.App.Core.Security.Impl;
+using Avatar.App.Core.Services;
+using Avatar.App.Core.Services.Impl;
+using Avatar.App.Infrastructure.FileStorage.Interfaces;
+using Avatar.App.Infrastructure.FileStorage.Services;
+using Avatar.App.Infrastructure.Repositories;
+using Avatar.App.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +52,8 @@ namespace Avatar.App.Api
             AddSwagger(services);
 
             AddSettings(services);
+
+            AddRepositories(services);
 
             AddServices(services);
         }
@@ -111,7 +118,7 @@ namespace Avatar.App.Api
         {
             var connection = Configuration["DB_CONNECTION"];
             services.AddDbContext<AvatarAppContext>(options =>
-                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Context")));
+                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
         }
 
         private static void AddSwagger(IServiceCollection services)
@@ -176,6 +183,14 @@ namespace Avatar.App.Api
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IRatingService, RatingService>();
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<IRepository<Video>, VideoRepository>();
+            services.AddScoped<IRepository<User>, UserRepository>();
+            services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
+            services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
         }
 
         #endregion

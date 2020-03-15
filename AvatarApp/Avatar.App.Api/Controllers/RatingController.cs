@@ -5,9 +5,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
-using Avatar.App.Entities;
-using Avatar.App.Service.Exceptions;
-using Avatar.App.Service.Services;
+using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Services;
+using Avatar.App.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -34,7 +34,7 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
-                var userProfiles = await _ratingService.GetRatingAsync(number);
+                var userProfiles = await _ratingService.GetCommonRatingAsync(number);
                 
                 return new JsonResult(ConvertModelHandler.UserProfilesToUserProfileModels(userProfiles));
             }
@@ -45,29 +45,7 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
-        [Route("likes/get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<LikedVideoModel>), description: "Rating Json")]
-        [HttpGet]
-        public async Task<ActionResult> GetLikes(int number, int skip)
-        {
-            var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
-            try
-            {
-                var userLikes = await _ratingService.GetLikesAsync(userGuid.Value, number, skip);
-                
-                return new JsonResult(ConvertModelHandler.LikedVideosToLikedVideoModels(userLikes));
-            }
-            catch (UserNotFoundException)
-            {
-                return Unauthorized();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
-        }
+        
 
         #region Private Methods
 

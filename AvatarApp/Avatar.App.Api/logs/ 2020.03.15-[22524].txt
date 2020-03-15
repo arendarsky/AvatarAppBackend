@@ -1,0 +1,12 @@
+﻿2020-03-15 18:40:45,343  INFO  Service started
+2020-03-15 18:40:45,375  INFO  Settings Development
+2020-03-15 18:42:53,311  ERROR Could not find a part of the path 'D:\data\videos\sc0qkzla.qgu.mp4'.   at System.IO.FileStream.ValidateFileHandle(SafeFileHandle fileHandle)
+   at System.IO.FileStream.CreateFileOpenHandle(FileMode mode, FileShare share, FileOptions options)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at System.IO.FileStream..ctor(String path, FileMode mode)
+   at Avatar.App.Infrastructure.FileStorage.Services.LocalStorageService.SaveFileAsync(String fullPath, Stream inputFileStream) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Infrastructure\FileStorage\Services\LocalStorageService.cs:line 44
+   at Avatar.App.Infrastructure.FileStorage.Services.LocalStorageService.UploadAsync(Stream fileStream, String fileName, String storagePrefix) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Infrastructure\FileStorage\Services\LocalStorageService.cs:line 24
+   at Avatar.App.Infrastructure.EfBaseRepository`1.InsertFileAsync(Stream fileStream, String fileName) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Infrastructure\EfBaseRepository.cs:line 118
+   at Avatar.App.Core.Services.Impl.VideoService.InsertVideoAsync(User user, String fileName, Stream fileStream) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Core\Services\Impl\VideoService.cs:line 226
+   at Avatar.App.Core.Services.Impl.VideoService.UploadVideoAsync(Stream fileStream, Guid userGuid, String fileExtension) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Core\Services\Impl\VideoService.cs:line 42
+   at Avatar.App.Api.Controllers.VideoController.Upload(IFormFile file) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Api\Controllers\VideoController.cs:line 62

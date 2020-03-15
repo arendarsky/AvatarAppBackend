@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avatar.App.Api.Models;
-using Avatar.App.Entities.Models;
-using Avatar.App.Service.Models;
+using Avatar.App.Core.Entities;
+using Avatar.App.Core.Models;
 
 namespace Avatar.App.Api.Handlers
 {

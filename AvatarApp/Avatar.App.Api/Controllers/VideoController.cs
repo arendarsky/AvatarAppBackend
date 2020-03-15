@@ -6,10 +6,10 @@ using System.IO;
 using System.Security.Claims;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
-using Avatar.App.Entities;
-using Avatar.App.Entities.Settings;
-using Avatar.App.Service.Exceptions;
-using Avatar.App.Service.Services;
+using Avatar.App.SharedKernel;
+using Avatar.App.SharedKernel.Settings;
+using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -99,7 +99,7 @@ namespace Avatar.App.Api.Controllers
 
             try
             {
-                var unwatchedVideos = await _videoService.GetUnwatchedVideoListAsync(userGuid.Value, number);
+                var unwatchedVideos = await _videoService.GetUnwatchedVideosAsync(userGuid.Value, number);
                 return new JsonResult(ConvertModelHandler.VideosToUserModels(unwatchedVideos));
             }
             catch (UserNotFoundException)

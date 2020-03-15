@@ -10,6 +10,7 @@ namespace Avatar.App.Core.Services
     public interface IProfileService
     {
         Task<UserProfile> GetAsync(Guid userGuid);
+        Task<User> GetPublicAsync(long id);
         Task<string> UploadPhotoAsync(Guid userGuid, Stream fileStream, string fileExtension);
         Task<Stream> GetPhotoStreamAsync(string fileName);
         Task SetDescriptionAsync(Guid userGuid, string description);

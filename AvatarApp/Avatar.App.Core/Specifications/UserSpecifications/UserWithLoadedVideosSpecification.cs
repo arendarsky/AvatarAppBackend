@@ -15,5 +15,10 @@ namespace Avatar.App.Core.Specifications.UserSpecifications
         {
             AddInclude(user => user.LoadedVideos);
         }
+
+        public UserWithLoadedVideosSpecification(long id) : base(user => user.Id == id)
+        {
+            AddInclude(user => user.LoadedVideos);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
+using Avatar.App.Api.Models.UserModels;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Services;
 using Avatar.App.SharedKernel;
@@ -28,7 +29,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<UserProfileModel>), description: "Rating Json")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<RatingUserModel>), description: "Rating Json")]
         [HttpGet]
         public async Task<ActionResult> Get(int number)
         {
@@ -36,7 +37,7 @@ namespace Avatar.App.Api.Controllers
             {
                 var userProfiles = await _ratingService.GetCommonRatingAsync(number);
                 
-                return new JsonResult(ConvertModelHandler.UserProfilesToUserProfileModels(userProfiles));
+                return new JsonResult(ConvertModelHandler.UserProfilesToRatingUserModels(userProfiles));
             }
             catch(Exception ex)
             {

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
-using System.Security.Claims;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
+using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Exceptions;
@@ -22,7 +21,7 @@ namespace Avatar.App.Api.Controllers
     [ApiController]
     [Authorize]
     [Route("api/video")]
-    public class VideoController : ControllerBase
+    public class VideoController : BaseAuthorizeController
     {
         private readonly IVideoService _videoService;
         private readonly AvatarAppSettings _avatarAppSettings;
@@ -42,28 +41,24 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Upload")]
-        [SwaggerResponse(statusCode: 200, type: typeof(VideoModel), description: "Video data")]
+        [SwaggerResponse(statusCode: 200, type: typeof(string), description: "Video data")]
         [RequestSizeLimit(209715200)]
         [Route("upload")]
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file == null) return BadRequest();
 
             var fileExtension = Path.GetExtension(file.FileName);
 
             if (!CheckFileExtension(fileExtension)) return BadRequest();
 
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                var video = await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid.Value, fileExtension);
-                return new JsonResult(new VideoModel
-                {
-                    Name = video.Name
-                });
+                var video = await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid, fileExtension);
+
+                return new JsonResult(video.Name);
             }
             catch (UserNotFoundException)
             {
@@ -89,18 +84,17 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetUnwatchedVideos")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<UserModel>), description: "List of video names")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<VideoUserModel>), description: "List of video names")]
         [Route("get_unwatched")]
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                var unwatchedVideos = await _videoService.GetUnwatchedVideosAsync(userGuid.Value, number);
-                return new JsonResult(ConvertModelHandler.VideosToUserModels(unwatchedVideos));
+                var unwatchedVideos = await _videoService.GetUnwatchedVideosAsync(userGuid, number);
+                return new JsonResult(ConvertModelHandler.VideosToVideoUserModels(unwatchedVideos));
             }
             catch (UserNotFoundException)
             {
@@ -163,11 +157,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetLike(string name, bool isLike)
         {
             var userGuid = GetUserGuid();
-            if (userGuid == null) return Unauthorized();
 
             try
             {
-                await _videoService.SetLikeAsync(userGuid.Value, name, isLike);
+                await _videoService.SetLikeAsync(userGuid, name, isLike);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -190,11 +183,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetVideoFragmentInterval(string fileName, double startTime, double endTime)
         {
             var userGuid = GetUserGuid();
-            if (userGuid == null) return Unauthorized();
 
             try
             {
-                await _videoService.SetVideoFragmentInterval(userGuid.Value, fileName, startTime, endTime);
+                await _videoService.SetVideoFragmentInterval(userGuid, fileName, startTime, endTime);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -221,11 +213,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetActive(string fileName)
         {
             var userGuid = GetUserGuid();
-            if (userGuid == null) return Unauthorized();
 
             try
             {
-                await _videoService.SetActiveAsync(userGuid.Value, fileName);
+                await _videoService.SetActiveAsync(userGuid, fileName);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -248,11 +239,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> Remove(string name)
         {
             var userGuid = GetUserGuid();
-            if (userGuid == null) return Unauthorized();
 
             try
             {
-                await _videoService.RemoveVideoAsync(userGuid.Value, name);
+                await _videoService.RemoveVideoAsync(userGuid, name);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -267,13 +257,6 @@ namespace Avatar.App.Api.Controllers
         }
 
         #region Private Methods
-
-        private Guid? GetUserGuid()
-        {
-            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifier == null) return null;
-            return Guid.Parse(nameIdentifier.Value);
-        }
 
         private bool CheckFileExtension(string fileExtension)
         {

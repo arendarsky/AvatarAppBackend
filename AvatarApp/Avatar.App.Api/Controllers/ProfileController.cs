@@ -22,7 +22,7 @@ namespace Avatar.App.Api.Controllers
     [Authorize]
     [Route("api/profile")]
     [ApiController]
-    public class ProfileController : ControllerBase
+    public class ProfileController : BaseAuthorizeController
     {
         private readonly IProfileService _profileService;
         private readonly AvatarAppSettings _avatarAppSettings;
@@ -38,16 +38,35 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> Get()
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                var userProfile = await _profileService.GetAsync(userGuid.Value);
-                return new JsonResult(ConvertModelHandler.UserProfileToUserProfileModel(userProfile));
+                var userProfile = await _profileService.GetAsync(userGuid);
+                return new JsonResult(ConvertModelHandler.UserProfileToPrivateUserProfile(userProfile));
             }
             catch (UserNotFoundException)
             {
                 return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        [Route("public/get")]
+        [HttpGet]
+        public async Task<ActionResult> GetPublic(long id)
+        {
+            try
+            {
+                var user = await _profileService.GetPublicAsync(id);
+                return new JsonResult(ConvertModelHandler.UserToPublicUserProfile(user));
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -67,7 +86,7 @@ namespace Avatar.App.Api.Controllers
             {
                 var userLikes = await _profileService.GetNotificationsAsync(userGuid.Value, number, skip);
 
-                return new JsonResult(ConvertModelHandler.LikedVideosToLikedVideoModels(userLikes));
+                return new JsonResult(ConvertModelHandler.LikedVideosToNotificationUserModel(userLikes));
             }
             catch (UserNotFoundException)
             {
@@ -204,12 +223,6 @@ namespace Avatar.App.Api.Controllers
 
         #region Private Methods
 
-        private Guid? GetUserGuid()
-        {
-            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifier == null) return null;
-            return Guid.Parse(nameIdentifier.Value);
-        }
 
         #endregion
     }

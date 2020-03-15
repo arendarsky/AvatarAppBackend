@@ -37,6 +37,11 @@ namespace Avatar.App.Core.Services.Impl
             };
         }
 
+        public async Task<User> GetPublicAsync(long id)
+        {
+             return await GetUserAsync(new UserWithLoadedVideosSpecification(id));
+        }
+
         public async Task<ICollection<LikedVideo>> GetNotificationsAsync(Guid userGuid, int number, int skip)
         {
             var user = await GetUserAsync(new UserWithLoadedVideosSpecification(userGuid));

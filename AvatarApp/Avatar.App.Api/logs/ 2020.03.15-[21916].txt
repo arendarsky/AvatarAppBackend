@@ -1,5 +1,0 @@
-﻿2020-03-15 18:31:18,965  INFO  Service started
-2020-03-15 18:31:19,003  INFO  Settings Development
-2020-03-15 18:31:40,969  ERROR Exception of type 'Avatar.App.Core.Exceptions.UserNotFoundException' was thrown.   at Avatar.App.Core.Services.Impl.BaseServiceWithAuthorization.GetUserAsync(ISpecification`1 specification) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Core\Services\Impl\BaseServiceWithAuthorization.cs:line 23
-   at Avatar.App.Core.Services.Impl.AuthenticationService.RegisterAsync(UserDto userDto) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Core\Services\Impl\AuthenticationService.cs:line 32
-   at Avatar.App.Api.Controllers.AuthenticationController.Register(UserDto user) in D:\Repository\Avatar\AvatarAppBackend\AvatarApp\Avatar.App.Api\Controllers\AuthenticationController.cs:line 56

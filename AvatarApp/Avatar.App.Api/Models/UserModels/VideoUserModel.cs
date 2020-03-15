@@ -3,9 +3,9 @@ using Avatar.App.Core.Entities;
 
 namespace Avatar.App.Api.Models.UserModels
 {
-    public class CastingUserModel: BaseUserModel
+    public class VideoUserModel: BaseUserModel
     {
-        public CastingUserModel(User user) : base(user)
+        public VideoUserModel(User user) : base(user)
         {
             var video = user.LoadedVideos.FirstOrDefault(v => v.IsActive);
 

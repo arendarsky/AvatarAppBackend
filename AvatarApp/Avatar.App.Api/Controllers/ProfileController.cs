@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models;
+using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Exceptions;
@@ -76,15 +77,15 @@ namespace Avatar.App.Api.Controllers
         }
 
         [Route("notifications")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<LikedVideoModel>), description: "Notifications json")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<NotificationUserModel>), description: "Notifications json")]
         [HttpGet]
         public async Task<ActionResult> GetNotifications(int number, int skip)
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
+
             try
             {
-                var userLikes = await _profileService.GetNotificationsAsync(userGuid.Value, number, skip);
+                var userLikes = await _profileService.GetNotificationsAsync(userGuid, number, skip);
 
                 return new JsonResult(ConvertModelHandler.LikedVideosToNotificationUserModel(userLikes));
             }
@@ -104,11 +105,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetDescription(string description)
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                await _profileService.SetDescriptionAsync(userGuid.Value, description);
+                await _profileService.SetDescriptionAsync(userGuid, description);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -127,11 +127,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetName(string name)
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                await _profileService.SetNameAsync(userGuid.Value, name);
+                await _profileService.SetNameAsync(userGuid, name);
                 return Ok();
             }
             catch (UserNotFoundException)
@@ -150,11 +149,10 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> SetPassword(string oldPassword, string newPassword)
         {
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                await _profileService.SetPasswordAsync(userGuid.Value, oldPassword, newPassword);
+                await _profileService.SetPasswordAsync(userGuid, oldPassword, newPassword);
                 return new JsonResult(true);
             }
             catch (UserNotFoundException)
@@ -179,12 +177,12 @@ namespace Avatar.App.Api.Controllers
         {
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
+
             var userGuid = GetUserGuid();
-            if (!userGuid.HasValue) return Unauthorized();
 
             try
             {
-                return new JsonResult(await _profileService.UploadPhotoAsync(userGuid.Value, file.OpenReadStream(), fileExtension));
+                return new JsonResult(await _profileService.UploadPhotoAsync(userGuid, file.OpenReadStream(), fileExtension));
             }
             catch (UserNotFoundException)
             {

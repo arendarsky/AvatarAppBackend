@@ -19,7 +19,7 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task<ICollection<UserProfile>> GetCommonRatingAsync(int number)
         {
-            var users = GetUsers(new UserWithLoadedVideosSpecification());
+            var users = GetUsers(new UserWithLoadedVideosSpecification()).ToList();
 
             var userProfiles = await GetUsersWithLikesNumberAsync(users);
 
@@ -43,11 +43,12 @@ namespace Avatar.App.Core.Services.Impl
 
         private async Task<IEnumerable<UserProfile>> GetUsersWithLikesNumberAsync(IEnumerable<User> users)
         {
-            var userProfiles = new List<UserProfile>();
-            await Task.Run(() =>
+            var userProfiles = await Task.Run(() =>
             {
-                userProfiles.AddRange(from user in users
+                var profiles = new List<UserProfile>();
+                profiles.AddRange(from user in users
                     select new UserProfile { LikesNumber = GetLikesNumber(user), User = user });
+                return profiles;
             });
 
             return userProfiles;

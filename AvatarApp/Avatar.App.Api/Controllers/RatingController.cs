@@ -19,7 +19,7 @@ namespace Avatar.App.Api.Controllers
     [Authorize]
     [Route("api/rating")]
     [ApiController]
-    public class RatingController : ControllerBase
+    public class RatingController : BaseAuthorizeController
     {
         private readonly IRatingService _ratingService;
 
@@ -46,16 +46,33 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
-        
+        [Route("user/get")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Rating Json")]
+        [HttpGet]
+        public async Task<ActionResult> GetUserRating()
+        {
+            try
+            {
+                var userGuid = GetUserGuid();
+
+                var likesNumber = await _ratingService.GetUserRating(userGuid);
+
+                return new JsonResult(likesNumber);
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+
 
         #region Private Methods
-
-        private Guid? GetUserGuid()
-        {
-            var nameIdentifier = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (nameIdentifier == null) return null;
-            return Guid.Parse(nameIdentifier.Value);
-        }
 
         #endregion
     }

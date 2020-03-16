@@ -52,10 +52,11 @@ namespace Avatar.App.Api.Controllers
 
             if (!CheckFileExtension(fileExtension)) return BadRequest();
 
-            var userGuid = GetUserGuid();
-
             try
             {
+
+                var userGuid = GetUserGuid();
+
                 var video = await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid, fileExtension);
 
                 return new JsonResult(video.Name);
@@ -89,10 +90,11 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetUnwatchedVideos(int number)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 var unwatchedVideos = await _videoService.GetUnwatchedVideosAsync(userGuid, number);
                 return new JsonResult(ConvertModelHandler.VideosToVideoUserModels(unwatchedVideos));
             }
@@ -156,10 +158,12 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> SetLike(string name, bool isLike)
         {
-            var userGuid = GetUserGuid();
+
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _videoService.SetLikeAsync(userGuid, name, isLike);
                 return Ok();
             }
@@ -212,10 +216,11 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> SetActive(string fileName)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _videoService.SetActiveAsync(userGuid, fileName);
                 return Ok();
             }
@@ -238,10 +243,11 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> Remove(string name)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _videoService.RemoveVideoAsync(userGuid, name);
                 return Ok();
             }

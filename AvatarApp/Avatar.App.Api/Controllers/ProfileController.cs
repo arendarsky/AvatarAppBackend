@@ -81,10 +81,11 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> GetNotifications(int number, int skip)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 var userLikes = await _profileService.GetNotificationsAsync(userGuid, number, skip);
 
                 return new JsonResult(ConvertModelHandler.LikedVideosToNotificationUserModel(userLikes));
@@ -104,10 +105,11 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> SetDescription(string description)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _profileService.SetDescriptionAsync(userGuid, description);
                 return Ok();
             }
@@ -126,10 +128,11 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> SetName(string name)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _profileService.SetNameAsync(userGuid, name);
                 return Ok();
             }
@@ -148,10 +151,11 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> SetPassword(string oldPassword, string newPassword)
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
+
                 await _profileService.SetPasswordAsync(userGuid, oldPassword, newPassword);
                 return new JsonResult(true);
             }
@@ -178,10 +182,10 @@ namespace Avatar.App.Api.Controllers
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
 
-            var userGuid = GetUserGuid();
-
             try
             {
+                var userGuid = GetUserGuid();
+
                 return new JsonResult(await _profileService.UploadPhotoAsync(userGuid, file.OpenReadStream(), fileExtension));
             }
             catch (UserNotFoundException)

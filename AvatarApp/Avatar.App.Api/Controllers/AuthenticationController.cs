@@ -51,20 +51,20 @@ namespace Avatar.App.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
                 return BadRequest();
-            //try
-            //{
+            try
+            {
                 await _authenticationService.RegisterAsync(user);
                 return new JsonResult(true);
-            //}
-            //catch (UserAlreadyExistsException)
-            //{
-            //    return new JsonResult(false);
-            //}
-            //catch(Exception ex)
-            //{
-            //    Logger.Log.LogError(ex.Message + ex.StackTrace);
-            //    return Problem();
-            //}
+            }
+            catch (UserAlreadyExistsException)
+            {
+                return new JsonResult(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
         }
 
         /// <summary>

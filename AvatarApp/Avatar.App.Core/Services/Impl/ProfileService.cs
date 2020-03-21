@@ -89,7 +89,7 @@ namespace Avatar.App.Core.Services.Impl
         {
             var user = await GetUserAsync(new UserSpecification(userGuid));
 
-            if (CheckUserPassword(user, oldPassword)) throw new InvalidPasswordException();
+            if (!CheckUserPassword(user, oldPassword)) throw new InvalidPasswordException();
 
             user.Password = PasswordHelper.HashPassword(newPassword);
 

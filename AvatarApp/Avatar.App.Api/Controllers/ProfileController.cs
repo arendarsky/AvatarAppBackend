@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
-using Avatar.App.Api.Models;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;

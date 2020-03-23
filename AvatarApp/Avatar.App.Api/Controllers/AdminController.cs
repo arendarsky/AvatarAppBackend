@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models.UserModels;

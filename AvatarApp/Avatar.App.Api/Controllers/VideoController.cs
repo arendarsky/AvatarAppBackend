@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using Avatar.App.Api.Handlers;
-using Avatar.App.Api.Models;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;

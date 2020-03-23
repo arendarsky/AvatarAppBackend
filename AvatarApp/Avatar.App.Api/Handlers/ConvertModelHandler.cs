@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avatar.App.Api.Models;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.Core.Entities;
 using Avatar.App.Core.Models;

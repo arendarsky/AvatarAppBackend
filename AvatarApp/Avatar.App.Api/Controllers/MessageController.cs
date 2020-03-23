@@ -15,6 +15,7 @@ namespace Avatar.App.Api.Controllers
     [Authorize]
     [Route("api/message")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;

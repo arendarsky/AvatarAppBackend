@@ -34,6 +34,14 @@ namespace Avatar.App.Api.Controllers
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
+        /// <summary>
+        /// Get user private profile
+        /// </summary>
+        /// <response code="200">Returns user private profile</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("Get")]
+        [SwaggerResponse(statusCode: 200, type: typeof(PrivateProfileUserModel), description: "User profile")]
         [Route("get")]
         [HttpGet]
         public async Task<ActionResult> Get()
@@ -43,7 +51,7 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 var userProfile = await _profileService.GetAsync(userGuid);
-                return new JsonResult(ConvertModelHandler.UserProfileToPrivateUserProfile(userProfile));
+                return new JsonResult(ConvertModelHandler.UserProfileToPrivateProfileUserModel(userProfile));
             }
             catch (UserNotFoundException)
             {
@@ -56,6 +64,16 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get user public profile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="200">Returns user public profile</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">User not found</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetPublic")]
+        [SwaggerResponse(statusCode: 200, type: typeof(PublicProfileUserModel), description: "User profile")]
         [Route("public/get")]
         [HttpGet]
         public async Task<ActionResult> GetPublic(long id)
@@ -76,8 +94,17 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get user's notifications
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="skip"></param>
+        /// <response code="200">Returns user's notifications</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetNotifications")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<NotificationUserModel>), description: "User's notifications")]
         [Route("notifications")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<NotificationUserModel>), description: "Notifications json")]
         [HttpGet]
         public async Task<ActionResult> GetNotifications(int number, int skip)
         {
@@ -101,6 +128,14 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Set user description 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <response code="200"></response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SetDescription")]
         [Route("set_description")]
         [HttpPost]
         public async Task<ActionResult> SetDescription(string description)
@@ -124,6 +159,14 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Set user name 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <response code="200"></response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SetName")]
         [Route("set_name")]
         [HttpGet]
         public async Task<ActionResult> SetName(string name)
@@ -147,6 +190,20 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Set user password 
+        /// </summary>
+        /// <remarks>
+        ///     true - old password is correct and password changed
+        ///     false - old password is incorrect
+        /// </remarks>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <response code="200"></response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SetPassword")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is old password correct")]
         [Route("set_password")]
         [HttpPost]
         public async Task<ActionResult> SetPassword(string oldPassword, string newPassword)
@@ -174,6 +231,16 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Upload image to server
+        /// </summary>
+        /// <param name="file"></param>
+        /// <response code="200">File successfully uploaded</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("UploadPhoto")]
+        [SwaggerResponse(statusCode: 200, type: typeof(string), description: "New image file name")]
         [Route("photo/upload")]
         [RequestSizeLimit(1048576)]
         [HttpPost]
@@ -199,6 +266,17 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get image stream by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <response code="200">Returns image stream</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">If the image doesn't exist on server</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetPhotoByName")]
+        [SwaggerResponse(statusCode: 200, type: typeof(FileStreamResult), description: "File stream")]
         [Route("photo/get/{name}")]
         [HttpGet]
         [AllowAnonymous]
@@ -212,7 +290,7 @@ namespace Avatar.App.Api.Controllers
 
                 return File(videoStream, "image/*", true);
             }
-            catch (DirectoryNotFoundException)
+            catch (IOException)
             {
                 return NotFound();
             }

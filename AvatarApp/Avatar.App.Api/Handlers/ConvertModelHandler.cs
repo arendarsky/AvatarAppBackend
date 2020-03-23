@@ -19,7 +19,7 @@ namespace Avatar.App.Api.Handlers
             return userProfiles.Select(u => new RatingUserModel(u.User, u.LikesNumber)).ToList();
         }
 
-        public static PrivateProfileUserModel UserProfileToPrivateUserProfile(UserProfile userProfile)
+        public static PrivateProfileUserModel UserProfileToPrivateProfileUserModel(UserProfile userProfile)
         {
             return new PrivateProfileUserModel(userProfile.User, userProfile.LikesNumber);
         }

@@ -28,6 +28,14 @@ namespace Avatar.App.Api.Controllers
             _ratingService = ratingService;
         }
 
+        /// <summary>
+        /// Get overall rating
+        /// </summary>
+        /// <param name="number"></param>
+        /// <response code="200">Returns overall rating</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("Get")]
         [Route("get")]
         [SwaggerResponse(statusCode: 200, type: typeof(ICollection<RatingUserModel>), description: "Rating Json")]
         [HttpGet]
@@ -46,6 +54,13 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get personal rating
+        /// </summary>
+        /// <response code="200">Returns personal rating</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetUserRating")]
         [Route("user/get")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Rating Json")]
         [HttpGet]

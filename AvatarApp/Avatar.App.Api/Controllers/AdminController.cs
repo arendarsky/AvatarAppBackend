@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avatar.App.Api.Handlers;
+using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Services;
@@ -15,7 +17,7 @@ namespace Avatar.App.Api.Controllers
     [Route("api/admin")]
     [Authorize]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class AdminController : BaseAuthorizeController
     {
         private readonly IVideoService _videoService;
 
@@ -33,15 +35,15 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetUncheckedVideoList")]
-        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<string>), description: "List of video names")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<VideoUserModel>), description: "List of video names")]
         [Route("get_videos")]
         [HttpGet]
         public async Task<ActionResult> GetUncheckedVideoList(int number = 1)
         {
             try
             {
-                var videoList = await _videoService.GetUncheckedVideosAsync(number);
-                return new JsonResult(videoList.Select(v => v.Name));
+                var uncheckedVideos = await _videoService.GetUncheckedVideosAsync(number);
+                return new JsonResult(ConvertModelHandler.VideosToVideoUserModels(uncheckedVideos));
             }
             catch (Exception ex)
             {

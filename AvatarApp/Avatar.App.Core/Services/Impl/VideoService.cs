@@ -127,7 +127,7 @@ namespace Avatar.App.Core.Services.Impl
 
         private bool CheckIntervalCorrectness(double startTime, double endTime)
         {
-            return startTime > 0 && endTime > 0 && endTime > startTime &&
+            return startTime >= 0 && endTime > 0 && endTime > startTime &&
                    endTime - startTime <= _avatarAppSettings.ShortVideoMaxLength;
         }
 

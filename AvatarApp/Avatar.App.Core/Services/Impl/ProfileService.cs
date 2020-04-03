@@ -111,7 +111,7 @@ namespace Avatar.App.Core.Services.Impl
                 foreach (var video in user.LoadedVideos.Where(v => v.IsApproved.HasValue && v.IsApproved == true))
                 {
                     likes.AddRange(LikedVideoRepository.List(new LikedVideoWithUserSpecification(video))
-                        .OrderByDescending(c => c.Date));
+                        .OrderBy(c => c.Date));
                 }
 
                 return likes;

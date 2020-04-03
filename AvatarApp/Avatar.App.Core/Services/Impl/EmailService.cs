@@ -9,14 +9,16 @@ namespace Avatar.App.Core.Services.Impl
 {
     public class EmailService : IEmailService
     {
+        private readonly AvatarAppSettings _avatarAppSettings;
         private readonly EmailSettings _emailSettings;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailService(IOptions<EmailSettings> emailSettings, IOptions<AvatarAppSettings> avatarAppOptions)
         {
+            _avatarAppSettings = avatarAppOptions.Value;
             _emailSettings = emailSettings.Value;
         }
 
-        public async Task SendConfirmCodeAsync(string email, string confirmCode)
+        public async Task SendConfirmCodeAsync(string email, string confirmCode, string guid)
         {
             var emailMessage = new MimeMessage();
 
@@ -25,7 +27,7 @@ namespace Avatar.App.Core.Services.Impl
             emailMessage.Subject = EmailMessages.ConfirmSubject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-                Text = confirmCode
+                Text = $"{_avatarAppSettings.WebUrl}/auth/confirm?guid={guid}&confirmCode={confirmCode}"
             };
 
             using var client = new SmtpClient();

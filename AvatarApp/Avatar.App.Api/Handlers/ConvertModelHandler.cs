@@ -10,7 +10,12 @@ namespace Avatar.App.Api.Handlers
     {
         public static ICollection<VideoUserModel> VideosToVideoUserModels(ICollection<Video> videos)
         {
-            return videos.Select(v => new VideoUserModel(v.User)).ToList();
+            return videos.Select(v => new VideoUserModel(v)).ToList();
+        }
+
+        public static ICollection<ModerationUserModel> VideosToModerationUserModels(ICollection<Video> videos)
+        {
+            return videos.Select(v => new ModerationUserModel(v)).ToList();
         }
 
         public static ICollection<RatingUserModel> UserProfilesToRatingUserModels(ICollection<UserProfile> userProfiles)

@@ -36,30 +36,41 @@ namespace Avatar.App.Core.Services.Impl
             await CreateUserAsync(userDto);
         }
 
-        public async Task<string> GetAuthorizationTokenAsync(string email, string password)
+        public async Task<AuthorizationDto> GetAuthorizationTokenAsync(string email, string password)
         {
             var user = await GetUserAsync(new UserSpecification(email)); ;
             if (user == null) throw new UserNotFoundException();
 
             if (!CheckUserPassword(user, password)) throw new InvalidPasswordException();
 
-            return CreateJwtToken(user);
+            return new AuthorizationDto
+            {
+                Token = user.IsEmailConfirmed ? CreateJwtToken(user) : null,
+                ConfirmationRequired = !user.IsEmailConfirmed
+            };
         }
 
         public async Task SendEmailAsync(string email)
         {
-            var confirmCode = ConfirmCodeHelper.CreateRandomCode();
+            var guid = await GetUserGuidAsync(email);
 
-            SaveCodeToCache(email, confirmCode);
+            var confirmCode = ConfirmCodeHelper.CreateRandomCode();
+            SaveCodeToCache(guid, confirmCode);
             
-            await _mailService.SendConfirmCodeAsync(email, confirmCode);
+            await _mailService.SendConfirmCodeAsync(email, confirmCode, guid);
         }
 
-        public async Task<bool> ConfirmEmailAsync(string email, string confirmCode)
+        public async Task<bool> ConfirmEmailAsync(string guid, string confirmCode)
         {
-            if (!await CheckConfirmCode(confirmCode, email)) return false;
+            var userGuid = Guid.Parse(guid);
 
-            await SetUserEmailConfirmed(email);
+            var user = await GetUserAsync(new UserSpecification(userGuid));
+
+            if (user.IsEmailConfirmed) return true;
+
+            if (!await CheckConfirmCode(confirmCode, guid)) return false;
+
+            SetUserEmailConfirmed(user);
 
             return true;
         }
@@ -111,32 +122,37 @@ namespace Avatar.App.Core.Services.Impl
             return hashed == user.Password;
         }
 
-        private void SaveCodeToCache(string email, string confirmCode)
+        private void SaveCodeToCache(string guid, string confirmCode)
         {
-            var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(2));
-            _cache.Set(email, confirmCode, cacheEntryOptions);
+            var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+            _cache.Set(guid, confirmCode, cacheEntryOptions);
         }
 
-        private async Task<bool> CheckConfirmCode(string confirmCode, string email)
+        private async Task<string> GetUserGuidAsync(string email)
+        {
+            var user = await GetUserAsync(new UserSpecification(email));
+
+            if (user == null) throw new UserNotFoundException();
+
+            return user.Guid.ToString();
+        }
+
+        private async Task<bool> CheckConfirmCode(string confirmCode, string guid)
         {
             var result = await Task.Run(() =>
             {
-                if (!_cache.TryGetValue(email, out string cacheEntry)) return false;
+                if (!_cache.TryGetValue(guid, out string cacheEntry)) return false;
 
                 if (!string.Equals(cacheEntry, confirmCode, StringComparison.CurrentCultureIgnoreCase)) return false;
 
-                _cache.Remove(email);
+                _cache.Remove(guid);
                 return true;
             });
             return result;
         }
 
-        private async Task SetUserEmailConfirmed(string email)
+        private void SetUserEmailConfirmed(User user)
         {
-            var user = await GetUserAsync(new UserSpecification(email));
-            if (user == null) throw new UserNotFoundException();
-
             user.IsEmailConfirmed = true;
             UserRepository.Update(user);
         }

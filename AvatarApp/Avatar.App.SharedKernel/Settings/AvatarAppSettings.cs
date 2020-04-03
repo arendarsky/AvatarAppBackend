@@ -9,5 +9,8 @@
         public int MaxVideoSize { get; set; }
         public int MaxImageSize { get; set; }
         public string AcceptedVideoExtension { get; set; }
+        public string AdminGuid { get; set; }
+
+        public string WebUrl { get; set; }
     }
 }

@@ -24,5 +24,11 @@ namespace Avatar.App.Core.Specifications.VideoSpecifications
         {
             AddInclude(video => video.User);
         }
+
+        //TODO Rename this
+        public VideoWithUserSpecification() : base(video => !video.IsApproved.HasValue)
+        {
+            AddInclude(video => video.User);
+        }
     }
 }

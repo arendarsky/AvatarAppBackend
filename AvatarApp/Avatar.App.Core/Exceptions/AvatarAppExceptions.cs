@@ -35,4 +35,9 @@ namespace Avatar.App.Core.Exceptions
     {
 
     }
+
+    public class UserNotAllowedException : Exception
+    {
+
+    }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Avatar.App.Api.Models.Impl
+namespace Avatar.App.Api.Models
 {
     public class AuthorizationResponseModel
     {
-        [JsonPropertyName("token")]
         public string Token { get; set; }
+        public bool ConfirmationRequired { get; set; }
     }
 }

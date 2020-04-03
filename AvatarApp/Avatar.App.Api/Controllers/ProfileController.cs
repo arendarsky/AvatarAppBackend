@@ -43,10 +43,10 @@ namespace Avatar.App.Api.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var userGuid = GetUserGuid();
 
             try
             {
+                var userGuid = GetUserGuid();
                 var userProfile = await _profileService.GetAsync(userGuid);
                 return new JsonResult(ConvertModelHandler.UserProfileToPrivateProfileUserModel(userProfile));
             }

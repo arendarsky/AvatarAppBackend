@@ -6,9 +6,11 @@ using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Services;
+using Avatar.App.SharedKernel.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
@@ -19,10 +21,12 @@ namespace Avatar.App.Api.Controllers
     public class AdminController : BaseAuthorizeController
     {
         private readonly IVideoService _videoService;
+        private readonly AvatarAppSettings _avatarAppSettings;
 
-        public AdminController(IVideoService videoService)
+        public AdminController(IVideoService videoService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _videoService = videoService;
+            _avatarAppSettings = avatarAppOptions.Value;
         }
 
         /// <summary>
@@ -34,15 +38,20 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetUncheckedVideoList")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<VideoUserModel>), description: "List of video names")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<ModerationUserModel>), description: "List of video names")]
         [Route("get_videos")]
         [HttpGet]
-        public async Task<ActionResult> GetUncheckedVideoList(int number = 1)
+        public async Task<ActionResult> GetUncheckedVideoList(int number)
         {
             try
             {
+                CheckAdminRight();
                 var uncheckedVideos = await _videoService.GetUncheckedVideosAsync(number);
-                return new JsonResult(ConvertModelHandler.VideosToVideoUserModels(uncheckedVideos));
+                return new JsonResult(ConvertModelHandler.VideosToModerationUserModels(uncheckedVideos));
+            }
+            catch (UserNotAllowedException)
+            {
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -68,8 +77,13 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
+                CheckAdminRight();
                 await _videoService.SetApproveStatusAsync(name, isApproved);
                 return Ok();
+            }
+            catch (UserNotAllowedException)
+            {
+                return Forbid();
             }
             catch (VideoNotFoundException)
             {
@@ -80,6 +94,13 @@ namespace Avatar.App.Api.Controllers
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
+        }
+
+        private void CheckAdminRight()
+        {
+            var userGuid = GetUserGuid();
+
+            if (userGuid != Guid.Parse(_avatarAppSettings.AdminGuid)) throw new UserNotAllowedException();
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Avatar.App.Api.Models.Impl;
+using Avatar.App.Api.Models;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Models;
@@ -87,8 +87,9 @@ namespace Avatar.App.Api.Controllers
             var response = new AuthorizationResponseModel();
             try
             {
-                var token = await _authenticationService.GetAuthorizationTokenAsync(email, password);
-                response.Token = token;
+                var authModel = await _authenticationService.GetAuthorizationTokenAsync(email, password);
+                response.Token = authModel.Token;
+                response.ConfirmationRequired = authModel.ConfirmationRequired;
                 return new JsonResult(response);
             }
             catch (UserNotFoundException)
@@ -122,19 +123,19 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 await _authenticationService.SendEmailAsync(email);
+                return Ok();
             }
             catch(Exception ex)
             {
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
             }
-            return Ok();
         }
 
         /// <summary>
         /// Check confirmation code and so validate email
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="guid"></param>
         /// <param name="confirmCode"></param>
         /// <response code="200">Confirmation codes are equal/not equal</response>
         /// <response code="400">If some of the parameters are null</response>
@@ -143,12 +144,18 @@ namespace Avatar.App.Api.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is confirmation successful")]
         [Route("confirm")]
         [HttpGet]
-        public async Task<ActionResult> ConfirmEmail(string email, string confirmCode)
+        public async Task<ActionResult> ConfirmEmail(string guid, string confirmCode)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();
+            if (string.IsNullOrWhiteSpace(guid) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();
             try
             {
-                return new JsonResult(await _authenticationService.ConfirmEmailAsync(email, confirmCode));
+                if (await _authenticationService.ConfirmEmailAsync(guid, confirmCode)) return Ok();
+
+                return Forbid();
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
             }
             catch(Exception ex)
             {

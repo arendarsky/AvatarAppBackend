@@ -177,7 +177,7 @@ namespace Avatar.App.Core.Services.Impl
 
         private async Task<IEnumerable<Video>> GetUncheckedVideosAsync()
         {
-            var uncheckedVideos = await Task.Run(() => { return _videoRepository.List(v => !v.IsApproved.HasValue); });
+            var uncheckedVideos = await Task.Run(() => _videoRepository.List(new VideoWithUserSpecification()));
 
             return uncheckedVideos;
         }

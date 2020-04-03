@@ -28,6 +28,8 @@ namespace Avatar.App.Api
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = new ConfigurationBuilder()
@@ -56,6 +58,15 @@ namespace Avatar.App.Api
             AddRepositories(services);
 
             AddServices(services);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://192.168.137.1:8081", "http://192.168.137.1:8080", "http://web.xce-factor.ru", "https://web.xce-factor.ru").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +81,8 @@ namespace Avatar.App.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
 

@@ -138,7 +138,7 @@ namespace Avatar.App.Core.Services.Impl
 
         private static bool CheckVideoAvailability(Video video)
         {
-            return video.IsApproved.HasValue && video.IsApproved == true && video.IsActive;
+            return video.IsApproved.HasValue && video.IsApproved == true;
         }
 
         private async Task<bool> CheckLikeExistenceAsync(BaseEntity video, BaseEntity user)
@@ -218,6 +218,7 @@ namespace Avatar.App.Core.Services.Impl
                 Name = fileName,
                 StartTime = 0,
                 EndTime = _avatarAppSettings.ShortVideoMaxLength,
+                IsApproved = true,
                 IsActive = !user.LoadedVideos.Any()
             };
 

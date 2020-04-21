@@ -19,6 +19,7 @@ namespace Avatar.App.Core.Services.Impl
         private readonly IEmailService _mailService;
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
         private readonly IMemoryCache _cache;
+        private const string PasswordPrefix = "password_";
 
         public AuthenticationService(IEmailService mailService, IJwtSigningEncodingKey signingEncodingKey, IMemoryCache memoryCache, IRepository<User> userRepository) : base(userRepository)
         {
@@ -62,15 +63,43 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task<bool> ConfirmEmailAsync(string guid, string confirmCode)
         {
-            var userGuid = Guid.Parse(guid);
+            if (!Guid.TryParse(guid, out var userGuid)) return false;
 
             var user = await GetUserAsync(new UserSpecification(userGuid));
+
+            if (user == null) throw new UserNotFoundException();
 
             if (user.IsEmailConfirmed) return true;
 
             if (!await CheckConfirmCode(confirmCode, guid)) return false;
 
             SetUserEmailConfirmed(user);
+
+            return true;
+        }
+
+        public async Task SendPasswordReset(string email)
+        {
+            var guid = await GetUserGuidAsync(email);
+            var passwordGuid = PasswordPrefix + guid;
+
+            var confirmCode = ConfirmCodeHelper.CreateRandomCode();
+            SaveCodeToCache(passwordGuid, confirmCode);
+
+            await _mailService.SendPasswordResetAsync(email, confirmCode, guid);
+        }
+
+        public async Task<bool> ChangePassword(string guid, string confirmCode, string password)
+        {
+            if (!Guid.TryParse(guid, out var userGuid)) return false;
+
+            var user = await GetUserAsync(new UserSpecification(userGuid));
+
+            var passwordGuid = PasswordPrefix + guid;
+
+            if (!await CheckConfirmCode(confirmCode, passwordGuid)) return false;
+
+            ChangeUserPassword(user, password);
 
             return true;
         }
@@ -154,6 +183,12 @@ namespace Avatar.App.Core.Services.Impl
         private void SetUserEmailConfirmed(User user)
         {
             user.IsEmailConfirmed = true;
+            UserRepository.Update(user);
+        }
+
+        private void ChangeUserPassword(User user, string password)
+        {
+            user.Password = PasswordHelper.HashPassword(password);
             UserRepository.Update(user);
         }
 

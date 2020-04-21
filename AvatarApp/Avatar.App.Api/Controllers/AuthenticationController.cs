@@ -108,7 +108,7 @@ namespace Avatar.App.Api.Controllers
         }
 
         /// <summary>
-        /// Send a confirmation code to the email.
+        /// Send a email confirmation message to the email.
         /// </summary>
         /// <param name="email"></param>
         /// <response code="200">Confirmation code was sent</response>
@@ -143,15 +143,14 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("ConfirmEmail")]
         [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is confirmation successful")]
         [Route("confirm")]
-        [HttpGet]
+        [HttpPost]
         public async Task<ActionResult> ConfirmEmail(string guid, string confirmCode)
         {
             if (string.IsNullOrWhiteSpace(guid) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();
             try
             {
-                if (await _authenticationService.ConfirmEmailAsync(guid, confirmCode)) return Ok();
+                return new JsonResult(await _authenticationService.ConfirmEmailAsync(guid, confirmCode));
 
-                return Forbid();
             }
             catch (UserNotFoundException)
             {
@@ -164,6 +163,62 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// Send a password reset message to the email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <response code="200">Password reset message was sent</response>
+        /// <response code="400">If the parameter is null</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SendPasswordReset")]
+        [Route("send_reset")]
+        [HttpGet]
+        public async Task<ActionResult> SendPasswordReset(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return BadRequest("Parameter 'email' is null or empty");
+            try
+            {
+                await _authenticationService.SendPasswordReset(email);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        /// <summary>
+        /// Check confirmation code and change password
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="confirmCode"></param>
+        /// <param name="password"></param>
+        /// <response code="200">Confirmation codes are equal/not equal</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("ChangePassword")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is confirmation successful")]
+        [Route("password_change")]
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(string guid, string confirmCode, string password)
+        {
+            if (string.IsNullOrWhiteSpace(guid) || string.IsNullOrWhiteSpace(confirmCode)) return BadRequest();
+            try
+            {
+                return new JsonResult(await _authenticationService.ChangePassword(guid, confirmCode, password));
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+
     }
 }

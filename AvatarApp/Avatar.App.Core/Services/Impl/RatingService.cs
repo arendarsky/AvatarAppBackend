@@ -19,7 +19,7 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task<ICollection<UserProfile>> GetCommonRatingAsync(int number)
         {
-            var users = GetUsers(new UserWithLoadedVideosSpecification()).ToList();
+            var users = GetUsers(new UserWithLoadedVideosSpecification()).Where(u => u.LoadedVideos.Any()).ToList();
 
             var userProfiles = await GetUsersWithLikesNumberAsync(users);
 

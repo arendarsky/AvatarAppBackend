@@ -14,6 +14,7 @@ using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
 using Avatar.App.Infrastructure.Repositories;
 using Avatar.App.SharedKernel.Interfaces;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace Avatar.App.Api
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        private const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
@@ -59,14 +60,9 @@ namespace Avatar.App.Api
 
             AddServices(services);
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.WithOrigins("http://192.168.137.1:8081", "http://192.168.137.1:8080", "http://web.xce-factor.ru", "https://web.xce-factor.ru").AllowAnyHeader().AllowAnyMethod();
-                    });
-            });
+            AddCorsPolicy(services);
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -191,6 +187,7 @@ namespace Avatar.App.Api
 
         private static void AddServices(IServiceCollection services)
         {
+            services.AddScoped<SmtpClient>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStorageService, LocalStorageService>();
@@ -206,6 +203,18 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
+        }
+
+        private void AddCorsPolicy(IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins(Configuration["WebSiteUrl"]).AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
         }
 
         #endregion

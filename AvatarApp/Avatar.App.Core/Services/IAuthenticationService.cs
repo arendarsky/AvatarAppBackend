@@ -10,5 +10,7 @@ namespace Avatar.App.Core.Services
         Task RegisterAsync(UserDto userDto);
         Task SendEmailAsync(string email);
         Task<bool> ConfirmEmailAsync(string guid, string confirmCode);
+        Task SendPasswordReset(string email);
+        Task<bool> ChangePassword(string guid, string confirmCode, string password);
     }
 }

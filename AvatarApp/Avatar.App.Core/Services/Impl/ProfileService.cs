@@ -42,13 +42,15 @@ namespace Avatar.App.Core.Services.Impl
              return await GetUserAsync(new UserWithLoadedVideosSpecification(id));
         }
 
-        public async Task<ICollection<LikedVideo>> GetNotificationsAsync(Guid userGuid, int number, int skip)
+        public async Task<ICollection<LikedVideo>> GetNotificationsAsync(Guid userGuid, int take, int skip)
         {
             var user = await GetUserAsync(new UserWithLoadedVideosSpecification(userGuid));
 
             var likes = await GetNotificationsAsync(user);
 
-            return likes.Skip(skip).Take(number).ToList();
+            var orderedLikes = TakeNotificationsOrderedByDate(likes, take, skip);
+
+            return orderedLikes;
         }
 
         public async Task<string> UploadPhotoAsync(Guid userGuid, Stream fileStream, string fileExtension)
@@ -110,8 +112,7 @@ namespace Avatar.App.Core.Services.Impl
                 var likes = new List<LikedVideo>();
                 foreach (var video in user.LoadedVideos.Where(v => v.IsApproved.HasValue && v.IsApproved == true))
                 {
-                    likes.AddRange(LikedVideoRepository.List(new LikedVideoWithUserSpecification(video))
-                        .OrderBy(c => c.Date));
+                    likes.AddRange(LikedVideoRepository.List(new LikedVideoWithUserSpecification(video)));
                 }
 
                 return likes;
@@ -121,6 +122,12 @@ namespace Avatar.App.Core.Services.Impl
 
 
         }
+
+        private static ICollection<LikedVideo> TakeNotificationsOrderedByDate(IEnumerable<LikedVideo> likedVideos, int take,
+            int skip)
+        {
+            return likedVideos.OrderByDescending(l => l.Date).Take(take).Skip(skip).ToList();
+        } 
 
         private async Task UpdatePhotoAsync(User user, Stream fileStream, string fileName)
         {

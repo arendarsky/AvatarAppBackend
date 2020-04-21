@@ -30,7 +30,7 @@ namespace Avatar.App.Api.Handlers
 
         public static ICollection<NotificationUserModel> LikedVideosToNotificationUserModel(ICollection<LikedVideo> likedVideos)
         {
-            return likedVideos.Select(l => new NotificationUserModel(l.User)).ToList();
+            return likedVideos.Select(l => new NotificationUserModel(l)).ToList();
         }
 
         public static PublicProfileUserModel UserToPublicUserProfile(User user)

@@ -7,7 +7,7 @@ namespace Avatar.App.Core.Services
 {
     public interface IRatingService
     {
-        Task<ICollection<UserProfile>> GetCommonRatingAsync(int number);
+        ICollection<UserProfile> GetCommonRating(int number);
         Task<int> GetUserRating(Guid userGuid);
     }
 }

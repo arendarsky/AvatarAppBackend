@@ -69,9 +69,9 @@ namespace Avatar.App.Core.Services.Impl
             UpdateVideoFragmentInterval(video, startTime, endTime);
         }
 
-        public async Task<Stream> GetVideoStreamAsync(string fileName)
+        public Stream GetVideoStream(string fileName)
         {
-            return await GetFileAsync(fileName);
+            return GetFile(fileName);
         }
 
         public async Task SetLikeAsync(Guid userGuid, string fileName, bool isLike)
@@ -192,9 +192,9 @@ namespace Avatar.App.Core.Services.Impl
             return videoList.OrderBy(c => Guid.NewGuid()).Take(number);
         }
 
-        private async Task<Stream> GetFileAsync(string fileName)
+        private Stream GetFile(string fileName)
         {
-            return await _videoRepository.GetFileAsync(fileName);
+            return _videoRepository.GetFile(fileName);
         }
 
         #endregion

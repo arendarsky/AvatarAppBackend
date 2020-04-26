@@ -277,12 +277,12 @@ namespace Avatar.App.Api.Controllers
         [Route("photo/get/{name}")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> GetPhotoByName(string name)
+        public ActionResult GetPhotoByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return BadRequest();
             try
             {
-                var videoStream = await _profileService.GetPhotoStreamAsync(name);
+                var videoStream = _profileService.GetPhotoStream(name);
                 if (videoStream == null) return NotFound();
 
                 return File(videoStream, "image/*", true);

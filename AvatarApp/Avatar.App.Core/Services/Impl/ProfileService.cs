@@ -64,9 +64,9 @@ namespace Avatar.App.Core.Services.Impl
             return fileName;
         }
 
-        public async Task<Stream> GetPhotoStreamAsync(string fileName)
+        public Stream GetPhotoStream(string fileName)
         {
-            return await GetPhotoAsync(fileName);
+            return GetPhoto(fileName);
         }
 
         public async Task SetDescriptionAsync(Guid userGuid, string description)
@@ -138,9 +138,9 @@ namespace Avatar.App.Core.Services.Impl
             UserRepository.Update(user);
         }
 
-        private async Task<Stream> GetPhotoAsync(string fileName)
+        private Stream GetPhoto(string fileName)
         {
-            return await UserRepository.GetFileAsync(fileName);
+            return UserRepository.GetFile(fileName);
         }
 
         private static bool CheckUserPassword(User user, string password)

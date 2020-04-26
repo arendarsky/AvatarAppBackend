@@ -17,11 +17,11 @@ namespace Avatar.App.Core.Services.Impl
         }
 
 
-        public async Task<ICollection<UserProfile>> GetCommonRatingAsync(int number)
+        public ICollection<UserProfile> GetCommonRating(int number)
         {
             var users = GetUsers(new UserWithLoadedVideosSpecification()).Where(u => u.LoadedVideos.Any()).ToList();
 
-            var userProfiles = await GetUsersWithLikesNumberAsync(users);
+            var userProfiles = GetUsersWithLikesNumberAsync(users);
 
             return TakeUsersOrderedByLikesNumber(userProfiles, number).ToList();
         }
@@ -41,17 +41,14 @@ namespace Avatar.App.Core.Services.Impl
             return UserRepository.List(specification);
         }
 
-        private async Task<IEnumerable<UserProfile>> GetUsersWithLikesNumberAsync(IEnumerable<User> users)
+        private IEnumerable<UserProfile> GetUsersWithLikesNumberAsync(IEnumerable<User> users)
         {
-            var userProfiles = await Task.Run(() =>
-            {
-                var profiles = new List<UserProfile>();
-                profiles.AddRange(from user in users
-                    select new UserProfile { LikesNumber = GetLikesNumber(user), User = user });
-                return profiles;
-            });
+            var profiles = new List<UserProfile>();
 
-            return userProfiles;
+            profiles.AddRange(from user in users
+                select new UserProfile { LikesNumber = GetLikesNumber(user), User = user });
+
+            return profiles;
         }
 
         private static IEnumerable<UserProfile> TakeUsersOrderedByLikesNumber(IEnumerable<UserProfile> userProfiles,

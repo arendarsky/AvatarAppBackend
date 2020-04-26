@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models;
 using Avatar.App.SharedKernel;
@@ -49,10 +51,10 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(UserDto user)
         {
-            if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
-                return BadRequest();
             try
             {
+                if (!IsValidEmail(user.Email) || string.IsNullOrWhiteSpace(user.Password))
+                    return BadRequest();
                 await _authenticationService.RegisterAsync(user);
                 return new JsonResult(true);
             }
@@ -125,7 +127,11 @@ namespace Avatar.App.Api.Controllers
                 await _authenticationService.SendEmailAsync(email);
                 return Ok();
             }
-            catch(Exception ex)
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
             {
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
                 return Problem();
@@ -181,6 +187,10 @@ namespace Avatar.App.Api.Controllers
                 await _authenticationService.SendPasswordReset(email);
                 return Ok();
             }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
             catch (Exception ex)
             {
                 Logger.Log.LogError(ex.Message + ex.StackTrace);
@@ -219,6 +229,54 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        #region Private Methods
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                    RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    var domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                    @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        #endregion
 
     }
 }

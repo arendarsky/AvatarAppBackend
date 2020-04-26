@@ -25,9 +25,9 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
         }
 
 
-        public async Task<Stream> GetFileStreamAsync(string fileName, string storagePrefix)
+        public Stream GetFileStream(string fileName, string storagePrefix)
         {
-            return await CreateFileStreamAsync(fileName, storagePrefix);
+            return CreateFileStreamAsync(fileName, storagePrefix);
         }
 
         #endregion
@@ -41,18 +41,18 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
 
         private static async Task SaveFileAsync(string fullPath, Stream inputFileStream)
         {
-            await using var outputFileStream = new FileStream(fullPath, FileMode.Create);
+            await using var outputFileStream =
+                new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None);
             await inputFileStream.CopyToAsync(outputFileStream);
         }
 
-        private async Task<Stream> CreateFileStreamAsync(string fileName, string storagePrefix)
+        private Stream CreateFileStreamAsync(string fileName, string storagePrefix)
         {
-            var fileStream = await Task.Run(() =>
-            {
-                var fullVideoPath = CreateFilePath(storagePrefix, fileName);
-                return new FileStream(fullVideoPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096,
-                    FileOptions.Asynchronous);
-            });
+            var fullVideoPath = CreateFilePath(storagePrefix, fileName);
+
+            var fileStream = new FileStream(fullVideoPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096,
+                FileOptions.Asynchronous);
+
             return fileStream;
         }
 

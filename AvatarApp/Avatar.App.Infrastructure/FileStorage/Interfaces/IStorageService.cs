@@ -20,7 +20,7 @@ namespace Avatar.App.Infrastructure.FileStorage.Interfaces
         /// <param name="fileName"></param>
         /// <param name="storagePrefix"></param>
         /// <returns></returns>
-        Task<Stream> GetFileStreamAsync(string fileName, string storagePrefix);
+        Stream GetFileStream(string fileName, string storagePrefix);
 
     }
 }

@@ -71,7 +71,7 @@ namespace Avatar.App.Core.Services.Impl
 
             if (user.IsEmailConfirmed) return true;
 
-            if (!await CheckConfirmCode(confirmCode, guid)) return false;
+            if (!CheckConfirmCode(confirmCode, guid)) return false;
 
             SetUserEmailConfirmed(user);
 
@@ -97,7 +97,7 @@ namespace Avatar.App.Core.Services.Impl
 
             var passwordGuid = PasswordPrefix + guid;
 
-            if (!await CheckConfirmCode(confirmCode, passwordGuid)) return false;
+            if (!CheckConfirmCode(confirmCode, passwordGuid)) return false;
 
             ChangeUserPassword(user, password);
 
@@ -166,18 +166,15 @@ namespace Avatar.App.Core.Services.Impl
             return user.Guid.ToString();
         }
 
-        private async Task<bool> CheckConfirmCode(string confirmCode, string guid)
+        private bool CheckConfirmCode(string confirmCode, string guid)
         {
-            var result = await Task.Run(() =>
-            {
-                if (!_cache.TryGetValue(guid, out string cacheEntry)) return false;
+            if (!_cache.TryGetValue(guid, out string cacheEntry)) return false;
 
-                if (!string.Equals(cacheEntry, confirmCode, StringComparison.CurrentCultureIgnoreCase)) return false;
+            if (!string.Equals(cacheEntry, confirmCode, StringComparison.CurrentCultureIgnoreCase)) return false;
 
-                _cache.Remove(guid);
-                return true;
-            });
-            return result;
+            _cache.Remove(guid);
+
+            return true;
         }
 
         private void SetUserEmailConfirmed(User user)

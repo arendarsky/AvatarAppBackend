@@ -125,12 +125,12 @@ namespace Avatar.App.Api.Controllers
         [AllowAnonymous]
         [Route("{name}")]
         [HttpGet]
-        public async Task<ActionResult> GetVideoByName(string name)
+        public ActionResult GetVideoByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return BadRequest();
             try
             {
-                var videoStream = await _videoService.GetVideoStreamAsync(name);
+                var videoStream = _videoService.GetVideoStream(name);
                 if (videoStream == null) return NotFound();
 
                 return File(videoStream, "video/*", true);

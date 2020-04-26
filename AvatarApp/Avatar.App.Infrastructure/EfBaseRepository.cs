@@ -67,9 +67,9 @@ namespace Avatar.App.Infrastructure
                 .FirstOrDefaultAsync(spec.Criteria);
         }
 
-        public async Task<Stream> GetFileAsync(string fileName)
+        public Stream GetFile(string fileName)
         {
-            return await StorageService.GetFileStreamAsync(fileName, StoragePrefix);
+            return StorageService.GetFileStream(fileName, StoragePrefix);
         }
 
         public IEnumerable<T> List()

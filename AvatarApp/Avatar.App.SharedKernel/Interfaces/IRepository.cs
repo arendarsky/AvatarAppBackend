@@ -14,7 +14,7 @@ namespace Avatar.App.SharedKernel.Interfaces
         Task<T> GetAsync(Expression<Func<T, bool>> predicate);
         T Get(ISpecification<T> spec);
         Task<T> GetAsync(ISpecification<T> spec);
-        Task<Stream> GetFileAsync(string fileName);
+        Stream GetFile(string fileName);
         IEnumerable<T> List();
         IEnumerable<T> List(Expression<Func<T, bool>> predicate);
         IEnumerable<T> List(ISpecification<T> spec);

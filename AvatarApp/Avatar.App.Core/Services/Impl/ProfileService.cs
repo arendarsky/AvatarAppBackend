@@ -98,6 +98,15 @@ namespace Avatar.App.Core.Services.Impl
             UserRepository.Update(user);
         }
 
+        public void RemoveAllUnusedFiles()
+        {
+            IEnumerable<User> users = UserRepository.List();
+
+            List<string> fileNames = users.Select(x => x.ProfilePhoto).ToList();
+
+            UserRepository.RemoveFiles(fileNames);
+        }
+
         #region Private Methods
 
         private static string CreateFileName(string fileExtension)

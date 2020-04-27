@@ -26,5 +26,6 @@ namespace Avatar.App.SharedKernel.Interfaces
         void UpdateRange(IEnumerable<T> entities);
         void Delete(T entity);
         void Delete(Expression<Func<T, bool>> predicate);
+        void RemoveFiles(List<string> existFiles);
     }
 }

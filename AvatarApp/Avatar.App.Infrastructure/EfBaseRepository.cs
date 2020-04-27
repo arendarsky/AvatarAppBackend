@@ -67,9 +67,16 @@ namespace Avatar.App.Infrastructure
                 .FirstOrDefaultAsync(spec.Criteria);
         }
 
+
+          
         public Stream GetFile(string fileName)
         {
             return StorageService.GetFileStream(fileName, StoragePrefix);
+        }
+
+        public void RemoveFiles(List<string> existFiles)
+        {
+            StorageService.RemoveUnusedFiles(existFiles, StoragePrefix);
         }
 
         public IEnumerable<T> List()

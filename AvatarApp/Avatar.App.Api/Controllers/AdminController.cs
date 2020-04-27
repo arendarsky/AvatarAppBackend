@@ -21,11 +21,13 @@ namespace Avatar.App.Api.Controllers
     public class AdminController : BaseAuthorizeController
     {
         private readonly IVideoService _videoService;
+        private readonly IProfileService _profileService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public AdminController(IVideoService videoService, IOptions<AvatarAppSettings> avatarAppOptions)
+        public AdminController(IVideoService videoService, IProfileService profileService, IOptions<AvatarAppSettings> avatarAppOptions)
         {
             _videoService = videoService;
+            _profileService = profileService;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -88,6 +90,66 @@ namespace Avatar.App.Api.Controllers
             catch (VideoNotFoundException)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        /// <summary>
+        /// Cleaning storage from unused video files
+        /// </summary>
+        /// <response code="200">If video status successfully changes</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">If video doesn't exist on server</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("CleanUpVideoStorage")]
+        [Route("clean_video_files")]
+        [HttpDelete]
+        public ActionResult CleanUpVideoStorage()
+        {
+            try
+            {
+                CheckAdminRight();
+                _profileService.RemoveAllUnusedFiles();
+                return Ok();
+            }
+            catch (UserNotAllowedException)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        /// <summary>
+        /// Cleaning storage from unused video files
+        /// </summary>
+        /// <response code="200">If video status successfully changes</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">If video doesn't exist on server</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("CleanUpImageStorage")]
+        [Route("clean_image_files")]
+        [HttpDelete]
+        public ActionResult CleanUpImageStorage()
+        {
+            try
+            {
+                CheckAdminRight();
+                _videoService.RemoveAllUnusedFiles();
+                return Ok();
+            }
+            catch (UserNotAllowedException)
+            {
+                return Forbid();
             }
             catch (Exception ex)
             {

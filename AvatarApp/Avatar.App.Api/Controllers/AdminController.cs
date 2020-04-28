@@ -108,13 +108,13 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("CleanUpVideoStorage")]
         [Route("clean_video_files")]
-        [HttpDelete]
+        [HttpGet]
         public ActionResult CleanUpVideoStorage()
         {
             try
             {
                 CheckAdminRight();
-                _profileService.RemoveAllUnusedFiles();
+                _videoService.RemoveAllUnusedFiles();
                 return Ok();
             }
             catch (UserNotAllowedException)
@@ -138,13 +138,13 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("CleanUpImageStorage")]
         [Route("clean_image_files")]
-        [HttpDelete]
+        [HttpGet]
         public ActionResult CleanUpImageStorage()
         {
             try
             {
                 CheckAdminRight();
-                _videoService.RemoveAllUnusedFiles();
+                _profileService.RemoveAllUnusedFiles();
                 return Ok();
             }
             catch (UserNotAllowedException)

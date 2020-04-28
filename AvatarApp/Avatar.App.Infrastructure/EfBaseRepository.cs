@@ -74,7 +74,7 @@ namespace Avatar.App.Infrastructure
             return StorageService.GetFileStream(fileName, StoragePrefix);
         }
 
-        public void RemoveFiles(List<string> existFiles)
+        public void RemoveFiles(ICollection<string> existFiles)
         {
             StorageService.RemoveUnusedFiles(existFiles, StoragePrefix);
         }

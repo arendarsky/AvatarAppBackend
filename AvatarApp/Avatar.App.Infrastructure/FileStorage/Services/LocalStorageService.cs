@@ -32,9 +32,11 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
             return CreateFileStreamAsync(fileName, storagePrefix);
         }
 
-        public void RemoveUnusedFiles(List<string> existFiles, string storagePrefix)
+        public void RemoveUnusedFiles(ICollection<string> existFiles, string storagePrefix)
         {
-            DeleteUnusedFiles(existFiles, storagePrefix);
+            var directory = new DirectoryInfo(_environmentConfig.STORAGE_PATH + storagePrefix);
+
+            RemoveUnusedFiles(existFiles, directory);
         }
 
         #endregion
@@ -63,13 +65,11 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
             return fileStream;
         }
 
-        private void DeleteUnusedFiles(List<string> existFiles, string storagePrefix)
+        private static void RemoveUnusedFiles(ICollection<string> existFiles, DirectoryInfo directory)
         {
-            DirectoryInfo dir = new DirectoryInfo(_environmentConfig.STORAGE_PATH + storagePrefix);
-            foreach (var file in dir.GetFiles())
+            foreach (var file in directory.GetFiles())
             {
-                if (!existFiles.Contains(file.Name))
-                    File.Delete(file.FullName);
+                if (!existFiles.Contains(file.Name)) File.Delete(file.FullName);
             }
         }
 

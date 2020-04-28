@@ -100,11 +100,9 @@ namespace Avatar.App.Core.Services.Impl
 
         public void RemoveAllUnusedFiles()
         {
-            IEnumerable<User> users = UserRepository.List();
+            var existedFiles = GetImageFilesNames();
 
-            List<string> fileNames = users.Select(x => x.ProfilePhoto).ToList();
-
-            UserRepository.RemoveFiles(fileNames);
+            UserRepository.RemoveFiles(existedFiles);
         }
 
         #region Private Methods
@@ -156,6 +154,11 @@ namespace Avatar.App.Core.Services.Impl
         {
             var hashed = PasswordHelper.HashPassword(password);
             return hashed == user.Password;
+        }
+
+        private ICollection<string> GetImageFilesNames()
+        {
+            return UserRepository.List().Select(user => user.ProfilePhoto).ToList();
         }
 
         #endregion

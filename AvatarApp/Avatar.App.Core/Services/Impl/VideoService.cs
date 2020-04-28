@@ -116,13 +116,11 @@ namespace Avatar.App.Core.Services.Impl
             RemoveVideo(video);
         }
 
-        public void  RemoveAllUnusedFiles()
+        public void RemoveAllUnusedFiles()
         {
-            IEnumerable<Video> existFiles = _videoRepository.List();
+            var existFiles = GetVideoFilesNames();
 
-            List<string> fileNames = existFiles.Select(x => x.Name).ToList();
-
-            _videoRepository.RemoveFiles(fileNames);
+            _videoRepository.RemoveFiles(existFiles);
         }
 
         #endregion
@@ -204,6 +202,11 @@ namespace Avatar.App.Core.Services.Impl
         private Stream GetFile(string fileName)
         {
             return _videoRepository.GetFile(fileName);
+        }
+
+        private ICollection<string> GetVideoFilesNames()
+        {
+            return _videoRepository.List().Select(video => video.Name).ToList();
         }
 
 

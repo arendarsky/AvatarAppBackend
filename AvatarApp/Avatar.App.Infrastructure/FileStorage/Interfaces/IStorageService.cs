@@ -29,7 +29,7 @@ namespace Avatar.App.Infrastructure.FileStorage.Interfaces
         /// <param name="existFiles"></param>
         /// <param name="storagePrefix"></param>
         /// <returns></returns>
-        void RemoveUnusedFiles(List<string> existFiles, string storagePrefix);
+        void RemoveUnusedFiles(ICollection<string> existFiles, string storagePrefix);
 
     }
 }

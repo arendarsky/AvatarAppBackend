@@ -98,6 +98,13 @@ namespace Avatar.App.Core.Services.Impl
             UserRepository.Update(user);
         }
 
+        public void RemoveAllUnusedFiles()
+        {
+            var existedFiles = GetImageFilesNames();
+
+            UserRepository.RemoveFiles(existedFiles);
+        }
+
         #region Private Methods
 
         private static string CreateFileName(string fileExtension)
@@ -147,6 +154,11 @@ namespace Avatar.App.Core.Services.Impl
         {
             var hashed = PasswordHelper.HashPassword(password);
             return hashed == user.Password;
+        }
+
+        private ICollection<string> GetImageFilesNames()
+        {
+            return UserRepository.List().Select(user => user.ProfilePhoto).ToList();
         }
 
         #endregion

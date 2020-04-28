@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.SharedKernel.Settings;
@@ -30,6 +32,13 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
             return CreateFileStreamAsync(fileName, storagePrefix);
         }
 
+        public void RemoveUnusedFiles(ICollection<string> existFiles, string storagePrefix)
+        {
+            var directory = new DirectoryInfo(_environmentConfig.STORAGE_PATH + storagePrefix);
+
+            RemoveUnusedFiles(existFiles, directory);
+        }
+
         #endregion
 
         #region Private Methods
@@ -54,6 +63,14 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
                 FileOptions.Asynchronous);
 
             return fileStream;
+        }
+
+        private static void RemoveUnusedFiles(ICollection<string> existFiles, DirectoryInfo directory)
+        {
+            foreach (var file in directory.GetFiles())
+            {
+                if (!existFiles.Contains(file.Name)) File.Delete(file.FullName);
+            }
         }
 
         #endregion

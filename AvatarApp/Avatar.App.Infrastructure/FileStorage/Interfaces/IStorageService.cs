@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Avatar.App.Infrastructure.FileStorage.Interfaces
@@ -21,6 +22,14 @@ namespace Avatar.App.Infrastructure.FileStorage.Interfaces
         /// <param name="storagePrefix"></param>
         /// <returns></returns>
         Stream GetFileStream(string fileName, string storagePrefix);
+
+        /// <summary>
+        /// Get stream from file on local disk
+        /// </summary>
+        /// <param name="existFiles"></param>
+        /// <param name="storagePrefix"></param>
+        /// <returns></returns>
+        void RemoveUnusedFiles(ICollection<string> existFiles, string storagePrefix);
 
     }
 }

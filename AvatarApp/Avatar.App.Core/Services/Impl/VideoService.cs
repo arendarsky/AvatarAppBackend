@@ -116,6 +116,13 @@ namespace Avatar.App.Core.Services.Impl
             RemoveVideo(video);
         }
 
+        public void RemoveAllUnusedFiles()
+        {
+            var existFiles = GetVideoFilesNames();
+
+            _videoRepository.RemoveFiles(existFiles);
+        }
+
         #endregion
 
         #region Check Methods
@@ -196,6 +203,12 @@ namespace Avatar.App.Core.Services.Impl
         {
             return _videoRepository.GetFile(fileName);
         }
+
+        private ICollection<string> GetVideoFilesNames()
+        {
+            return _videoRepository.List().Select(video => video.Name).ToList();
+        }
+
 
         #endregion
 

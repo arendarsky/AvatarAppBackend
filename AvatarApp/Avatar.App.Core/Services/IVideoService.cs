@@ -17,6 +17,6 @@ namespace Avatar.App.Core.Services
         Task SetApproveStatusAsync(string fileName, bool isApproved);
         Task SetActiveAsync(Guid userGuid, string fileName);
         Task RemoveVideoAsync(Guid userGuid, string fileName);
-
+        void RemoveAllUnusedFiles();
     }
 }

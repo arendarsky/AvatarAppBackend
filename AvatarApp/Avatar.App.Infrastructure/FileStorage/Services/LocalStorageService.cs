@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.SharedKernel.Settings;
@@ -38,6 +37,15 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
             var directory = new DirectoryInfo(_environmentConfig.STORAGE_PATH + storagePrefix);
 
             RemoveUnusedFiles(existFiles, directory);
+        }
+
+        public void RemoveFile(string storagePrefix, string fileName)
+        {
+            var fullPath = CreateFilePath(storagePrefix, fileName);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
         }
 
         #endregion

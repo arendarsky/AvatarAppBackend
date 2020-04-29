@@ -28,5 +28,6 @@ namespace Avatar.App.SharedKernel.Interfaces
         void Delete(T entity);
         void Delete(Expression<Func<T, bool>> predicate);
         void RemoveFiles(ICollection<string> existFiles);
+        void DeleteFile(string fileName);
     }
 }

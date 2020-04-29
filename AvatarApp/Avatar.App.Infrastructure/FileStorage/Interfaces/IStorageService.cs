@@ -25,12 +25,20 @@ namespace Avatar.App.Infrastructure.FileStorage.Interfaces
         Stream GetFileStream(string fileName, string storagePrefix);
 
         /// <summary>
-        /// Get stream from file on local disk
+        /// Remove unused files from local disk
         /// </summary>
         /// <param name="existFiles"></param>
         /// <param name="storagePrefix"></param>
         /// <returns></returns>
         void RemoveUnusedFiles(ICollection<string> existFiles, string storagePrefix);
+
+        /// <summary>
+        /// Remove file from local disk
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="storagePrefix"></param>
+        /// <returns></returns>
+        void RemoveFile(string fileName, string storagePrefix);
 
     }
 }

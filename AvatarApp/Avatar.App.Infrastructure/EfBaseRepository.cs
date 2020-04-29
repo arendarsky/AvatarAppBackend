@@ -80,6 +80,11 @@ namespace Avatar.App.Infrastructure
             StorageService.RemoveUnusedFiles(existFiles, StoragePrefix);
         }
 
+        public void DeleteFile(string fileName)
+        {
+            StorageService.RemoveFile(fileName, StoragePrefix);
+        }
+
         public IEnumerable<T> List()
         {
             return DbContext.Set<T>().AsEnumerable();

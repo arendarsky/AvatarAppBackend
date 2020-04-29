@@ -1,4 +1,6 @@
-﻿namespace Avatar.App.SharedKernel.Settings
+﻿using System.Collections.Generic;
+
+namespace Avatar.App.SharedKernel.Settings
 {
     public class AvatarAppSettings
     {
@@ -9,6 +11,7 @@
         public int MaxVideoSize { get; set; }
         public int MaxImageSize { get; set; }
         public string AcceptedVideoExtension { get; set; }
+        public List<string> AcceptedImageExtensions { get; set; }
         public string AdminGuid { get; set; }
 
         public string WebUrl { get; set; }

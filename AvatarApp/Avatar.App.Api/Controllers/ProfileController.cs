@@ -245,6 +245,7 @@ namespace Avatar.App.Api.Controllers
         {
             if (file == null) return BadRequest();
             var fileExtension = Path.GetExtension(file.FileName);
+            if (!CheckFileExtension(fileExtension)) return BadRequest();
 
             try
             {
@@ -300,6 +301,10 @@ namespace Avatar.App.Api.Controllers
 
         #region Private Methods
 
+        private bool CheckFileExtension(string fileExtension)
+        {
+            return _avatarAppSettings.AcceptedImageExtensions.Contains(fileExtension);
+        }
 
         #endregion
     }

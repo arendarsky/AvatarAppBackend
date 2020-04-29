@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Avatar.App.Core.Services
 {
     public interface IVideoService
     {
-        Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension = null);
+        Task<Video> UploadVideoAsync(IFormFile fileStream, Guid userGuid);
         Task<ICollection<Video>> GetUnwatchedVideosAsync(Guid userGuid, int number);
         Task<ICollection<Video>> GetUncheckedVideosAsync(int number);
         Task SetVideoFragmentInterval(Guid userGuid, string fileName, double startTime, double endTime);

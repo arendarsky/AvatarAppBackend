@@ -10,6 +10,7 @@ using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.Core.Specifications.VideoSpecifications;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Core.Services.Impl
@@ -31,15 +32,15 @@ namespace Avatar.App.Core.Services.Impl
 
         #region Public Methods
 
-        public async Task<Video> UploadVideoAsync(Stream fileStream, Guid userGuid, string fileExtension)
+        public async Task<Video> UploadVideoAsync(IFormFile file, Guid userGuid)
         {
             var user = await GetUserAsync(new UserWithLoadedVideosSpecification(userGuid));
 
             if (!CheckForAvailableVideoSlots(user)) throw new ReachedVideoLimitException();
 
-            var fileName = CreateFileName(fileExtension);
+            var fileName = CreateFileName(file);
 
-            var video = await InsertVideoAsync(user, fileName, fileStream);
+            var video = await InsertVideoAsync(user, fileName, file);
 
             return video;
         }
@@ -214,8 +215,9 @@ namespace Avatar.App.Core.Services.Impl
 
         #region Create Methods
 
-        private static string CreateFileName(string fileExtension)
+        private static string CreateFileName(IFormFile file)
         {
+            var fileExtension = Path.GetExtension(file.FileName);
             return Path.GetRandomFileName() + fileExtension;
         }
 
@@ -223,7 +225,7 @@ namespace Avatar.App.Core.Services.Impl
 
         #region Insert Methods
 
-        private async Task<Video> InsertVideoAsync(User user, string fileName, Stream fileStream)
+        private async Task<Video> InsertVideoAsync(User user, string fileName, IFormFile file)
         {
             var video = new Video
             {
@@ -235,7 +237,7 @@ namespace Avatar.App.Core.Services.Impl
                 IsActive = !user.LoadedVideos.Any()
             };
 
-            await _videoRepository.InsertFileAsync(fileStream, fileName);
+            await _videoRepository.InsertFileAsync(file, fileName);
 
             await _videoRepository.InsertAsync(video);
 

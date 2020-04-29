@@ -49,17 +49,13 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-
-            var fileExtension = Path.GetExtension(file.FileName);
-
-            if (!CheckFileExtension(fileExtension)) return BadRequest();
-
             try
             {
+                if (!CheckFileExtension(file)) return BadRequest();
 
                 var userGuid = GetUserGuid();
 
-                var video = await _videoService.UploadVideoAsync(file.OpenReadStream(), userGuid, fileExtension);
+                var video = await _videoService.UploadVideoAsync(file, userGuid);
 
                 return new JsonResult(video.Name);
             }
@@ -297,8 +293,9 @@ namespace Avatar.App.Api.Controllers
 
         #region Private Methods
 
-        private bool CheckFileExtension(string fileExtension)
+        private bool CheckFileExtension(IFormFile file)
         {
+            var fileExtension = Path.GetExtension(file.FileName);
             return fileExtension == _avatarAppSettings.AcceptedVideoExtension;
         }
 

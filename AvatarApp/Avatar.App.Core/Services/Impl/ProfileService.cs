@@ -11,6 +11,7 @@ using Avatar.App.Core.Specifications.LikedVideoSpecifications;
 using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.SharedKernel.Interfaces;
 using Avatar.App.SharedKernel.Settings;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Core.Services.Impl
@@ -53,13 +54,13 @@ namespace Avatar.App.Core.Services.Impl
             return orderedLikes;
         }
 
-        public async Task<string> UploadPhotoAsync(Guid userGuid, Stream fileStream, string fileExtension)
+        public async Task<string> UploadPhotoAsync(Guid userGuid, IFormFile file)
         {
             var user = await GetUserAsync(new UserSpecification(userGuid));
 
-            var fileName = CreateFileName(fileExtension);
+            var fileName = CreateFileName(file);
 
-            await UpdatePhotoAsync(user, fileStream, fileName);
+            await UpdatePhotoAsync(user, file, fileName);
 
             return fileName;
         }
@@ -107,8 +108,9 @@ namespace Avatar.App.Core.Services.Impl
 
         #region Private Methods
 
-        private static string CreateFileName(string fileExtension)
+        private static string CreateFileName(IFormFile file)
         {
+            var fileExtension = Path.GetExtension(file.FileName);
             return Path.GetRandomFileName() + fileExtension;
         }
 
@@ -136,9 +138,9 @@ namespace Avatar.App.Core.Services.Impl
             return likedVideos.OrderByDescending(l => l.Date).Take(take).Skip(skip).ToList();
         } 
 
-        private async Task UpdatePhotoAsync(User user, Stream fileStream, string fileName)
+        private async Task UpdatePhotoAsync(User user, IFormFile file, string fileName)
         {
-            await UserRepository.InsertFileAsync(fileStream, fileName);
+            await UserRepository.InsertFileAsync(file, fileName);
 
             user.ProfilePhoto = fileName;
 

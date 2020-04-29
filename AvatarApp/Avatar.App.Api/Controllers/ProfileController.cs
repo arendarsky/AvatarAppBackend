@@ -243,14 +243,15 @@ namespace Avatar.App.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> UploadPhoto(IFormFile file)
         {
-            if (file == null) return BadRequest();
-            var fileExtension = Path.GetExtension(file.FileName);
-
             try
             {
+                if (file == null) return BadRequest();
+                
+                if (!CheckFileExtension(file)) return BadRequest();
+
                 var userGuid = GetUserGuid();
 
-                return new JsonResult(await _profileService.UploadPhotoAsync(userGuid, file.OpenReadStream(), fileExtension));
+                return new JsonResult(await _profileService.UploadPhotoAsync(userGuid, file));
             }
             catch (UserNotFoundException)
             {
@@ -300,6 +301,11 @@ namespace Avatar.App.Api.Controllers
 
         #region Private Methods
 
+        private bool CheckFileExtension(IFormFile file)
+        {
+            var fileExtension = Path.GetExtension(file.FileName);
+            return _avatarAppSettings.AcceptedImageExtensions.Contains(fileExtension);
+        }
 
         #endregion
     }

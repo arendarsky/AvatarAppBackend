@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Avatar.App.SharedKernel.Interfaces
 {
@@ -21,7 +22,7 @@ namespace Avatar.App.SharedKernel.Interfaces
         int Count(Expression<Func<T, bool>> predicate);
         void Insert(T entity);
         Task InsertAsync(T entity);
-        Task InsertFileAsync(Stream fileStream, string fileName);
+        Task InsertFileAsync(IFormFile file, string fileName);
         void Update(T entity);
         void UpdateRange(IEnumerable<T> entities);
         void Delete(T entity);

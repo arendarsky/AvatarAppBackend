@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Avatar.App.Infrastructure.FileStorage.Interfaces
 {
@@ -9,11 +10,11 @@ namespace Avatar.App.Infrastructure.FileStorage.Interfaces
         /// <summary>
         /// Save file from stream to local disk
         /// </summary>
-        /// <param name="fileStream"></param>
+        /// <param name="file"></param>
         /// <param name="fileName"></param>
         /// <param name="storagePrefix"></param>
         /// <returns></returns>
-        Task UploadAsync(Stream fileStream, string fileName, string storagePrefix);
+        Task UploadAsync(IFormFile file, string fileName, string storagePrefix);
 
         /// <summary>
         /// Get stream from file on local disk

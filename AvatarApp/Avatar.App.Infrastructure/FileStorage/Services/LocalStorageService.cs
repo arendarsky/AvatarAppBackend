@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.SharedKernel.Settings;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Infrastructure.FileStorage.Services
@@ -19,11 +20,11 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
 
         #region Public Methods
 
-        public async Task UploadAsync(Stream fileStream, string fileName, string storagePrefix)
+        public async Task UploadAsync(IFormFile file, string fileName, string storagePrefix)
         {
             var fullPath = CreateFilePath(storagePrefix, fileName);
 
-            await SaveFileAsync(fullPath, fileStream);
+            await SaveFileAsync(fullPath, file);
         }
 
 
@@ -48,11 +49,10 @@ namespace Avatar.App.Infrastructure.FileStorage.Services
             return _environmentConfig.STORAGE_PATH + storagePrefix + fileName;
         }
 
-        private static async Task SaveFileAsync(string fullPath, Stream inputFileStream)
+        private static async Task SaveFileAsync(string fullPath, IFormFile file)
         {
-            await using var outputFileStream =
-                new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None);
-            await inputFileStream.CopyToAsync(outputFileStream);
+            await using var outputFileStream = File.Create(fullPath);
+            await file.CopyToAsync(outputFileStream);
         }
 
         private Stream CreateFileStreamAsync(string fileName, string storagePrefix)

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
 using Avatar.App.Core.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Avatar.App.Core.Services
 {
@@ -11,7 +12,7 @@ namespace Avatar.App.Core.Services
     {
         Task<UserProfile> GetAsync(Guid userGuid);
         Task<User> GetPublicAsync(long id);
-        Task<string> UploadPhotoAsync(Guid userGuid, Stream fileStream, string fileExtension);
+        Task<string> UploadPhotoAsync(Guid userGuid, IFormFile file);
         Stream GetPhotoStream(string fileName);
         Task SetDescriptionAsync(Guid userGuid, string description);
         Task SetNameAsync(Guid userGuid, string name);

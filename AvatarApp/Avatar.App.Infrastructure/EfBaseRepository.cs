@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Infrastructure
@@ -120,9 +121,9 @@ namespace Avatar.App.Infrastructure
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task InsertFileAsync(Stream fileStream, string fileName)
+        public async Task InsertFileAsync(IFormFile file, string fileName)
         {
-            await StorageService.UploadAsync(fileStream, fileName, StoragePrefix);
+            await StorageService.UploadAsync(file, fileName, StoragePrefix);
         }
 
         public void Update(T entity)

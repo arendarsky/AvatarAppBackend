@@ -245,7 +245,7 @@ namespace Avatar.App.Api
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avatar App V1");
-                c.RoutePrefix = string.Empty;
+                c.RoutePrefix = "swagger/avatar";
             });
         }
 

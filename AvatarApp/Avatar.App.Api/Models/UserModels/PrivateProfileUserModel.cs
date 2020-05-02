@@ -9,6 +9,7 @@ namespace Avatar.App.Api.Models.UserModels
         public PrivateProfileUserModel(User user, int likesNumber) : base(user)
         {
             LikesNumber = likesNumber;
+            Email = user.Email;
 
             if (user.LoadedVideos == null) return;
 
@@ -16,7 +17,7 @@ namespace Avatar.App.Api.Models.UserModels
         }
 
         public int LikesNumber { get; set; }
-
+        public string Email { get; set; }
         public ICollection<VideoModel> Videos { get; set; }
     }
 }

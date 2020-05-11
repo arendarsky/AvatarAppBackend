@@ -13,7 +13,8 @@ namespace Avatar.App.Infrastructure
         public DbSet<Message> Messages { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
-            Database.Migrate();
+            Database.EnsureCreated();
+            //Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

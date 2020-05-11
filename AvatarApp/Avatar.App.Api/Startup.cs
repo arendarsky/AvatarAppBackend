@@ -128,8 +128,11 @@ namespace Avatar.App.Api
         private void AddDbConnection(IServiceCollection services)
         {
             var connection = Configuration["DB_CONNECTION"];
+        //    services.AddDbContext<AvatarAppContext>(options =>
+        //        options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
             services.AddDbContext<AvatarAppContext>(options =>
-                options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
+                options.UseNpgsql(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
+
         }
 
         private static void AddSwagger(IServiceCollection services)

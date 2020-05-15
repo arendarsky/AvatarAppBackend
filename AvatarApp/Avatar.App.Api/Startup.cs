@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Avatar.App.Core.Entities;
+using Avatar.App.Core.ExceptionMiddleware;
 using Avatar.App.Infrastructure;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;
@@ -81,6 +82,8 @@ namespace Avatar.App.Api
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
+
+            app.ConfigureExceptionMiddleware();
 
             app.UseHttpsRedirection();
 

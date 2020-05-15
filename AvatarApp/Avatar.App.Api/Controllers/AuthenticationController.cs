@@ -10,6 +10,7 @@ using Avatar.App.Core.Security;
 using Avatar.App.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
@@ -87,26 +88,12 @@ namespace Avatar.App.Api.Controllers
         public async Task<ActionResult> GetAuthorizationToken(string email, string password)
         {
             var response = new AuthorizationResponseModel();
-            try
-            {
+
                 var authModel = await _authenticationService.GetAuthorizationTokenAsync(email, password);
                 response.Token = authModel.Token;
                 response.ConfirmationRequired = authModel.ConfirmationRequired;
-                return new JsonResult(response);
-            }
-            catch (UserNotFoundException)
-            {
-                return new JsonResult(response);
-            }
-            catch (InvalidPasswordException)
-            {
-                return new JsonResult(response);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+                return new JsonResult(new ResponseModel(200, string.Empty, response));
+
         }
 
         /// <summary>

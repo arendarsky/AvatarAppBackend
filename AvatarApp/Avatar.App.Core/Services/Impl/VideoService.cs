@@ -233,7 +233,6 @@ namespace Avatar.App.Core.Services.Impl
                 Name = fileName,
                 StartTime = 0,
                 EndTime = _avatarAppSettings.ShortVideoMaxLength,
-                IsApproved = true,
                 IsActive = !user.LoadedVideos.Any()
             };
 

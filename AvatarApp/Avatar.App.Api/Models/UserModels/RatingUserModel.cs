@@ -10,7 +10,9 @@ namespace Avatar.App.Api.Models.UserModels
             LikesNumber = likesNumber;
 
             var video = user.LoadedVideos?.FirstOrDefault(c =>
-                c.IsApproved.HasValue && c.IsApproved == true && c.IsActive);
+                            c.IsApproved.HasValue && c.IsApproved == true && c.IsActive) ??
+                        user.LoadedVideos?.FirstOrDefault(c =>
+                            c.IsApproved.HasValue && c.IsApproved == true);
 
             if (video == null) return;
 

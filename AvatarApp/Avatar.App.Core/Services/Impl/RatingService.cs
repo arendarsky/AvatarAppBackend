@@ -20,7 +20,7 @@ namespace Avatar.App.Core.Services.Impl
         public ICollection<UserProfile> GetCommonRating(int number)
         {
             var users = GetUsers(new UserWithLoadedVideosSpecification())
-                .Where(u => u.LoadedVideos.Any(video => video.IsActive)).ToList();
+                .Where(u => u.LoadedVideos.Any(video => video.IsApproved.HasValue && video.IsApproved.Value)).ToList();
 
             var userProfiles = GetUsersWithLikesNumberAsync(users);
 

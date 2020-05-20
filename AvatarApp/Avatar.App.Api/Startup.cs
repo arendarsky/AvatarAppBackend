@@ -14,6 +14,9 @@ using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
 using Avatar.App.Infrastructure.Repositories;
 using Avatar.App.SharedKernel.Interfaces;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,7 +65,9 @@ namespace Avatar.App.Api
 
             AddCorsPolicy(services);
 
-            
+            AddFireBaseMessaging(services);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -128,7 +133,7 @@ namespace Avatar.App.Api
         private void AddDbConnection(IServiceCollection services)
         {
             var connection = Configuration["DB_CONNECTION"];
-            services.AddDbContext<AvatarAppContext>(options =>
+            services.AddDbContextPool<AvatarAppContext>(options =>
                 options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
         }
 
@@ -214,6 +219,29 @@ namespace Avatar.App.Api
                     {
                         builder.WithOrigins(Configuration["WebSiteUrl"]).AllowAnyHeader().AllowAnyMethod();
                     });
+            });
+        }
+
+        private void AddFireBaseMessaging(IServiceCollection services)
+        {
+            services.AddSingleton(service =>
+            {
+                var path = Configuration.GetSection("FireBase.Settings")["PathToCredentials"];
+                FirebaseApp app;
+                try
+                {
+                    app = FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromFile(path)
+                    }, "FBApp");
+                }
+                catch (Exception)
+                {
+                    app = FirebaseApp.GetInstance("FBApp");
+                }
+
+                var messagingInstance = FirebaseMessaging.GetMessaging(app);
+                return messagingInstance;
             });
         }
 

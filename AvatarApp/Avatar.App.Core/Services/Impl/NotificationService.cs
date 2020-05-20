@@ -11,48 +11,23 @@ namespace Avatar.App.Core.Services.Impl
 {
     public class NotificationService: INotificationService
     {
-        private readonly EnvironmentConfig _environmentConfig;
-        private readonly FirebaseMessaging _messagingInstance;
+        private readonly FirebaseMessaging _firebaseMessaging;
 
-        public NotificationService(IOptions<EnvironmentConfig> environmentConfig)
+        public NotificationService(FirebaseMessaging firebaseMessaging)
         {
-            _environmentConfig = environmentConfig.Value;
-            _messagingInstance = GetMessagingInstance();
+            _firebaseMessaging = firebaseMessaging;
         }
 
         public async Task<string> SendNotificationAsync(Message message)
         {
-            var result = await _messagingInstance.SendAsync(message, false);
+            var result = await _firebaseMessaging.SendAsync(message, false);
             return result;
         }
 
         public async Task<BatchResponse> SendNotificationAsync(IEnumerable<Message> messages)
         {
-            var result = await _messagingInstance.SendAllAsync(messages, false);
+            var result = await _firebaseMessaging.SendAllAsync(messages, false);
             return result;
         }
-
-        #region PrivateMethods
-
-        private FirebaseMessaging GetMessagingInstance()
-        {
-            var path = _environmentConfig.STORAGE_PATH + "\\FireBaseAuth.json";
-            FirebaseApp app = null;
-            try
-            {
-                app = FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromFile(path)
-                }, "FBApp");
-            }
-            catch (Exception)
-            {
-                app = FirebaseApp.GetInstance("FBApp");
-            }
-            var messagingInstance = FirebaseMessaging.GetMessaging(app);
-            return messagingInstance;
-        }
-
-        #endregion
     }
 }

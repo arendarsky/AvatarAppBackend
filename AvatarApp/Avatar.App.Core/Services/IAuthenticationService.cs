@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avatar.App.Core.Models;
 
 namespace Avatar.App.Core.Services
@@ -12,5 +13,6 @@ namespace Avatar.App.Core.Services
         Task<bool> ConfirmEmailAsync(string guid, string confirmCode);
         Task SendPasswordReset(string email);
         Task<bool> ChangePassword(string guid, string confirmCode, string password);
+        Task SetFireBaseId(Guid guid, string fireBaseId);
     }
 }

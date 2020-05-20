@@ -8,6 +8,7 @@ using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Models;
 using Avatar.App.Core.Security;
 using Avatar.App.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
@@ -16,7 +17,7 @@ namespace Avatar.App.Api.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : BaseAuthorizeController
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
@@ -217,6 +218,39 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 return new JsonResult(await _authenticationService.ChangePassword(guid, confirmCode, password));
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+        /// <summary>
+        /// Set Firebase Id
+        /// </summary>
+        /// <param name="fireBaseId"></param>
+        /// <response code="200"></response>
+        /// <response code="400"></response>
+        /// <response code="500"></response>
+        [SwaggerOperation("SetFireBaseId")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "Is confirmation successful")]
+        [Authorize]
+        [Route("firebase_set")]
+        [HttpPost]
+        public async Task<ActionResult> SetFireBaseId([FromBody] string fireBaseId)
+        {
+            try
+            {
+                var userGuid = GetUserGuid();
+
+                await _authenticationService.SetFireBaseId(userGuid, fireBaseId);
+
+                return Ok();
             }
             catch (UserNotFoundException)
             {

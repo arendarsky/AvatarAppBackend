@@ -12,6 +12,8 @@ using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using FirebaseAdmin.Messaging;
+using Message = FirebaseAdmin.Messaging.Message;
 
 namespace Avatar.App.Core.Services.Impl
 {
@@ -20,14 +22,16 @@ namespace Avatar.App.Core.Services.Impl
         private readonly IRepository<Video> _videoRepository;
         private readonly IRepository<WatchedVideo> _watchedVideoRepository;
         private readonly IRepository<LikedVideo> _likedVideoRepository;
+        private readonly INotificationService _notificationService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public VideoService(IOptions<AvatarAppSettings> avatarAppOptions, IRepository<Video> videoRepository, IRepository<User> userRepository, IRepository<WatchedVideo> watchedVideoRepository, IRepository<LikedVideo> likedVideoRepository) : base(userRepository)
+        public VideoService(IOptions<AvatarAppSettings> avatarAppOptions, IRepository<Video> videoRepository, IRepository<User> userRepository, IRepository<WatchedVideo> watchedVideoRepository, IRepository<LikedVideo> likedVideoRepository, INotificationService notificationService) : base(userRepository)
         {
             _videoRepository = videoRepository;
             _watchedVideoRepository = watchedVideoRepository;
             _likedVideoRepository = likedVideoRepository;
             _avatarAppSettings = avatarAppOptions.Value;
+            _notificationService = notificationService;
         }
 
         #region Public Methods
@@ -90,6 +94,9 @@ namespace Avatar.App.Core.Services.Impl
             if (!isLike) return;
 
             await InsertLikedVideoAsync(user, video);
+
+            if (video.User.FireBaseId != null)
+                await SendLikeNotification(video, user);
         }
 
         public async Task SetApproveStatusAsync(string fileName, bool isApproved)
@@ -308,5 +315,24 @@ namespace Avatar.App.Core.Services.Impl
         }
 
         #endregion
+
+        #region Notification Methods
+
+        private async Task SendLikeNotification(Video video, User sender)
+        {
+            var message = new Message
+            {
+                Notification = new Notification
+                {
+                    Title = "Вашему видео поставили лайк",
+                    Body = $"${sender.Name} поставил лайк вашему видео ${video.Name}"
+                },
+                Token = video.User.FireBaseId
+            };
+            await _notificationService.SendNotificationAsync(message);
+        }
+
+        #endregion
+        
     }
 }

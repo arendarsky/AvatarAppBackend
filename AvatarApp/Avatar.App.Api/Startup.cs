@@ -196,6 +196,7 @@ namespace Avatar.App.Api
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStorageService, LocalStorageService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IProfileService, ProfileService>();

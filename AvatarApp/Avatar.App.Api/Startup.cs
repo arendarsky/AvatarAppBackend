@@ -20,6 +20,7 @@ using Google.Apis.Auth.OAuth2;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,6 +76,8 @@ namespace Avatar.App.Api
         {
 
             RegisterLogger(env, loggerFactory, applicationLifetime);
+
+            UseHttpContext(app);
 
             EnableSwagger(app);
             
@@ -201,6 +204,7 @@ namespace Avatar.App.Api
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IRatingService, RatingService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -264,7 +268,7 @@ namespace Avatar.App.Api
                     Logger.Log.LogInformation($"Settings {env.EnvironmentName}");
                 });
         }
-
+        
         private static void EnableSwagger(IApplicationBuilder app)
         {
             app.UseSwagger();
@@ -276,6 +280,11 @@ namespace Avatar.App.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avatar App V1");
                 c.RoutePrefix = "swagger/avatar";
             });
+        }
+
+        private static void UseHttpContext(IApplicationBuilder app)
+        {
+            MyHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
         }
 
         #endregion

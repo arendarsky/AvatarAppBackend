@@ -324,13 +324,12 @@ namespace Avatar.App.Core.Services.Impl
             {
                 Notification = new Notification
                 {
-                    Title = "Вашему видео поставили лайк",
-                    Body = $"{sender.Name} поставил лайк вашему видео {video.Name}"
+                    Title = $"{sender.Name} хочет видеть тебя в финале XCE FACTOR 2020"
                 },
                 Token = video.User.FireBaseId
             };
             if (sender.ProfilePhoto != null)
-                message.Notification.ImageUrl = $"{MyHttpContext.AppBaseUrl}/data/images/{sender.ProfilePhoto}";
+                message.Notification.ImageUrl = $"{MyHttpContext.AppBaseUrl}/api/profile/get/{sender.ProfilePhoto}";
             await _notificationService.SendNotificationAsync(message);
         }
 

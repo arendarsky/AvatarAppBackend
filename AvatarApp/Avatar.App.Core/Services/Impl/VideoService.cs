@@ -324,7 +324,8 @@ namespace Avatar.App.Core.Services.Impl
             {
                 Notification = new Notification
                 {
-                    Title = $"{sender.Name} хочет видеть тебя в финале XCE FACTOR 2020"
+                    Title = $"{sender.Name}",
+                    Body = "Хочет видеть тебя в финале XCE FACTOR 2020!"
                 },
                 Token = video.User.FireBaseId
             };

@@ -329,7 +329,7 @@ namespace Avatar.App.Core.Services.Impl
                 Token = video.User.FireBaseId
             };
             if (sender.ProfilePhoto != null)
-                message.Notification.ImageUrl = $"{MyHttpContext.AppBaseUrl}/api/profile/get/{sender.ProfilePhoto}";
+                message.Notification.ImageUrl = $"{MyHttpContext.AppBaseUrl}/api/profile/photo/get/{sender.ProfilePhoto}";
             await _notificationService.SendNotificationAsync(message);
         }
 

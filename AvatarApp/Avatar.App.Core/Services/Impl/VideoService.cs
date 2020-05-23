@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Managres;
 using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.Core.Specifications.VideoSpecifications;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using FirebaseAdmin.Messaging;
-using Message = FirebaseAdmin.Messaging.Message;
+using Microsoft.Extensions.Logging;
 
 namespace Avatar.App.Core.Services.Impl
 {
@@ -95,8 +95,7 @@ namespace Avatar.App.Core.Services.Impl
 
             await InsertLikedVideoAsync(user, video);
 
-            if (video.User.FireBaseId != null)
-                await SendLikeNotification(video, user);
+            await SendLikeNotification(video, user);
         }
 
         public async Task SetApproveStatusAsync(string fileName, bool isApproved)
@@ -320,18 +319,21 @@ namespace Avatar.App.Core.Services.Impl
 
         private async Task SendLikeNotification(Video video, User sender)
         {
-            var message = new Message
+            var recipient = video.User;
+
+            if (recipient == null || string.IsNullOrWhiteSpace(recipient.FireBaseId)) return;
+
+            var message = FirebaseMessageManager.CreateLikeMessage(recipient, sender);
+
+            try
             {
-                Notification = new Notification
-                {
-                    Title = $"{sender.Name}",
-                    Body = "Хочет видеть тебя в финале XCE FACTOR 2020!"
-                },
-                Token = video.User.FireBaseId
-            };
-            if (sender.ProfilePhoto != null)
-                message.Notification.ImageUrl = $"{MyHttpContext.AppBaseUrl}/api/profile/photo/get/{sender.ProfilePhoto}";
-            await _notificationService.SendNotificationAsync(message);
+                await _notificationService.SendNotificationAsync(message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+            }
+
         }
 
         #endregion

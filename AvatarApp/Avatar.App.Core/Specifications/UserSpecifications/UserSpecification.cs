@@ -6,6 +6,10 @@ namespace Avatar.App.Core.Specifications.UserSpecifications
 {
     public class UserSpecification: BaseSpecification<User>
     {
+        public UserSpecification(long id) : base(user => user.Id == id)
+        {
+        }
+
         public UserSpecification(string email) : base(user => user.Email == email)
         {
         }

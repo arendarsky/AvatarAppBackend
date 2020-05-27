@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
 using Avatar.App.Core.Models;
+using Avatar.App.Core.Specifications.SemifinalistsSpecifications;
 using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.SharedKernel.Interfaces;
 
@@ -11,16 +12,18 @@ namespace Avatar.App.Core.Services.Impl
 {
     public class RatingService : BaseServiceWithRating, IRatingService
     {
-        public RatingService(IRepository<User> userRepository, IRepository<LikedVideo> likedVideoRepository) : base(likedVideoRepository, userRepository)
-        {
+        private readonly IRepository<Semifinalist> _semifinalistsRepository;
 
+        public RatingService(IRepository<User> userRepository, IRepository<LikedVideo> likedVideoRepository,
+            IRepository<Semifinalist> semifinalistsRepository) : base(likedVideoRepository, userRepository)
+        {
+            _semifinalistsRepository = semifinalistsRepository;
         }
 
 
         public ICollection<UserProfile> GetCommonRating(int number)
         {
-            var users = GetUsers(new UserWithLoadedVideosSpecification())
-                .Where(u => u.LoadedVideos.Any(video => video.IsApproved.HasValue && video.IsApproved.Value)).ToList();
+            var users = GetUsers(new UserCommonRatingSpecification()).ToList();
 
             var userProfiles = GetUsersWithLikesNumberAsync(users);
 
@@ -32,6 +35,14 @@ namespace Avatar.App.Core.Services.Impl
             var user = await GetUserAsync(new UserSpecification(userGuid));
 
             return GetLikesNumber(user);
+        }
+
+        public ICollection<User> GetSemifinalists()
+        {
+            return _semifinalistsRepository.List(new SemifinalistWithUserSpecification())
+                .OrderByDescending(s => s.Date)
+                .Select(semi => semi.User)
+                .ToList();
         }
 
 

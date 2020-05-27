@@ -213,6 +213,7 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
+            services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
         }
 
         private void AddCorsPolicy(IServiceCollection services)

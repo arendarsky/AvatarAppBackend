@@ -23,7 +23,7 @@ namespace Avatar.App.Core.Services.Impl
 
         public ICollection<UserProfile> GetCommonRating(int number)
         {
-            var users = GetUsers(new UserCommonRatingSpecification());
+            var users = GetUsers(new UserCommonRatingSpecification()).ToList();
 
             var userProfiles = GetUsersWithLikesNumberAsync(users);
 

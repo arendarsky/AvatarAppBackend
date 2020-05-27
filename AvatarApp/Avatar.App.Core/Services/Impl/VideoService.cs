@@ -83,7 +83,7 @@ namespace Avatar.App.Core.Services.Impl
         {
             var user = await GetUserAsync(new UserSpecification(userGuid));
 
-            var video = await GetVideoAsync(new VideoSpecification(fileName));
+            var video = await GetVideoAsync(new VideoWithUserSpecification(fileName));
 
             if (!CheckVideoAvailability(video)) throw new VideoNotFoundException();
 

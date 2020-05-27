@@ -222,7 +222,7 @@ namespace Avatar.App.Api
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(Configuration["WebSiteUrl"]).AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins(Configuration["WebSiteUrl"], "http://web.xce-factor.ru", "http://192.168.1.2:8080").AllowAnyHeader().AllowAnyMethod();
                     });
             });
         }

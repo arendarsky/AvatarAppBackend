@@ -14,9 +14,13 @@ using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
 using Avatar.App.Infrastructure.Repositories;
 using Avatar.App.SharedKernel.Interfaces;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,7 +66,9 @@ namespace Avatar.App.Api
 
             AddCorsPolicy(services);
 
-            
+            AddFireBaseMessaging(services);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +76,8 @@ namespace Avatar.App.Api
         {
 
             RegisterLogger(env, loggerFactory, applicationLifetime);
+
+            UseHttpContext(app);
 
             EnableSwagger(app);
             
@@ -128,9 +136,8 @@ namespace Avatar.App.Api
         private void AddDbConnection(IServiceCollection services)
         {
             var connection = Configuration["DB_CONNECTION"];
-        //    services.AddDbContext<AvatarAppContext>(options =>
+            services.AddDbContextPool<AvatarAppContext>(options =>
         //        options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
-            services.AddDbContext<AvatarAppContext>(options =>
                 options.UseNpgsql(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
 
         }
@@ -194,10 +201,12 @@ namespace Avatar.App.Api
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStorageService, LocalStorageService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IRatingService, RatingService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -206,6 +215,7 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
+            services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
         }
 
         private void AddCorsPolicy(IServiceCollection services)
@@ -215,8 +225,31 @@ namespace Avatar.App.Api
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(Configuration["WebSiteUrl"]).AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins(Configuration["WebSiteUrl"], "http://web.xce-factor.ru", "http://192.168.1.2:8080").AllowAnyHeader().AllowAnyMethod();
                     });
+            });
+        }
+
+        private void AddFireBaseMessaging(IServiceCollection services)
+        {
+            services.AddSingleton(service =>
+            {
+                var path = Configuration.GetSection("FireBase.Settings")["PathToCredentials"];
+                FirebaseApp app;
+                try
+                {
+                    app = FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromFile(path)
+                    }, "FBApp");
+                }
+                catch (Exception)
+                {
+                    app = FirebaseApp.GetInstance("FBApp");
+                }
+
+                var messagingInstance = FirebaseMessaging.GetMessaging(app);
+                return messagingInstance;
             });
         }
 
@@ -238,7 +271,7 @@ namespace Avatar.App.Api
                     Logger.Log.LogInformation($"Settings {env.EnvironmentName}");
                 });
         }
-
+        
         private static void EnableSwagger(IApplicationBuilder app)
         {
             app.UseSwagger();
@@ -250,6 +283,11 @@ namespace Avatar.App.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Avatar App V1");
                 c.RoutePrefix = "swagger/avatar";
             });
+        }
+
+        private static void UseHttpContext(IApplicationBuilder app)
+        {
+            MyHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
         }
 
         #endregion

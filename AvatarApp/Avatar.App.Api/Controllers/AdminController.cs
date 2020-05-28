@@ -158,6 +158,34 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Set Semifinalist
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <response code="200">If video status successfully changes</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">If video doesn't exist on server</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SetSemifinalist")]
+        [Route("set_semifinalist")]
+        [HttpGet]
+        public async Task SetSemifinalist(long userId)
+        {
+            try
+            {
+                CheckAdminRight();
+                await _profileService.SetSemifinalistAsync(userId);
+            }
+            catch (UserNotAllowedException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+            }
+        }
+
         private void CheckAdminRight()
         {
             var userGuid = GetUserGuid();

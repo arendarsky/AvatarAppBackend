@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Managres;
 using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.Core.Specifications.VideoSpecifications;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Avatar.App.Core.Services.Impl
 {
@@ -20,14 +22,16 @@ namespace Avatar.App.Core.Services.Impl
         private readonly IRepository<Video> _videoRepository;
         private readonly IRepository<WatchedVideo> _watchedVideoRepository;
         private readonly IRepository<LikedVideo> _likedVideoRepository;
+        private readonly INotificationService _notificationService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public VideoService(IOptions<AvatarAppSettings> avatarAppOptions, IRepository<Video> videoRepository, IRepository<User> userRepository, IRepository<WatchedVideo> watchedVideoRepository, IRepository<LikedVideo> likedVideoRepository) : base(userRepository)
+        public VideoService(IOptions<AvatarAppSettings> avatarAppOptions, IRepository<Video> videoRepository, IRepository<User> userRepository, IRepository<WatchedVideo> watchedVideoRepository, IRepository<LikedVideo> likedVideoRepository, INotificationService notificationService) : base(userRepository)
         {
             _videoRepository = videoRepository;
             _watchedVideoRepository = watchedVideoRepository;
             _likedVideoRepository = likedVideoRepository;
             _avatarAppSettings = avatarAppOptions.Value;
+            _notificationService = notificationService;
         }
 
         #region Public Methods
@@ -79,7 +83,7 @@ namespace Avatar.App.Core.Services.Impl
         {
             var user = await GetUserAsync(new UserSpecification(userGuid));
 
-            var video = await GetVideoAsync(new VideoSpecification(fileName));
+            var video = await GetVideoAsync(new VideoWithUserSpecification(fileName));
 
             if (!CheckVideoAvailability(video)) throw new VideoNotFoundException();
 
@@ -90,6 +94,8 @@ namespace Avatar.App.Core.Services.Impl
             if (!isLike) return;
 
             await InsertLikedVideoAsync(user, video);
+
+            await SendLikeNotification(video, user);
         }
 
         public async Task SetApproveStatusAsync(string fileName, bool isApproved)
@@ -233,7 +239,6 @@ namespace Avatar.App.Core.Services.Impl
                 Name = fileName,
                 StartTime = 0,
                 EndTime = _avatarAppSettings.ShortVideoMaxLength,
-                IsApproved = true,
                 IsActive = !user.LoadedVideos.Any()
             };
 
@@ -309,5 +314,29 @@ namespace Avatar.App.Core.Services.Impl
         }
 
         #endregion
+
+        #region Notification Methods
+
+        private async Task SendLikeNotification(Video video, User sender)
+        {
+            var recipient = video.User;
+
+            if (recipient == null || string.IsNullOrWhiteSpace(recipient.FireBaseId)) return;
+
+            var message = FirebaseMessageManager.CreateLikeMessage(recipient, sender);
+
+            try
+            {
+                await _notificationService.SendNotificationAsync(message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+            }
+
+        }
+
+        #endregion
+        
     }
 }

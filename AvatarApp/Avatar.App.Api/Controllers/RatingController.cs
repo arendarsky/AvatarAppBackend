@@ -82,6 +82,35 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get semifinalists
+        /// </summary>
+        /// <response code="200">Returns semifinalists</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("GetSemifinalists")]
+        [Route("get_semifinalists")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Rating Json")]
+        [HttpGet]
+        public ActionResult GetSemifinalists()
+        {
+            try
+            {
+                var users = _ratingService.GetSemifinalists();
+
+                return new JsonResult(ConvertModelHandler.UsersToUserModels(users));
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
 
 
         #region Private Methods

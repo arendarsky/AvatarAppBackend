@@ -8,12 +8,14 @@ namespace Avatar.App.Core.Entities
     {
         public string Name { get; set; }
         public Guid Guid { get; set; }
+        public string FireBaseId { get; set; }
         public string Email { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public string ProfilePhoto { get; set; }
         public string Password { get; set; }
         public string Contact { get; set; }
         public string Description { get; set; }
+        public Semifinalist Semifinalist { get; set; }
         public ICollection<Video> LoadedVideos { get; set; }
 
         public ICollection<WatchedVideo> WatchedVideos { get; set; }

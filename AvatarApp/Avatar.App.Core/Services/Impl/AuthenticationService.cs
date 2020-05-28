@@ -30,9 +30,8 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task RegisterAsync(UserDto userDto)
         {
-            var user = await GetUserAsync(new UserSpecification(userDto.Email));
-
-            if (user != null) throw new UserAlreadyExistsException();
+            if (!await CheckUserExistenceAsync(new UserSpecification(userDto.Email)))
+                throw new UserAlreadyExistsException();
 
             await CreateUserAsync(userDto);
         }
@@ -40,7 +39,6 @@ namespace Avatar.App.Core.Services.Impl
         public async Task<AuthorizationDto> GetAuthorizationTokenAsync(string email, string password)
         {
             var user = await GetUserAsync(new UserSpecification(email)); ;
-            if (user == null) throw new UserNotFoundException();
 
             if (!CheckUserPassword(user, password)) throw new InvalidPasswordException();
 
@@ -66,8 +64,6 @@ namespace Avatar.App.Core.Services.Impl
             if (!Guid.TryParse(guid, out var userGuid)) return false;
 
             var user = await GetUserAsync(new UserSpecification(userGuid));
-
-            if (user == null) throw new UserNotFoundException();
 
             if (user.IsEmailConfirmed) return true;
 
@@ -104,13 +100,20 @@ namespace Avatar.App.Core.Services.Impl
             return true;
         }
 
+        public async Task SetFireBaseId(Guid guid, string fireBaseId)
+        {
+            var user = await GetUserAsync(new UserSpecification(guid));
+
+            user.FireBaseId = fireBaseId;
+
+            UserRepository.Update(user);
+        }
+
         #region Private Methods
 
-        protected override async Task<User> GetUserAsync(ISpecification<User> specification)
+        protected async Task<bool> CheckUserExistenceAsync(ISpecification<User> specification)
         {
-            var user = await UserRepository.GetAsync(specification);
-
-            return user;
+            return await UserRepository.GetAsync(specification) == null;
         }
 
         private string CreateJwtToken(User user)

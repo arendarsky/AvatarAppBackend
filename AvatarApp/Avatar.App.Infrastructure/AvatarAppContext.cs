@@ -11,9 +11,10 @@ namespace Avatar.App.Infrastructure
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
         public DbSet<LikedVideo> LikedVideos { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Semifinalist> Semifinalists { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+           
             //Database.Migrate();
         }
 

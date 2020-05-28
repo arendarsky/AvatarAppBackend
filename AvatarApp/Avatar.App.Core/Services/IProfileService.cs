@@ -19,5 +19,6 @@ namespace Avatar.App.Core.Services
         Task SetPasswordAsync(Guid userGuid, string oldPassword, string newPassword);
         Task<ICollection<LikedVideo>> GetNotificationsAsync(Guid userGuid, int number, int skip);
         void RemoveAllUnusedFiles();
+        Task SetSemifinalistAsync(long userId);
     }
 }

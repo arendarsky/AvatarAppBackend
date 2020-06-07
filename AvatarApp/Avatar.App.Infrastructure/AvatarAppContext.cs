@@ -15,7 +15,7 @@ namespace Avatar.App.Infrastructure
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
            
-            //Database.Migrate();
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

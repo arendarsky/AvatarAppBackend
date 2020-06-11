@@ -20,5 +20,6 @@ namespace Avatar.App.Core.Services
         Task<ICollection<LikedVideo>> GetNotificationsAsync(Guid userGuid, int number, int skip);
         void RemoveAllUnusedFiles();
         Task SetSemifinalistAsync(long userId);
+        Task UpdateProfileAsync(Guid userGuid, PrivateProfileDto profile);
     }
 }

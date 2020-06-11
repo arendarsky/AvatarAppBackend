@@ -117,6 +117,18 @@ namespace Avatar.App.Core.Services.Impl
             await SetSemifinalistAsync(user);
         }
 
+        public async Task UpdateProfileAsync(Guid userGuid, PrivateProfileDto profile)
+        {
+            var user = await GetUserAsync(new UserSpecification(userGuid));
+
+            user.Name = profile.Name;
+
+            user.Description = profile.Description;
+
+            user.InstagramLogin = profile.InstagramLogin;
+
+            UserRepository.Update(user);
+        }
         #region Private Methods
 
         private static string CreateFileName(IFormFile file)

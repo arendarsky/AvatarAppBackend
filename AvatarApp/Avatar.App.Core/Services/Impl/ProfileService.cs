@@ -129,6 +129,15 @@ namespace Avatar.App.Core.Services.Impl
 
             UserRepository.Update(user);
         }
+
+        public async Task StopGeneralEmailing(Guid userGuid)
+        {
+            var user = await GetUserAsync(new UserSpecification(userGuid));
+
+            user.ConsentToGeneralEmail = false;
+
+            UserRepository.Update(user);
+        }
         #region Private Methods
 
         private static string CreateFileName(IFormFile file)

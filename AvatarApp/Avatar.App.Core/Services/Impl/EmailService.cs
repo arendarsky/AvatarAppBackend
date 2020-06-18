@@ -48,9 +48,8 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task SendGeneralEmailMessage(string subject, string text)
         {
-            var allUsers = UserRepository.List();
-
-            var emails = allUsers.Where(user => user.ConsentToGeneralEmail == true).Select(user => user.Email);
+            var emails = UserRepository.List(user =>
+                user.ConsentToGeneralEmail.HasValue && user.ConsentToGeneralEmail.Value).Select(user => user.Email);
 
             var message = CreateGeneralEmailMessage(emails, subject, CreateGeneralMessageBody(text));
 

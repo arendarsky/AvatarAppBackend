@@ -11,5 +11,6 @@ namespace Avatar.App.Core.Services
         ICollection<UserProfile> GetCommonRating(int number);
         Task<int> GetUserRating(Guid userGuid);
         ICollection<User> GetSemifinalists();
+        IEnumerable<UserProfile> GetUsersWithLikesNumberAsync(IEnumerable<User> users);
     }
 }

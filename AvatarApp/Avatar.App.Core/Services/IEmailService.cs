@@ -7,5 +7,7 @@ namespace Avatar.App.Core.Services
         Task SendConfirmCodeAsync(string email, string confirmCode, string guid);
 
         Task SendPasswordResetAsync(string email, string confirmCode, string guid);
+
+        Task SendGeneralEmailMessage(string subject, string text);
     }
 }

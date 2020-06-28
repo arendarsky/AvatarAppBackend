@@ -38,9 +38,9 @@ namespace Avatar.App.Api.Handlers
             return new PublicProfileUserModel(user);
         }
 
-        public static ICollection<UserModel> UsersToUserModels(ICollection<User> users)
+        public static ICollection<SemifinalistUserModel> UserProfilesToSemifinalistUserModels(ICollection<UserProfile> usersProfiles)
         {
-            return users.Select(user => new UserModel(user)).ToList();
+            return usersProfiles.Select(user => new SemifinalistUserModel(user)).ToList();
         }
     }
 }

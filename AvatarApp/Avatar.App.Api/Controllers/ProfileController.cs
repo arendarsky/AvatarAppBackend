@@ -101,7 +101,7 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetNotifications")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<SemifinalistUserModel>), description: "User's notifications")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<NotificationUserModel>), description: "User's notifications")]
         [Route("notifications")]
         [HttpGet]
         public async Task<ActionResult> GetNotifications(int number, int skip)
@@ -113,7 +113,7 @@ namespace Avatar.App.Api.Controllers
 
                 var userLikes = await _profileService.GetNotificationsAsync(userGuid, number, skip);
 
-                return new JsonResult(ConvertModelHandler.LikedVideosToSemifinalistUserModel(userLikes));
+                return new JsonResult(ConvertModelHandler.LikedVideosToNotificationUserModel(userLikes));
             }
             catch (UserNotFoundException)
             {

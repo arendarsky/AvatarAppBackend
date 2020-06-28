@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models.UserModels;
@@ -98,8 +97,8 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 var users = _ratingService.GetSemifinalists();
-                var usersWithLikes = _ratingService.GetUsersWithLikesNumberAsync(users).ToList();
-                return new JsonResult(ConvertModelHandler.UserPorfilesToSemifinalistUserModels(usersWithLikes));
+
+                return new JsonResult(ConvertModelHandler.UsersToUserModels(users));
             }
             catch (UserNotFoundException)
             {

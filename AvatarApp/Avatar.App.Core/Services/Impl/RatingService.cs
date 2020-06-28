@@ -45,15 +45,6 @@ namespace Avatar.App.Core.Services.Impl
                 .ToList();
         }
 
-        public IEnumerable<UserProfile> GetUsersWithLikesNumberAsync(IEnumerable<User> users)
-        {
-            var profiles = new List<UserProfile>();
-
-            profiles.AddRange(from user in users
-                              select new UserProfile { LikesNumber = GetLikesNumber(user), User = user });
-
-            return profiles;
-        }
 
         #region Private Methods
 
@@ -62,7 +53,15 @@ namespace Avatar.App.Core.Services.Impl
             return UserRepository.List(specification);
         }
 
+        private IEnumerable<UserProfile> GetUsersWithLikesNumberAsync(IEnumerable<User> users)
+        {
+            var profiles = new List<UserProfile>();
 
+            profiles.AddRange(from user in users
+                select new UserProfile { LikesNumber = GetLikesNumber(user), User = user });
+
+            return profiles;
+        }
 
         private static IEnumerable<UserProfile> TakeUsersOrderedByLikesNumber(IEnumerable<UserProfile> userProfiles,
             int number)

@@ -28,14 +28,9 @@ namespace Avatar.App.Api.Handlers
             return new PrivateProfileUserModel(userProfile.User, userProfile.LikesNumber);
         }
 
-        public static ICollection<SemifinalistUserModel> LikedVideosToSemifinalistUserModel(ICollection<LikedVideo> likedVideos)
+        public static ICollection<NotificationUserModel> LikedVideosToNotificationUserModel(ICollection<LikedVideo> likedVideos)
         {
-            return likedVideos.Select(l => new SemifinalistUserModel(l)).ToList();
-        }
-
-        public static ICollection<SemifinalistUserModel> UserPorfilesToSemifinalistUserModels(ICollection<UserProfile> users)
-        {
-            return users.Select(l => new SemifinalistUserModel(l)).ToList();
+            return likedVideos.Select(l => new NotificationUserModel(l)).ToList();
         }
 
         public static PublicProfileUserModel UserToPublicUserProfile(User user)

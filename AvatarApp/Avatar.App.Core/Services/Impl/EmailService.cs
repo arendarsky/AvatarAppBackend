@@ -51,7 +51,7 @@ namespace Avatar.App.Core.Services.Impl
         public async Task SendGeneralEmailMessage(string subject, string text)
         {
             var emails = UserRepository.List(user => user.LoadedVideos.Count > 0 && user.LoadedVideos.Count < 5)
-                .Skip(240)
+                .Skip(282)
                 .Select(user => user.Email).ToList();
 
             foreach (var email in emails)

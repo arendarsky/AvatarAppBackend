@@ -218,6 +218,7 @@ namespace Avatar.App.Api.Controllers
             }
         }
 
+
         private void CheckAdminRight()
         {
             var userGuid = GetUserGuid();

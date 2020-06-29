@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Avatar.App.SharedKernel.Interfaces;
 using Avatar.App.Core.Entities;
 using System.Linq;
+using System.Threading;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace Avatar.App.Core.Services.Impl
 {
@@ -48,17 +50,34 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task SendGeneralEmailMessage(string subject, string text)
         {
-            var emails = UserRepository.List(user =>
-                //user.ConsentToGeneralEmail.HasValue && user.ConsentToGeneralEmail.Value &&
-                                                    user.Email=="arendarskydd@gmail.com"
-                                                    || user.Email== "vrdiazz@gmail.com").Select(user => user.Email);
+            var emails = UserRepository.List(user => user.LoadedVideos.Count > 0 && user.LoadedVideos.Count < 5)
+                .Skip(240)
+                .Select(user => user.Email).ToList();
 
-            foreach (var email in emails )
+            foreach (var email in emails)
             {
                 var message = CreateGeneralEmailMessage(email, subject, CreateGeneralMessageBody(text));
 
                 await SendGeneralMessageAsync(message);
+
+                await Task.Delay(1000);
             }
+            //const int n = 30;
+            //var skip = 0;
+            //while (true)
+            //{
+            //    var emailPart = emails.Skip(skip).Take(n).ToList();
+            //    if (!emailPart.Any()) break;
+            //    foreach (var email in emailPart)
+            //    {
+            //        var message = CreateGeneralEmailMessage(email, subject, CreateGeneralMessageBody(text));
+
+            //        await SendGeneralMessageAsync(message);
+            //    }
+
+            //    skip += n;
+            //    await Task.Delay(5000);
+            //}
         }
 
         #region Private Methods

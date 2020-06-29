@@ -24,14 +24,16 @@ namespace Avatar.App.Api.Controllers
         private readonly IVideoService _videoService;
         private readonly IProfileService _profileService;
         private readonly IEmailService _emailService;
+        private readonly IAppService _appService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
         public AdminController(IVideoService videoService, IProfileService profileService,
-            IOptions<AvatarAppSettings> avatarAppOptions, IEmailService emailService)
+            IOptions<AvatarAppSettings> avatarAppOptions, IEmailService emailService, IAppService appService)
         {
             _videoService = videoService;
             _profileService = profileService;
             _emailService = emailService;
+            _appService = appService;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -174,12 +176,12 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("SetSemifinalist")]
         [Route("set_semifinalist")]
         [HttpGet]
-        public async Task SetSemifinalist(long userId)
+        public async Task SetSemifinalist(long? userId = null)
         {
             try
             {
                 CheckAdminRight();
-                await _profileService.SetSemifinalistAsync(userId);
+                await _appService.SetSemifinalistAsync(userId);
             }
             catch (UserNotAllowedException)
             {

@@ -39,9 +39,8 @@ namespace Avatar.App.Core.Services.Impl
 
         public ICollection<UserProfile> GetSemifinalists()
         {
-            var users = _semifinalistsRepository.List(new SemifinalistWithUserSpecification())
-                .OrderByDescending(s => s.Date)
-                .Select(semi => semi.User);
+            var users = UserRepository.List(new UserSemifinalistsSpecification())
+                .OrderByDescending(u => u.Semifinalist.Date);
 
             return GetUsersWithLikesNumberAsync(users).ToList();
         }

@@ -49,11 +49,16 @@ namespace Avatar.App.Core.Services.Impl
         public async Task SendGeneralEmailMessage(string subject, string text)
         {
             var emails = UserRepository.List(user =>
-                user.ConsentToGeneralEmail.HasValue && user.ConsentToGeneralEmail.Value).Select(user => user.Email);
+                //user.ConsentToGeneralEmail.HasValue && user.ConsentToGeneralEmail.Value &&
+                                                    user.Email=="arendarskydd@gmail.com"
+                                                    || user.Email== "vrdiazz@gmail.com").Select(user => user.Email);
 
-            var message = CreateGeneralEmailMessage(emails, subject, CreateGeneralMessageBody(text));
+            foreach (var email in emails )
+            {
+                var message = CreateGeneralEmailMessage(email, subject, CreateGeneralMessageBody(text));
 
-            await SendGeneralMessageAsync(message);
+                await SendGeneralMessageAsync(message);
+            }
         }
 
         #region Private Methods
@@ -67,11 +72,11 @@ namespace Avatar.App.Core.Services.Impl
             return emailMessage;
         }
 
-        private MimeMessage CreateGeneralEmailMessage(IEnumerable<string> emails, string subject, MimeEntity body)
+        private MimeMessage CreateGeneralEmailMessage(string email, string subject, MimeEntity body)
         {
             var emailMessage = new MimeMessage { Subject = subject, Body = body };
             emailMessage.From.Add(new MailboxAddress(_generalEmailSettings.Name, _generalEmailSettings.Email));
-            emailMessage.To.AddRange(emails.Select(email => new MailboxAddress("", email)));
+            emailMessage.To.Add(new MailboxAddress("", email));
 
             return emailMessage;
         }

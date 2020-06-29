@@ -10,6 +10,6 @@ namespace Avatar.App.Core.Services
     {
         ICollection<UserProfile> GetCommonRating(int number);
         Task<int> GetUserRating(Guid userGuid);
-        ICollection<User> GetSemifinalists();
+        ICollection<UserProfile> GetSemifinalists();
     }
 }

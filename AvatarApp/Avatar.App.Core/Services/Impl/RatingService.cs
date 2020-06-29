@@ -37,12 +37,12 @@ namespace Avatar.App.Core.Services.Impl
             return GetLikesNumber(user);
         }
 
-        public ICollection<User> GetSemifinalists()
+        public ICollection<UserProfile> GetSemifinalists()
         {
-            return _semifinalistsRepository.List(new SemifinalistWithUserSpecification())
-                .OrderByDescending(s => s.Date)
-                .Select(semi => semi.User)
-                .ToList();
+            var users = UserRepository.List(new UserSemifinalistsSpecification())
+                .OrderByDescending(u => u.Semifinalist.Date);
+
+            return GetUsersWithLikesNumberAsync(users).ToList();
         }
 
 

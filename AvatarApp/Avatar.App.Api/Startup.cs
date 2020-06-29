@@ -189,6 +189,7 @@ namespace Avatar.App.Api
         private void AddSettings(IServiceCollection services)
         {
             services.Configure<EmailSettings>(Configuration.GetSection("Email.Settings"));
+            services.Configure<GeneralEmailSettings>(Configuration.GetSection("GeneralEmail.Settings"));
             services.Configure<AvatarAppSettings>(Configuration.GetSection("Avatar.App.Settings"));
             services.Configure<EnvironmentConfig>(Configuration);
         }

@@ -5,6 +5,7 @@ using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
+using Avatar.App.Core.Models;
 using Avatar.App.Core.Services;
 using Avatar.App.SharedKernel.Settings;
 using Microsoft.AspNetCore.Authorization;
@@ -22,12 +23,15 @@ namespace Avatar.App.Api.Controllers
     {
         private readonly IVideoService _videoService;
         private readonly IProfileService _profileService;
+        private readonly IEmailService _emailService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public AdminController(IVideoService videoService, IProfileService profileService, IOptions<AvatarAppSettings> avatarAppOptions)
+        public AdminController(IVideoService videoService, IProfileService profileService,
+            IOptions<AvatarAppSettings> avatarAppOptions, IEmailService emailService)
         {
             _videoService = videoService;
             _profileService = profileService;
+            _emailService = emailService;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -176,6 +180,34 @@ namespace Avatar.App.Api.Controllers
             {
                 CheckAdminRight();
                 await _profileService.SetSemifinalistAsync(userId);
+            }
+            catch (UserNotAllowedException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// Send general message
+        /// </summary>
+        /// <param name="generalMessage"></param>
+        /// <response code="200">If video status successfully changes</response>
+        /// <response code="400">If some of the parameters are null</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">If video doesn't exist on server</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("SendGeneralMessage")]
+        [Route("send_general_message")]
+        [HttpPost]
+        public async Task SendGeneralMessage(GeneralMessageDto generalMessage)
+        {
+            try
+            {
+                CheckAdminRight();
+                await _emailService.SendGeneralEmailMessage(generalMessage.Subject, generalMessage.Text);
             }
             catch (UserNotAllowedException)
             {

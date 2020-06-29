@@ -4,20 +4,28 @@ using Avatar.App.Core.Constants;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System.Collections.Generic;
+using Avatar.App.SharedKernel.Interfaces;
+using Avatar.App.Core.Entities;
+using System.Linq;
 
 namespace Avatar.App.Core.Services.Impl
 {
-    public class EmailService : IEmailService
+    public class EmailService : BaseServiceWithAuthorization, IEmailService
     {
         private readonly SmtpClient _smtpClient;
         private readonly AvatarAppSettings _avatarAppSettings;
         private readonly EmailSettings _emailSettings;
+        private readonly GeneralEmailSettings _generalEmailSettings;
 
-        public EmailService(IOptions<EmailSettings> emailSettings, IOptions<AvatarAppSettings> avatarAppOptions, SmtpClient smtpClient)
+        public EmailService(IOptions<EmailSettings> emailSettings, 
+            IOptions<GeneralEmailSettings> generalEmailSettings, IOptions<AvatarAppSettings> avatarAppOptions, 
+            SmtpClient smtpClient, IRepository<User> userRepository) : base(userRepository)
         {
             _smtpClient = smtpClient;
             _avatarAppSettings = avatarAppOptions.Value;
             _emailSettings = emailSettings.Value;
+            _generalEmailSettings = generalEmailSettings.Value;
         }
 
         public async Task SendConfirmCodeAsync(string email, string confirmCode, string guid)
@@ -38,12 +46,36 @@ namespace Avatar.App.Core.Services.Impl
             await SendMessageAsync(emailMessage);
         }
 
+        public async Task SendGeneralEmailMessage(string subject, string text)
+        {
+            var emails = UserRepository.List(user =>
+                //user.ConsentToGeneralEmail.HasValue && user.ConsentToGeneralEmail.Value &&
+                                                    user.Email=="arendarskydd@gmail.com"
+                                                    || user.Email== "vrdiazz@gmail.com").Select(user => user.Email);
+
+            foreach (var email in emails )
+            {
+                var message = CreateGeneralEmailMessage(email, subject, CreateGeneralMessageBody(text));
+
+                await SendGeneralMessageAsync(message);
+            }
+        }
+
         #region Private Methods
 
         private MimeMessage CreateEmailMessage(string email, string subject, MimeEntity body)
         {
             var emailMessage = new MimeMessage { Subject = subject, Body = body };
             emailMessage.From.Add(new MailboxAddress(_emailSettings.Name, _emailSettings.Email));
+            emailMessage.To.Add(new MailboxAddress("", email));
+
+            return emailMessage;
+        }
+
+        private MimeMessage CreateGeneralEmailMessage(string email, string subject, MimeEntity body)
+        {
+            var emailMessage = new MimeMessage { Subject = subject, Body = body };
+            emailMessage.From.Add(new MailboxAddress(_generalEmailSettings.Name, _generalEmailSettings.Email));
             emailMessage.To.Add(new MailboxAddress("", email));
 
             return emailMessage;
@@ -122,6 +154,7 @@ $"                                                        <a href='{_avatarAppSe
             };
         }
 
+
         private MimeEntity CreatePasswordResetBody(string guid, string confirmCode)
         {
             return new TextPart(MimeKit.Text.TextFormat.Html)
@@ -190,6 +223,15 @@ $"                                                        <a href='{_avatarAppSe
             };
         }
 
+        private MimeEntity CreateGeneralMessageBody(string text)
+        {
+            return new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = text
+            };
+        }
+
+
         private async Task SendMessageAsync(MimeMessage emailMessage)
         {
             await _smtpClient.ConnectAsync(_emailSettings.Host, _emailSettings.Port,
@@ -199,6 +241,18 @@ $"                                                        <a href='{_avatarAppSe
 
             await _smtpClient.DisconnectAsync(true);
         }
+
+        private async Task SendGeneralMessageAsync(MimeMessage emailMessage)
+        {
+            await _smtpClient.ConnectAsync(_generalEmailSettings.Host, _generalEmailSettings.Port,
+                _generalEmailSettings.UseSsl);
+            await _smtpClient.AuthenticateAsync(_generalEmailSettings.UserName, _generalEmailSettings.Password);
+            await _smtpClient.SendAsync(emailMessage);
+
+            await _smtpClient.DisconnectAsync(true);
+        }
+
+
 
         #endregion
     }

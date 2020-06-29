@@ -207,6 +207,7 @@ namespace Avatar.App.Api
             services.AddScoped<IRatingService, RatingService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
+            services.AddScoped<IAppService, AppService>();
         }
 
         private static void AddRepositories(IServiceCollection services)

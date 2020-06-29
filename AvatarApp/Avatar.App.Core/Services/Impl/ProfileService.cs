@@ -18,14 +18,12 @@ namespace Avatar.App.Core.Services.Impl
 {
     public class ProfileService : BaseServiceWithRating, IProfileService
     {
-        private readonly IRepository<Semifinalist> _semifinalistRepository;
         private readonly AvatarAppSettings _avatarAppSettings;
 
         public ProfileService(IOptions<AvatarAppSettings> avatarAppOptions, IRepository<User> userRepository,
-            IRepository<LikedVideo> likedVideoRepository, IRepository<Semifinalist> semifinalistRepository) : base(
+            IRepository<LikedVideo> likedVideoRepository) : base(
             likedVideoRepository, userRepository)
         {
-            _semifinalistRepository = semifinalistRepository;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -110,13 +108,6 @@ namespace Avatar.App.Core.Services.Impl
             UserRepository.RemoveFiles(existedFiles);
         }
 
-        public async Task SetSemifinalistAsync(long userId)
-        {
-            var user = await GetUserAsync(new UserSpecification(userId));
-
-            await SetSemifinalistAsync(user);
-        }
-
         public async Task UpdateProfileAsync(Guid userGuid, PrivateProfileDto profile)
         {
             var user = await GetUserAsync(new UserSpecification(userGuid));
@@ -193,15 +184,6 @@ namespace Avatar.App.Core.Services.Impl
         private ICollection<string> GetImageFilesNames()
         {
             return UserRepository.List().Select(user => user.ProfilePhoto).ToList();
-        }
-
-        private async Task SetSemifinalistAsync(User user)
-        {
-            await _semifinalistRepository.InsertAsync(new Semifinalist
-            {
-                UserId = user.Id,
-                Date = DateTime.Now
-            });
         }
 
         #endregion

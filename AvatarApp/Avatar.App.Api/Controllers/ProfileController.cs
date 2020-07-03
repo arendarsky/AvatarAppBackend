@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
+using Avatar.App.Core.Models;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -291,6 +292,38 @@ namespace Avatar.App.Api.Controllers
             catch (IOException)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+
+        /// <summary>
+        /// Set user description 
+        /// </summary>
+        /// <param name="privateProfile"></param>
+        /// <response code="200"></response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("UpdateProfile")]
+        [Route("update_profile")]
+        [HttpPost]
+        public async Task<ActionResult> UpdateProfile(PrivateProfileDto privateProfile)
+        {
+
+            try
+            {
+                var userGuid = GetUserGuid();
+
+                await _profileService.UpdateProfileAsync(userGuid, privateProfile);
+                return Ok();
+            }
+            catch (UserNotFoundException)
+            {
+                return Unauthorized();
             }
             catch (Exception ex)
             {

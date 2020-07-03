@@ -142,6 +142,7 @@ namespace Avatar.App.Core.Services.Impl
                 Name = userDto.Name,
                 Password = hashed,
                 Email = userDto.Email,
+                ConsentToGeneralEmail = userDto.ConsentToGeneralEmail,
                 Guid = guid
             };
 

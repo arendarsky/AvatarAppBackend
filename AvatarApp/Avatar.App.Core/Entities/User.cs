@@ -15,6 +15,8 @@ namespace Avatar.App.Core.Entities
         public string Password { get; set; }
         public string Contact { get; set; }
         public string Description { get; set; }
+        public string InstagramLogin { get; set; }
+        public bool? ConsentToGeneralEmail {get; set;}
         public Semifinalist Semifinalist { get; set; }
         public ICollection<Video> LoadedVideos { get; set; }
 

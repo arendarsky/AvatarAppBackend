@@ -1,0 +1,2 @@
+﻿2020-07-03 13:12:15,074  INFO  Service started
+2020-07-03 13:12:15,304  INFO  Settings Development

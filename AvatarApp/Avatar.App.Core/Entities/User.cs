@@ -26,5 +26,6 @@ namespace Avatar.App.Core.Entities
 
         public ICollection<Message> ReceivedMessages { get; set; } 
         public ICollection<Message> SentMessages { get; set; }
+        public ICollection<BattleVote> BattleVotes { get; set; }
     }
 }

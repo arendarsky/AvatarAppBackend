@@ -27,6 +27,18 @@ namespace Avatar.App.Infrastructure
             modelBuilder.Entity<Video>()
                 .HasIndex(b => b.Name)
                 .IsUnique();
+
+            modelBuilder.Entity<Battle>().HasMany(b => b.BattleVotes).WithOne(bv => bv.Battle);
+
+            modelBuilder.Entity<BattleSemifinalist>()
+                .HasOne(bs => bs.Battle)
+                .WithMany(b => b.BattleSemifinalists)
+                .HasForeignKey(bs => bs.BattleId);
+
+            modelBuilder.Entity<BattleSemifinalist>()
+                .HasOne(bs => bs.Semifinalist)
+                .WithMany(s => s.BattleSemifinalists)
+                .HasForeignKey(bs => bs.SemifinalistId);
         }
     }
 }

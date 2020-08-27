@@ -11,7 +11,7 @@ namespace Avatar.App.Core.Entities
 
         public Semifinalist Semifinalist { get; set; }
 
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
 
         public User User { get; set; }
 

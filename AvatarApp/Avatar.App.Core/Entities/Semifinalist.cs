@@ -15,6 +15,8 @@ namespace Avatar.App.Core.Entities
 
         public Video Video { get; set; }
 
+        public ICollection<BattleVote> BattleVotes { get; set; }
+
         public ICollection<BattleSemifinalist> BattleSemifinalists { get; set; }
     }
 }

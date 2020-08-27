@@ -9,7 +9,7 @@ namespace Avatar.App.Core.Entities
     {
         public DateTime? CreationDate { get; set; }
 
-        public DateTime? CompletionDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public ICollection<BattleVote> BattleVotes { get; set; }
 

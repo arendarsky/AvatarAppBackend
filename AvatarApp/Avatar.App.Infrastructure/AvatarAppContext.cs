@@ -12,6 +12,9 @@ namespace Avatar.App.Infrastructure
         public DbSet<LikedVideo> LikedVideos { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Semifinalist> Semifinalists { get; set; }
+        public DbSet<Battle> Battles { get; set; }
+        public DbSet<BattleVote> BattleVotes { get; set; }
+        public DbSet<BattleSemifinalist> BattleSemifinalists { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
            // Database.Migrate();
@@ -27,18 +30,6 @@ namespace Avatar.App.Infrastructure
             modelBuilder.Entity<Video>()
                 .HasIndex(b => b.Name)
                 .IsUnique();
-
-            modelBuilder.Entity<Battle>().HasMany(b => b.BattleVotes).WithOne(bv => bv.Battle);
-
-            modelBuilder.Entity<BattleSemifinalist>()
-                .HasOne(bs => bs.Battle)
-                .WithMany(b => b.BattleSemifinalists)
-                .HasForeignKey(bs => bs.BattleId);
-
-            modelBuilder.Entity<BattleSemifinalist>()
-                .HasOne(bs => bs.Semifinalist)
-                .WithMany(s => s.BattleSemifinalists)
-                .HasForeignKey(bs => bs.SemifinalistId);
         }
     }
 }

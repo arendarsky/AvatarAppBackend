@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Avatar.App.SharedKernel;
 
 namespace Avatar.App.Core.Entities
 {
-    public class BattleSemifinalist
+    public class BattleSemifinalist: BaseEntity
     {
         public long BattleId { get; set; }
 

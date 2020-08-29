@@ -29,11 +29,11 @@ namespace Avatar.App.Api.Controllers
         /// Creates new battle 
         /// </summary>
         /// <param name="battleCreatingDto"></param>
-        /// <response code="200">Returns user private profile</response>
+        /// <response code="200">Returns bool value</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Post")]
-        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "True if success")]
         [Route("battle")]
         [HttpPost]
         public async Task<ActionResult> CreateBattle(BattleCreatingDto battleCreatingDto)

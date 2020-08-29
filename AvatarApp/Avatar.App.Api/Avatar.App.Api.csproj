@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\SemifinalController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="avatarapp-c02672388663.p12" />
   </ItemGroup>
 

@@ -26,6 +26,7 @@ namespace Avatar.App.Core.Services.Impl
 
         public async Task<bool> CreateBattleAsync(BattleCreatingDto battleCreatingDto)
         {
+            //вынести число участников в appsettings.json
             if (battleCreatingDto.SemifinalistsId.Count() != 5)
                 return false;
 
@@ -45,7 +46,7 @@ namespace Avatar.App.Core.Services.Impl
                 var semifinalist = await _semifinalistRepository.GetByIdAsync(semifinalistId);
 
                 if (semifinalist == null)
-                    throw new UserNotFoundException();
+                    throw new SemifinalistNotFoundException();
 
                 var battleSemifinalist = new BattleSemifinalist()
                 {

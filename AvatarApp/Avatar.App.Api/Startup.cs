@@ -208,6 +208,7 @@ namespace Avatar.App.Api
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IAnalyticsService, AnalyticsService>();
             services.AddScoped<IAppService, AppService>();
+            services.AddScoped<ISemifinalService, SemifinalService>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -217,6 +218,8 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
             services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
+            services.AddScoped<IRepository<Battle>, BattleRepository>();
+            services.AddScoped<IRepository<BattleSemifinalist>, BattleSemifinalistRepository>();
         }
 
         private void AddCorsPolicy(IServiceCollection services)

@@ -6,11 +6,11 @@ namespace Avatar.App.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsEmailConfirmed",
-                table: "Users",
-                nullable: false,
-                defaultValue: false);
+            //migrationBuilder.AddColumn<bool>(
+            //    name: "IsEmailConfirmed",
+            //    table: "Users",
+            //    nullable: false,
+            //    defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

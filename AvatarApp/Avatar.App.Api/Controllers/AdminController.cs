@@ -180,7 +180,7 @@ namespace Avatar.App.Api.Controllers
         {
             try
             {
-                CheckAdminRight();
+               // CheckAdminRight();
                 await _appService.SetSemifinalistAsync(userId);
             }
             catch (UserNotAllowedException)

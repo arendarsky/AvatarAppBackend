@@ -60,5 +60,10 @@ namespace Avatar.App.Core.Services.Impl
             return true;
                 
         }
+
+        public IEnumerable<Battle> GetActiveBattles()
+        {
+            return _battleRepository.List().Where(b => b.EndDate > DateTime.Now);
+        }
     }
 }

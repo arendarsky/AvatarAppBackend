@@ -1,4 +1,5 @@
-﻿using Avatar.App.Core.Models;
+﻿using Avatar.App.Core.Entities;
+using Avatar.App.Core.Models;
 using Avatar.App.Core.Services;
 using Avatar.App.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,32 @@ namespace Avatar.App.Api.Controllers
             try
             {
                 var result = await _semifinalService.CreateBattleAsync(battleCreatingDto);
+                return new JsonResult(result);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.LogError(ex.Message + ex.StackTrace);
+                return Problem();
+            }
+        }
+
+
+        /// <summary>
+        /// Returns active battle 
+        /// </summary>
+        /// <param name="battleCreatingDto"></param>
+        /// <response code="200">Returns bool value</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">If something goes wrong on server</response>
+        [SwaggerOperation("Get")]
+        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<Battle>), description: "True if success")]
+        [Route("battle/active")]
+        [HttpPost]
+        public async Task<ActionResult> GetActiveBattles()
+        {
+            try
+            {
+                var result = await _semifinalService.GetActiveBattle();
                 return new JsonResult(result);
             }
             catch (Exception ex)

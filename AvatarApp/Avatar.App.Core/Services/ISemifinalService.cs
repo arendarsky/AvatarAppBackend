@@ -12,5 +12,7 @@ namespace Avatar.App.Core.Services
         Task<bool> CreateBattleAsync(BattleCreatingDto battleCreatingDto);
 
         IEnumerable<Battle> GetActiveBattles();
+
+        Task<bool> Vote(long battleId, long semifinalistId);
     }
 }

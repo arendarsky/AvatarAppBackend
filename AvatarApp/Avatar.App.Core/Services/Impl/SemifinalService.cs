@@ -15,13 +15,14 @@ namespace Avatar.App.Core.Services.Impl
         private readonly IRepository<Battle> _battleRepository;
         private readonly IRepository<BattleSemifinalist> _battleSemifinalistRepository;
         private readonly IRepository<Semifinalist> _semifinalistRepository;
+        private readonly IRepository<BattleVote> _battleVoteRepository;
 
-        public SemifinalService(IRepository<Battle> battleRepository, IRepository<BattleSemifinalist> battleSemifinalistRepository, IRepository<Semifinalist> semifinalistRepository)
+        public SemifinalService(IRepository<Battle> battleRepository, IRepository<BattleSemifinalist> battleSemifinalistRepository, IRepository<Semifinalist> semifinalistRepository, IRepository<BattleVote> battleVoteRepository)
         {
             _battleRepository = battleRepository;
             _battleSemifinalistRepository = battleSemifinalistRepository;
             _semifinalistRepository = semifinalistRepository;
-
+            _battleVoteRepository = battleVoteRepository;
         }
 
         public async Task<bool> CreateBattleAsync(BattleCreatingDto battleCreatingDto)
@@ -64,6 +65,34 @@ namespace Avatar.App.Core.Services.Impl
         public IEnumerable<Battle> GetActiveBattles()
         {
             return _battleRepository.List().Where(b => b.EndDate > DateTime.Now);
+        }
+
+        public async Task<bool> Vote(long battleId, long semifinalistId)
+        {
+            var battle = await _battleRepository.GetByIdAsync(battleId);
+
+            var semifinalist = await _semifinalistRepository.GetByIdAsync(semifinalistId);
+
+            if (battle == null || semifinalist == null)
+                return false;
+
+            var battleVote = new BattleVote()
+            {
+                Battle = battle,
+                Semifinalist = semifinalist,
+                BattleId = battleId,
+                SemifinalistId = semifinalistId
+            };
+
+            var dbBattleVote = await _battleVoteRepository.GetAsync(b =>
+            b.BattleId == battleVote.BattleId && b.SemifinalistId == battleVote.SemifinalistId);
+
+            if (dbBattleVote == null)
+                await _battleVoteRepository.InsertAsync(battleVote);
+            else
+                _battleVoteRepository.Delete(dbBattleVote);
+
+            return true;
         }
     }
 }

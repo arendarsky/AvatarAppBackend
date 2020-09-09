@@ -13,7 +13,6 @@ namespace Avatar.App.Infrastructure
         public DbSet<Message> Messages { get; set; }
         public DbSet<Semifinalist> Semifinalists { get; set; }
         public DbSet<Battle> Battles { get; set; }
-        public DbSet<BattleVote> BattleVotes { get; set; }
         public DbSet<BattleSemifinalist> BattleSemifinalists { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {

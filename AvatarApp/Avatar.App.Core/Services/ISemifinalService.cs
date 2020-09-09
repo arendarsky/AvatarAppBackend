@@ -13,6 +13,6 @@ namespace Avatar.App.Core.Services
 
         IEnumerable<Battle> GetActiveBattles();
 
-        Task<bool> Vote(long battleId, long semifinalistId);
+        Task<bool> Vote(Guid userGuid, long battleId, long semifinalistId);
     }
 }

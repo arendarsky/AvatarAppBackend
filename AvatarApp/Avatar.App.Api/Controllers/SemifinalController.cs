@@ -84,14 +84,15 @@ namespace Avatar.App.Api.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(IEnumerable<bool>), description: "True if success")]
-        [Route("battle/ge")]
+        [SwaggerResponse(statusCode: 200, type: typeof(bool), description: "True if success")]
+        [Route("battle/vote")]
         [HttpPost]
         public ActionResult Vote(long battleId, long semifinalistId)
         {
             try
             {
-                var result = _semifinalService.Vote(battleId, semifinalistId);
+                var userGuid = GetUserGuid();
+                var result = _semifinalService.Vote(userGuid, battleId, semifinalistId);
                 return new JsonResult(result);
             }
             catch (Exception ex)

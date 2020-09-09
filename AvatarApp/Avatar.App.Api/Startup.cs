@@ -220,7 +220,7 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
             services.AddScoped<IRepository<Battle>, BattleRepository>();
             services.AddScoped<IRepository<BattleSemifinalist>, BattleSemifinalistRepository>();
-            services.AddScoped<IRepository<BattleVote>, BattleVoteRepository>();
+            
         }
 
         private void AddCorsPolicy(IServiceCollection services)

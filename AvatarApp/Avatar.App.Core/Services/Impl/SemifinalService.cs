@@ -1,6 +1,7 @@
 ﻿using Avatar.App.Core.Entities;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Models;
+using Avatar.App.Core.Specifications.UserSpecifications;
 using Avatar.App.SharedKernel.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,23 @@ using System.Threading.Tasks;
 
 namespace Avatar.App.Core.Services.Impl
 {
-    public class SemifinalService: ISemifinalService
+    public class SemifinalService: BaseServiceWithAuthorization, ISemifinalService
     {
         private readonly IRepository<Battle> _battleRepository;
         private readonly IRepository<BattleSemifinalist> _battleSemifinalistRepository;
         private readonly IRepository<Semifinalist> _semifinalistRepository;
-        private readonly IRepository<BattleVote> _battleVoteRepository;
+        private readonly IRepository<LikedVideo> _likedVideoRepository;
+        private readonly IRepository<User> _userRepository;
 
-        public SemifinalService(IRepository<Battle> battleRepository, IRepository<BattleSemifinalist> battleSemifinalistRepository, IRepository<Semifinalist> semifinalistRepository, IRepository<BattleVote> battleVoteRepository)
+
+        public SemifinalService(IRepository<Battle> battleRepository, IRepository<BattleSemifinalist> battleSemifinalistRepository, IRepository<Semifinalist> semifinalistRepository, IRepository<LikedVideo> likedVideoRepository, IRepository<User> userRepository) :
+            base(userRepository)
         {
             _battleRepository = battleRepository;
             _battleSemifinalistRepository = battleSemifinalistRepository;
             _semifinalistRepository = semifinalistRepository;
-            _battleVoteRepository = battleVoteRepository;
+            _likedVideoRepository = likedVideoRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<bool> CreateBattleAsync(BattleCreatingDto battleCreatingDto)
@@ -67,7 +72,7 @@ namespace Avatar.App.Core.Services.Impl
             return _battleRepository.List().Where(b => b.EndDate > DateTime.Now);
         }
 
-        public async Task<bool> Vote(long battleId, long semifinalistId)
+        public async Task<bool> Vote(Guid userGuid, long battleId, long semifinalistId)
         {
             var battle = await _battleRepository.GetByIdAsync(battleId);
 
@@ -76,23 +81,38 @@ namespace Avatar.App.Core.Services.Impl
             if (battle == null || semifinalist == null)
                 return false;
 
-            var battleVote = new BattleVote()
+            var battleLike = new LikedVideo()
             {
-                Battle = battle,
+                User = await GetUserAsync(new UserSpecification(userGuid)),
+                Date = DateTime.Now,
+                Video = semifinalist.Video, 
                 Semifinalist = semifinalist,
-                BattleId = battleId,
-                SemifinalistId = semifinalistId
+                Battle = battle
             };
 
-            var dbBattleVote = await _battleVoteRepository.GetAsync(b =>
-            b.BattleId == battleVote.BattleId && b.SemifinalistId == battleVote.SemifinalistId);
+            var dbBattleLike = await _likedVideoRepository.GetAsync(b => 
+            b.Semifinalist != null && b.User == battleLike.User && b.Video == battleLike.Video 
+            && b.Battle == battleLike.Battle);
 
-            if (dbBattleVote == null)
-                await _battleVoteRepository.InsertAsync(battleVote);
+            if (dbBattleLike == null)
+            {
+                //вынести макс. кол-во в appsettings
+                if (battle.Likes.Count(like => like.User == battleLike.User) == 2)
+                    return false;
+
+                await _likedVideoRepository.InsertAsync(battleLike);
+            }
+                
             else
-                _battleVoteRepository.Delete(dbBattleVote);
+                _likedVideoRepository.Delete(dbBattleLike);
 
             return true;
         }
+
+        //public async Task<IEnumerable<Semifinalist>> GetBattleWinnersAsync(long battleId)
+        //{
+        //    var battle = await _battleRepository.GetByIdAsync(battleId);
+        //    battle.Likes.GroupBy(l => l.Semifinalist).OrderByDescending(x => x.Count()).Select(x => x.FirstOrDefault());
+        //}
     }
 }

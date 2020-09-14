@@ -10,7 +10,6 @@ namespace Avatar.App.Infrastructure
         public DbSet<Video> Videos { get; set; }
         public DbSet<WatchedVideo> WatchedVideos { get; set; }
         public DbSet<LikedVideo> LikedVideos { get; set; }
-        public DbSet<Message> Messages { get; set; }
         public DbSet<Semifinalist> Semifinalists { get; set; }
         public DbSet<Battle> Battles { get; set; }
         public DbSet<BattleSemifinalist> BattleSemifinalists { get; set; }
@@ -21,8 +20,6 @@ namespace Avatar.App.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasMany(u => u.SentMessages).WithOne(m => m.From);
-            modelBuilder.Entity<User>().HasMany(u => u.ReceivedMessages).WithOne(m => m.To);
             modelBuilder.Entity<User>()
                 .HasIndex(b => b.Guid)
                 .IsUnique();

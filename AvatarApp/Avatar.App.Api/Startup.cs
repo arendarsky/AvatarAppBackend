@@ -8,6 +8,8 @@ using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Security;
 using Avatar.App.Core.Security.Impl;
+using Avatar.App.Core.Semifinal.Interfaces;
+using Avatar.App.Core.Semifinal.Services;
 using Avatar.App.Core.Services;
 using Avatar.App.Core.Services.Impl;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
@@ -64,47 +66,14 @@ namespace Avatar.App.Api
 
             AddServices(services);
 
+            AddSemifinalServices(services);
+
             AddCorsPolicy(services);
 
             AddFireBaseMessaging(services);
 
 
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
-        {
-
-            RegisterLogger(env, loggerFactory, applicationLifetime);
-
-            UseHttpContext(app);
-
-            EnableSwagger(app);
-            
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseCors(MyAllowSpecificOrigins);
-
-            app.UseAuthentication();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseStaticFiles();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-
-        #region Private ConfigureServices Methods
 
         private void AddJwtAuthentication(IServiceCollection services)
         {
@@ -193,24 +162,6 @@ namespace Avatar.App.Api
             services.Configure<AvatarAppSettings>(Configuration.GetSection("Avatar.App.Settings"));
             services.Configure<EnvironmentConfig>(Configuration);
         }
-
-        private static void AddServices(IServiceCollection services)
-        {
-            services.AddScoped<SmtpClient>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IStorageService, LocalStorageService>();
-            services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IVideoService, VideoService>();
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IProfileService, ProfileService>();
-            services.AddScoped<IRatingService, RatingService>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IAnalyticsService, AnalyticsService>();
-            services.AddScoped<IAppService, AppService>();
-            services.AddScoped<ISemifinalService, SemifinalService>();
-        }
-
         private static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<IRepository<Video>, VideoRepository>();
@@ -220,7 +171,27 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
             services.AddScoped<IRepository<Battle>, BattleRepository>();
             services.AddScoped<IRepository<BattleSemifinalist>, BattleSemifinalistRepository>();
-            
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<SmtpClient>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IStorageService, LocalStorageService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IVideoService, VideoService>();
+            services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IRatingService, RatingService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IAnalyticsService, AnalyticsService>();
+        }
+
+        private static void AddSemifinalServices(IServiceCollection services)
+        {
+            services.AddScoped<ISemifinalistService, SemifinalistService>();
+            services.AddScoped<IBattleService, BattleService>();
+            services.AddScoped<IBattleVoteService, BattleVoteService>();
         }
 
         private void AddCorsPolicy(IServiceCollection services)
@@ -258,7 +229,38 @@ namespace Avatar.App.Api
             });
         }
 
-        #endregion
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+        {
+
+            RegisterLogger(env, loggerFactory, applicationLifetime);
+
+            UseHttpContext(app);
+
+            EnableSwagger(app);
+            
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseCors(MyAllowSpecificOrigins);
+
+            app.UseAuthentication();
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseStaticFiles();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
 
         #region Private Configure Methods
 

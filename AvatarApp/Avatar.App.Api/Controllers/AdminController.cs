@@ -6,6 +6,7 @@ using Avatar.App.Api.Models.UserModels;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Models;
+using Avatar.App.Core.Semifinal.Interfaces;
 using Avatar.App.Core.Services;
 using Avatar.App.SharedKernel.Settings;
 using Microsoft.AspNetCore.Authorization;
@@ -24,16 +25,16 @@ namespace Avatar.App.Api.Controllers
         private readonly IVideoService _videoService;
         private readonly IProfileService _profileService;
         private readonly IEmailService _emailService;
-        private readonly IAppService _appService;
+        private readonly ISemifinalistService _semifinalistService;
         private readonly AvatarAppSettings _avatarAppSettings;
 
         public AdminController(IVideoService videoService, IProfileService profileService,
-            IOptions<AvatarAppSettings> avatarAppOptions, IEmailService emailService, IAppService appService)
+            IOptions<AvatarAppSettings> avatarAppOptions, IEmailService emailService, ISemifinalistService semifinalistService)
         {
             _videoService = videoService;
             _profileService = profileService;
             _emailService = emailService;
-            _appService = appService;
+            _semifinalistService = semifinalistService;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -181,14 +182,11 @@ namespace Avatar.App.Api.Controllers
             try
             {
                // CheckAdminRight();
-                await _appService.SetSemifinalistAsync(userId);
+               var semifinalist = _semifinalistService.CreateFromUserId(userId);
+               await _semifinalistService.InsertSemifinalist(semifinalist);
             }
             catch (UserNotAllowedException)
             {
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
             }
         }
 

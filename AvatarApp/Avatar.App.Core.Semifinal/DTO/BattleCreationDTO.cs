@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Avatar.App.Core.Models
+namespace Avatar.App.Core.Semifinal.DTO
 {
-    public class BattleCreatingDto
+    public class BattleCreationDTO
     {
         public IEnumerable<long> SemifinalistsId { get; set; }
-
         public DateTime EndDate { get; set; }
+        public int WinnersNumber { get; set; }
     }
 }

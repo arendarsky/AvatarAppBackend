@@ -40,4 +40,9 @@ namespace Avatar.App.Core.Exceptions
     {
 
     }
+
+    public class SemifinalistNotFoundException : Exception
+    {
+
+    }
 }

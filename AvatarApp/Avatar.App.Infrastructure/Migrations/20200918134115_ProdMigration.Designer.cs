@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Avatar.App.Infrastructure.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    [Migration("20200527184543_Semifinalists")]
-    partial class Semifinalists
+    [Migration("20200918134115_ProdMigration")]
+    partial class ProdMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,79 @@ namespace Avatar.App.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Avatar.App.Core.Entities.Battle", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("WinnersNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Battles");
+                });
+
+            modelBuilder.Entity("Avatar.App.Core.Entities.BattleSemifinalist", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("BattleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SemifinalistId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BattleId");
+
+                    b.HasIndex("SemifinalistId");
+
+                    b.ToTable("BattleSemifinalists");
+                });
+
+            modelBuilder.Entity("Avatar.App.Core.Entities.BattleVote", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("BattleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("SemifinalistId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BattleId");
+
+                    b.HasIndex("SemifinalistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BattleVote");
+                });
 
             modelBuilder.Entity("Avatar.App.Core.Entities.LikedVideo", b =>
                 {
@@ -46,40 +119,6 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.ToTable("LikedVideos");
                 });
 
-            modelBuilder.Entity("Avatar.App.Core.Entities.Message", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool?>("Accepted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Contact")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("FromId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("SentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("ToId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FromId");
-
-                    b.HasIndex("ToId");
-
-                    b.ToTable("Messages");
-                });
-
             modelBuilder.Entity("Avatar.App.Core.Entities.Semifinalist", b =>
                 {
                     b.Property<long>("Id")
@@ -87,11 +126,14 @@ namespace Avatar.App.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("VideoName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -108,8 +150,8 @@ namespace Avatar.App.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Contact")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool?>("ConsentToGeneralEmail")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -122,6 +164,9 @@ namespace Avatar.App.Infrastructure.Migrations
 
                     b.Property<Guid>("Guid")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InstagramLogin")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
@@ -153,9 +198,6 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.Property<double>("EndTime")
                         .HasColumnType("float");
 
-                    b.Property<string>("Extension")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -168,7 +210,7 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.Property<double>("StartTime")
                         .HasColumnType("float");
 
-                    b.Property<long?>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -204,6 +246,40 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.ToTable("WatchedVideos");
                 });
 
+            modelBuilder.Entity("Avatar.App.Core.Entities.BattleSemifinalist", b =>
+                {
+                    b.HasOne("Avatar.App.Core.Entities.Battle", "Battle")
+                        .WithMany("BattleSemifinalists")
+                        .HasForeignKey("BattleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Avatar.App.Core.Entities.Semifinalist", "Semifinalist")
+                        .WithMany("BattleSemifinalists")
+                        .HasForeignKey("SemifinalistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Avatar.App.Core.Entities.BattleVote", b =>
+                {
+                    b.HasOne("Avatar.App.Core.Entities.Battle", "Battle")
+                        .WithMany("Votes")
+                        .HasForeignKey("BattleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Avatar.App.Core.Entities.Semifinalist", "Semifinalist")
+                        .WithMany("Votes")
+                        .HasForeignKey("SemifinalistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Avatar.App.Core.Entities.User", "User")
+                        .WithMany("BattleVotes")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Avatar.App.Core.Entities.LikedVideo", b =>
                 {
                     b.HasOne("Avatar.App.Core.Entities.User", "User")
@@ -219,17 +295,6 @@ namespace Avatar.App.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Avatar.App.Core.Entities.Message", b =>
-                {
-                    b.HasOne("Avatar.App.Core.Entities.User", "From")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("FromId");
-
-                    b.HasOne("Avatar.App.Core.Entities.User", "To")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ToId");
-                });
-
             modelBuilder.Entity("Avatar.App.Core.Entities.Semifinalist", b =>
                 {
                     b.HasOne("Avatar.App.Core.Entities.User", "User")
@@ -243,7 +308,9 @@ namespace Avatar.App.Infrastructure.Migrations
                 {
                     b.HasOne("Avatar.App.Core.Entities.User", "User")
                         .WithMany("LoadedVideos")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Avatar.App.Core.Entities.WatchedVideo", b =>

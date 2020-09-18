@@ -9,8 +9,8 @@ namespace Avatar.App.SharedKernel.Interfaces
 {
     public interface IRepository<T> where T: BaseEntity
     {
-        T GetById(int id);
-        Task<T> GetByIdAsync(int id);
+        T GetById(long id);
+        Task<T> GetByIdAsync(long id);
         T Get(Expression<Func<T, bool>> predicate);
         Task<T> GetAsync(Expression<Func<T, bool>> predicate);
         T Get(ISpecification<T> spec);

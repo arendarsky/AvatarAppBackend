@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200911150134_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200911150134_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200918124001_BattleMigration.cs" />
+    <Compile Remove="Migrations\20200918124001_BattleMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200918133749_ProdMigration.cs" />
+    <Compile Remove="Migrations\20200918133749_ProdMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200918133833_ProdMigration.cs" />
+    <Compile Remove="Migrations\20200918133833_ProdMigration.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">

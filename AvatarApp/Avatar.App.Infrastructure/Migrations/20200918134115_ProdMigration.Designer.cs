@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Avatar.App.Infrastructure.Migrations
 {
     [DbContext(typeof(AvatarAppContext))]
-    [Migration("20200918124001_BattleMigration")]
-    partial class BattleMigration
+    [Migration("20200918134115_ProdMigration")]
+    partial class ProdMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

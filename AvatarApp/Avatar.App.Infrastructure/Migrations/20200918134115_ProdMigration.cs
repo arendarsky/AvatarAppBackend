@@ -3,40 +3,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Avatar.App.Infrastructure.Migrations
 {
-    public partial class BattleMigration : Migration
+    public partial class ProdMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_LikedVideos_Battles_BattleId",
-                table: "LikedVideos");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_LikedVideos_Semifinalists_SemifinalistId",
-                table: "LikedVideos");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Semifinalists_Videos_VideoId",
-                table: "Semifinalists");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_Videos_Users_UserId",
                 table: "Videos");
 
             migrationBuilder.DropTable(
                 name: "Messages");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Semifinalists_VideoId",
-                table: "Semifinalists");
-
-            migrationBuilder.DropIndex(
-                name: "IX_LikedVideos_BattleId",
-                table: "LikedVideos");
-
-            migrationBuilder.DropIndex(
-                name: "IX_LikedVideos_SemifinalistId",
-                table: "LikedVideos");
 
             migrationBuilder.DropColumn(
                 name: "Extension",
@@ -45,18 +21,6 @@ namespace Avatar.App.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "Contact",
                 table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "VideoId",
-                table: "Semifinalists");
-
-            migrationBuilder.DropColumn(
-                name: "BattleId",
-                table: "LikedVideos");
-
-            migrationBuilder.DropColumn(
-                name: "SemifinalistId",
-                table: "LikedVideos");
 
             migrationBuilder.AlterColumn<long>(
                 name: "UserId",
@@ -79,27 +43,46 @@ namespace Avatar.App.Infrastructure.Migrations
                 table: "Semifinalists",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "EndDate",
-                table: "Battles",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
+            migrationBuilder.CreateTable(
+                name: "Battles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    EndDate = table.Column<DateTime>(nullable: false),
+                    WinnersNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Battles", x => x.Id);
+                });
 
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "CreationDate",
-                table: "Battles",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "WinnersNumber",
-                table: "Battles",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.CreateTable(
+                name: "BattleSemifinalists",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BattleId = table.Column<long>(nullable: false),
+                    SemifinalistId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BattleSemifinalists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BattleSemifinalists_Battles_BattleId",
+                        column: x => x.BattleId,
+                        principalTable: "Battles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BattleSemifinalists_Semifinalists_SemifinalistId",
+                        column: x => x.SemifinalistId,
+                        principalTable: "Semifinalists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateTable(
                 name: "BattleVote",
@@ -136,6 +119,16 @@ namespace Avatar.App.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BattleSemifinalists_BattleId",
+                table: "BattleSemifinalists",
+                column: "BattleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BattleSemifinalists_SemifinalistId",
+                table: "BattleSemifinalists",
+                column: "SemifinalistId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BattleVote_BattleId",
                 table: "BattleVote",
                 column: "BattleId");
@@ -166,15 +159,17 @@ namespace Avatar.App.Infrastructure.Migrations
                 table: "Videos");
 
             migrationBuilder.DropTable(
+                name: "BattleSemifinalists");
+
+            migrationBuilder.DropTable(
                 name: "BattleVote");
+
+            migrationBuilder.DropTable(
+                name: "Battles");
 
             migrationBuilder.DropColumn(
                 name: "VideoName",
                 table: "Semifinalists");
-
-            migrationBuilder.DropColumn(
-                name: "WinnersNumber",
-                table: "Battles");
 
             migrationBuilder.AlterColumn<long>(
                 name: "UserId",
@@ -198,38 +193,6 @@ namespace Avatar.App.Infrastructure.Migrations
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Date",
                 table: "Semifinalists",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime));
-
-            migrationBuilder.AddColumn<long>(
-                name: "VideoId",
-                table: "Semifinalists",
-                type: "bigint",
-                nullable: true);
-
-            migrationBuilder.AddColumn<long>(
-                name: "BattleId",
-                table: "LikedVideos",
-                type: "bigint",
-                nullable: true);
-
-            migrationBuilder.AddColumn<long>(
-                name: "SemifinalistId",
-                table: "LikedVideos",
-                type: "bigint",
-                nullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "EndDate",
-                table: "Battles",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime));
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "CreationDate",
-                table: "Battles",
                 type: "datetime2",
                 nullable: true,
                 oldClrType: typeof(DateTime));
@@ -265,21 +228,6 @@ namespace Avatar.App.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Semifinalists_VideoId",
-                table: "Semifinalists",
-                column: "VideoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LikedVideos_BattleId",
-                table: "LikedVideos",
-                column: "BattleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LikedVideos_SemifinalistId",
-                table: "LikedVideos",
-                column: "SemifinalistId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Messages_FromId",
                 table: "Messages",
                 column: "FromId");
@@ -288,30 +236,6 @@ namespace Avatar.App.Infrastructure.Migrations
                 name: "IX_Messages_ToId",
                 table: "Messages",
                 column: "ToId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_LikedVideos_Battles_BattleId",
-                table: "LikedVideos",
-                column: "BattleId",
-                principalTable: "Battles",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_LikedVideos_Semifinalists_SemifinalistId",
-                table: "LikedVideos",
-                column: "SemifinalistId",
-                principalTable: "Semifinalists",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Semifinalists_Videos_VideoId",
-                table: "Semifinalists",
-                column: "VideoId",
-                principalTable: "Videos",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Videos_Users_UserId",

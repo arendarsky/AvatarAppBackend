@@ -30,21 +30,6 @@ namespace Avatar.App.Api.Controllers
             _battleVoteService = battleVoteService;
         }
 
-
-        /// <summary>
-        /// Creates new battle 
-        /// </summary>
-        /// <param name="battleCreationDTO"></param>
-        [SwaggerOperation("CreateBattle")]
-        [Route("battle/create")]
-        [HttpPost]
-        public async Task CreateBattle(BattleCreationDTO battleCreationDTO)
-        {
-            var battle = await _battleService.CreateFromBattleCreationDTOAsync(battleCreationDTO);
-            await _battleService.InsertBattleAsync(battle);
-        }
-
-
         /// <summary>
         /// Returns active battles
         /// </summary>
@@ -58,7 +43,6 @@ namespace Avatar.App.Api.Controllers
             var battleModels = battles.Select(battle => BattleModel.FromBattleWithUserLikeInfo(battle, userGuid));
             return new JsonResult(battleModels);
         }
-
 
         /// <summary>
         /// Set vote 

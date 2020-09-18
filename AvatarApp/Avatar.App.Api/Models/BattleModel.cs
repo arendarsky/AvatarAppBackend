@@ -11,7 +11,8 @@ namespace Avatar.App.Api.Models
     {
         public long Id { get; set; }
         public DateTime EndDate { get; set; }
-        public int VotesNumber { get; set; }
+        public int WinnersNumber { get; set; }
+        public int TotalVotesNumber { get; set; }
         public IEnumerable<BattleParticipantUserModel> BattleParticipants { get; set; }
 
         public static BattleModel FromBattleWithUserLikeInfo(Battle battle, Guid userGuid)
@@ -29,7 +30,8 @@ namespace Avatar.App.Api.Models
         {
             Id = battle.Id;
             EndDate = battle.EndDate;
-            VotesNumber = battle.Votes.Count();
+            WinnersNumber = battle.WinnersNumber;
+            TotalVotesNumber = battle.Votes.Count();
         }
     }
 }

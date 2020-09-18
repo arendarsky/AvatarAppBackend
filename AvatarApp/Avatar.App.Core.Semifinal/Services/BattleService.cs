@@ -13,12 +13,12 @@ namespace Avatar.App.Core.Semifinal.Services
     public class BattleService: IBattleService
     {
         private readonly IRepository<Semifinalist> _semifinalistRepository;
-        private readonly IRepository<Battle> _battleRepository;
+        private readonly IBattleRepository _battleRepository;
 
         private BattleCreationDTO BattleCreationDTO { get; set; }
         private Battle Battle { get; set; }
 
-        public BattleService(IRepository<Semifinalist> semifinalistRepository, IRepository<Battle> battleRepository)
+        public BattleService(IRepository<Semifinalist> semifinalistRepository, IBattleRepository battleRepository)
         {
             _semifinalistRepository = semifinalistRepository;
             _battleRepository = battleRepository;
@@ -39,6 +39,7 @@ namespace Avatar.App.Core.Semifinal.Services
                 CreationDate = DateTime.Now,
                 WinnersNumber = BattleCreationDTO.WinnersNumber,
                 EndDate = BattleCreationDTO.EndDate,
+                BattleSemifinalists = new List<BattleSemifinalist>()
             };
         }
 
@@ -73,7 +74,7 @@ namespace Avatar.App.Core.Semifinal.Services
 
         public IEnumerable<Battle> GetBattles()
         {
-            return _battleRepository.List().OrderByDescending(battle => battle.EndDate);
+            return _battleRepository.GetWithRelations(battle => true).OrderByDescending(battle => battle.EndDate);
         }
     }
 }

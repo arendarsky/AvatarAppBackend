@@ -169,8 +169,9 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
             services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
-            services.AddScoped<IRepository<Battle>, BattleRepository>();
+            services.AddScoped<IBattleRepository, BattleRepository>();
             services.AddScoped<IRepository<BattleSemifinalist>, BattleSemifinalistRepository>();
+            services.AddScoped<IRepository<BattleVote>, BattleVoteRepository>();
         }
 
         private static void AddServices(IServiceCollection services)

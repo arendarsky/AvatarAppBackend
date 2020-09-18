@@ -6,7 +6,7 @@ namespace Avatar.App.Core.Semifinal.Interfaces
 {
     public interface IBattleVoteService
     {
-        Task VoteTo(Guid userGuid, BattleVoteCreationDTO battleVoteCreationDTO);
-        Task CancelVote(Guid userGuid, BattleVoteCreationDTO battleVoteCreationDTO);
+        Task VoteToAsync(Guid userGuid, BattleVoteDTO battleVoteCreationDTO);
+        Task CancelVoteAsync(Guid userGuid, BattleVoteDTO battleVoteCreationDTO);
     }
 }

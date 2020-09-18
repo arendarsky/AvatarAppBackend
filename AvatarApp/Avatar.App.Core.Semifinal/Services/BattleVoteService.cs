@@ -12,23 +12,23 @@ namespace Avatar.App.Core.Semifinal.Services
 {
     public class BattleVoteService: BaseServiceWithAuthorization, IBattleVoteService
     {
-        private readonly IRepository<Battle> _battleRepository;
+        private readonly IBattleRepository _battleRepository;
         private readonly IRepository<BattleVote> _battleVoteRepository;
 
         private User User { get; set; }
-        private BattleVoteCreationDTO BattleVoteCreationDTO { get; set; }
+        private BattleVoteDTO BattleVoteCreationDTO { get; set; }
         private BattleVote BattleVote { get; set; }
 
-        public BattleVoteService(IRepository<Battle> battleRepository, IRepository<BattleVote> battleVoteRepository,
+        public BattleVoteService(IBattleRepository battleRepository, IRepository<BattleVote> battleVoteRepository,
             IRepository<User> userRepository) : base(userRepository)
         {
             _battleRepository = battleRepository;
             _battleVoteRepository = battleVoteRepository;
         }
 
-        public async Task VoteTo(Guid userGuid, BattleVoteCreationDTO battleVoteCreationDTO)
+        public async Task VoteToAsync(Guid userGuid, BattleVoteDTO battleVoteDTO)
         {
-            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteCreationDTO);
+            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteDTO);
 
             if (CheckRepetitiveVote() || !CheckUserVotesNumber())
             {
@@ -39,9 +39,9 @@ namespace Avatar.App.Core.Semifinal.Services
             await _battleVoteRepository.InsertAsync(BattleVote);
         }
 
-        private async Task SetupUserAndBattleVoteCreationDTO(Guid userGuid, BattleVoteCreationDTO battleVoteCreationDTO)
+        private async Task SetupUserAndBattleVoteCreationDTO(Guid userGuid, BattleVoteDTO battleVoteDTO)
         {
-            BattleVoteCreationDTO = battleVoteCreationDTO;
+            BattleVoteCreationDTO = battleVoteDTO;
             User = await GetUserAsync(new UserSpecification(userGuid));
         }
 
@@ -90,9 +90,9 @@ namespace Avatar.App.Core.Semifinal.Services
             };
         }
 
-        public async Task CancelVote(Guid userGuid, BattleVoteCreationDTO battleVoteCreationDTO)
+        public async Task CancelVoteAsync(Guid userGuid, BattleVoteDTO battleVoteDTO)
         {
-            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteCreationDTO);
+            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteDTO);
             var existedVote = GetVoteByBattleVoteDTOAndUser();
 
             if (existedVote == null)

@@ -18,7 +18,10 @@ namespace Avatar.App.Core.Services.Impl
         {
             var user = await UserRepository.GetAsync(specification);
 
-            if (user == null) throw new UserNotFoundException();
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
 
             return user;
         }

@@ -24,12 +24,12 @@ namespace Avatar.App.Infrastructure
             StorageService = storageService;
         }
 
-        public T GetById(int id)
+        public T GetById(long id)
         {
             return DbContext.Set<T>().Find(id);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(long id)
         {
             return await DbContext.Set<T>().FindAsync(id);
         }

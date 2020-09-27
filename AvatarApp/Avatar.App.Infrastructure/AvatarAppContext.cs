@@ -15,8 +15,6 @@ namespace Avatar.App.Infrastructure
         public DbSet<BattleSemifinalist> BattleSemifinalists { get; set; }
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
-           
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -14,62 +14,62 @@ namespace Avatar.App.Core.Semifinal.Services
     {
         private readonly IBattleRepository _battleRepository;
         private readonly IRepository<BattleVote> _battleVoteRepository;
-
-        private User User { get; set; }
-        private BattleVoteDTO BattleVoteCreationDTO { get; set; }
-        private BattleVote BattleVote { get; set; }
+        private readonly IBattleService _battleService;
 
         public BattleVoteService(IBattleRepository battleRepository, IRepository<BattleVote> battleVoteRepository,
-            IRepository<User> userRepository) : base(userRepository)
+            IRepository<User> userRepository, IBattleService battleService) : base(userRepository)
         {
             _battleRepository = battleRepository;
             _battleVoteRepository = battleVoteRepository;
+            _battleService = battleService;
         }
 
-        public async Task VoteToAsync(Guid userGuid, BattleVoteDTO battleVoteDTO)
+        public async Task<BattleParticipantVotesDTO> VoteToAsync(Guid userGuid, BattleVoteDTO battleVoteDTO)
         {
-            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteDTO);
+            var user = await GetUserAsync(new UserSpecification(userGuid));
 
-            if (CheckRepetitiveVote() || !CheckUserVotesNumber())
+            var existedVote = GetVoteByBattleVoteDTOAndUser(user, battleVoteDTO);
+
+            if (existedVote != null)
             {
-                return;
+                RemoveVote(existedVote);
+                return _battleService.GetVotesInfo(userGuid, battleVoteDTO);
             }
 
-            BattleVote = CreateBattleVote();
-            await _battleVoteRepository.InsertAsync(BattleVote);
+            if (!CheckUserVotesNumber(user, battleVoteDTO))
+            {
+                return _battleService.GetVotesInfo(userGuid, battleVoteDTO);
+            }
+
+            var battleVote = CreateBattleVote(user, battleVoteDTO);
+            _battleVoteRepository.Insert(battleVote);
+            return _battleService.GetVotesInfo(userGuid, battleVoteDTO);
         }
 
-        private async Task SetupUserAndBattleVoteCreationDTO(Guid userGuid, BattleVoteDTO battleVoteDTO)
-        {
-            BattleVoteCreationDTO = battleVoteDTO;
-            User = await GetUserAsync(new UserSpecification(userGuid));
-        }
-
-        private BattleVote GetVoteByBattleVoteDTOAndUser()
+        private BattleVote GetVoteByBattleVoteDTOAndUser(User user, BattleVoteDTO battleVoteCreationDTO)
         {
             return _battleVoteRepository.Get(vote =>
-                vote.BattleId == BattleVoteCreationDTO.BattleId && vote.SemifinalistId == BattleVoteCreationDTO.SemifinalistId &&
-                vote.UserId == User.Id);
+                vote.BattleId == battleVoteCreationDTO.BattleId && vote.SemifinalistId == battleVoteCreationDTO.SemifinalistId &&
+                vote.UserId == user.Id);
         }
 
-        private bool CheckRepetitiveVote()
+        private void RemoveVote(BattleVote vote)
         {
-            var exactSameVote = GetVoteByBattleVoteDTOAndUser();
-            return exactSameVote != null;
+            _battleVoteRepository.Delete(vote);
         }
 
-        private bool CheckUserVotesNumber()
+        private bool CheckUserVotesNumber(User user, BattleVoteDTO battleVoteDTO)
         {
-            var battle = GetBattle();
+            var battle = GetBattle(battleVoteDTO);
             var userVotesNumber = _battleVoteRepository.Count(vote =>
-                vote.BattleId == BattleVoteCreationDTO.BattleId && vote.UserId == User.Id);
+                vote.BattleId == battleVoteDTO.BattleId && vote.UserId == user.Id);
 
             return battle.WinnersNumber > userVotesNumber;
         }
 
-        private Battle GetBattle()
+        private Battle GetBattle(BattleVoteDTO battleVoteDTO)
         {
-            var battle = _battleRepository.GetById(BattleVoteCreationDTO.BattleId);
+            var battle = _battleRepository.GetById(battleVoteDTO.BattleId);
 
             if (battle == null)
             {
@@ -79,33 +79,15 @@ namespace Avatar.App.Core.Semifinal.Services
             return battle;
         }
 
-        private BattleVote CreateBattleVote()
+        private static BattleVote CreateBattleVote(User user, BattleVoteDTO battleVoteDTO)
         {
             return new BattleVote()
             {
-                SemifinalistId = BattleVoteCreationDTO.SemifinalistId,
-                BattleId = BattleVoteCreationDTO.BattleId,
-                UserId = User.Id,
+                SemifinalistId = battleVoteDTO.SemifinalistId,
+                BattleId = battleVoteDTO.BattleId,
+                UserId = user.Id,
                 Date = DateTime.Now
             };
-        }
-
-        public async Task CancelVoteAsync(Guid userGuid, BattleVoteDTO battleVoteDTO)
-        {
-            await SetupUserAndBattleVoteCreationDTO(userGuid, battleVoteDTO);
-            var existedVote = GetVoteByBattleVoteDTOAndUser();
-
-            if (existedVote == null)
-            {
-                return;
-            }
-
-            RemoveVote(existedVote);
-        }
-
-        private void RemoveVote(BattleVote vote)
-        {
-            _battleVoteRepository.Delete(vote);
         }
     }
 }

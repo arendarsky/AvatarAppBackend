@@ -50,22 +50,10 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("VoteTo")]
         [Route("vote")]
         [HttpPost]
-        public async Task VoteTo(BattleVoteDTO battleVoteDTO)
+        public async Task<BattleParticipantVotesDTO> VoteTo(BattleVoteDTO battleVoteDTO)
         {
             var userGuid = GetUserGuid();
-            await _battleVoteService.VoteToAsync(userGuid, battleVoteDTO);
-        }
-
-        /// <summary>
-        /// Cancel vote
-        /// </summary>
-        [SwaggerOperation("CancelVote")]
-        [Route("vote/cancel")]
-        [HttpPost]
-        public async Task CancelVote(BattleVoteDTO battleVoteDTO)
-        {
-            var userGuid = GetUserGuid();
-            await _battleVoteService.CancelVoteAsync(userGuid, battleVoteDTO);
+            return await _battleVoteService.VoteToAsync(userGuid, battleVoteDTO);
         }
     }
 }

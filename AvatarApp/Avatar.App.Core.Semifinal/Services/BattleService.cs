@@ -76,5 +76,23 @@ namespace Avatar.App.Core.Semifinal.Services
         {
             return _battleRepository.GetWithRelations(battle => true).OrderByDescending(battle => battle.EndDate);
         }
+
+        public BattleParticipantVotesDTO GetVotesInfo(Guid userGuid, BattleVoteDTO battleVoteDTO)
+        {
+            var battle = _battleRepository.GetWithRelations(b => b.Id == battleVoteDTO.BattleId)
+                .FirstOrDefault();
+
+            if (battle == null)
+            {
+                return null;
+            }
+
+            return new BattleParticipantVotesDTO
+            {
+                VotesNumber = battle.Votes.Count(vote => vote.SemifinalistId == battleVoteDTO.SemifinalistId),
+                IsLikedByUser = battle.Votes.Any(vote =>
+                    vote.SemifinalistId == battleVoteDTO.SemifinalistId && vote.User.Guid == userGuid)
+            };
+        }
     }
 }

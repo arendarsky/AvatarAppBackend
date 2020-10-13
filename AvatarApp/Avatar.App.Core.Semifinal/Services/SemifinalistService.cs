@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
+using Avatar.App.Core.Semifinal.DTO;
 using Avatar.App.Core.Semifinal.Exceptions;
 using Avatar.App.Core.Semifinal.Interfaces;
 using Avatar.App.Core.Services;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avatar.App.Core.Entities;
 using Avatar.App.Core.Semifinal.DTO;
@@ -10,5 +11,6 @@ namespace Avatar.App.Core.Semifinal.Interfaces
         Task<Battle> CreateFromBattleCreationDTOAsync(BattleCreationDTO battleCreationDTO);
         Task InsertBattleAsync(Battle battle);
         IEnumerable<Battle> GetBattles();
+        BattleParticipantVotesDTO GetVotesInfo(Guid userGuid, BattleVoteDTO battleVoteDTO);
     }
 }

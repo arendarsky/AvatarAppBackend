@@ -15,6 +15,7 @@ namespace Avatar.App.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://*:443");
                 });
     }
 }

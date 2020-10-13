@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Avatar.App.Api.Extensions;
 using Avatar.App.Core.Entities;
 using Avatar.App.Infrastructure;
 using Avatar.App.SharedKernel;
@@ -53,6 +54,10 @@ namespace Avatar.App.Api
             services.AddControllers();
 
             services.AddMemoryCache();
+
+            services.AddMvcCore().AddRazorViewEngine();
+
+            services.AddAvatarAppHttpContextAccessor();
 
             AddJwtAuthentication(services);
 
@@ -249,9 +254,11 @@ namespace Avatar.App.Api
 
             app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseHttpContext();
+
             app.UseAuthentication();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

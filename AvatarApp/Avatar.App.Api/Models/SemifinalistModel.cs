@@ -11,7 +11,7 @@ namespace Avatar.App.Api.Models
         public long Id { get; set; }
         public string VideoName { get; set; }
         public int VotesNumber { get; set; }
-        public bool? IsLikedByUser { get; set; }
+        public bool IsLikedByUser { get; set; }
 
         public static SemifinalistModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid)
         {

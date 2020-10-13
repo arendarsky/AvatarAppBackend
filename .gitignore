@@ -30,5 +30,6 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 /logs
+logs/
 /logs/*.txt
 /AvatarTelegramBot/AvatarTelegramBot.API/logs/ *.txt

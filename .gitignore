@@ -33,3 +33,5 @@ packages/
 logs/
 /logs/*.txt
 /AvatarAppBackend/Avatar.App.Api/logs/ *.txt
+appsettings.json
+firebaseAuth.json

@@ -74,8 +74,6 @@ namespace Avatar.App.Api
 
             AddSemifinalServices(services);
 
-            AddCorsPolicy(services);
-
             AddFireBaseMessaging(services);
 
 
@@ -210,7 +208,7 @@ namespace Avatar.App.Api
                 options.AddPolicy(MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins(Configuration["WebSiteUrl"], "http://web.xce-factor.ru", "http://192.168.1.2:8080").AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins("http://web.xce-factor.ru", "http://192.168.1.2:8080").AllowAnyHeader().AllowAnyMethod();
                     });
             });
         }

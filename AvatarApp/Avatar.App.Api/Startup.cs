@@ -217,13 +217,13 @@ namespace Avatar.App.Api
         {
             services.AddSingleton(service =>
             {
-                var settings = Configuration.GetSection("Firebase.Settings").Value;
+                var path = Configuration.GetSection("Firebase.Settings")["PathToCredentials"];
                 FirebaseApp app;
                 try
                 {
                     app = FirebaseApp.Create(new AppOptions()
                     {
-                        Credential = GoogleCredential.FromJson(settings)
+                        Credential = GoogleCredential.FromFile(path)
                     }, "FBApp");
                 }
                 catch (Exception)

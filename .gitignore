@@ -32,4 +32,6 @@ packages/
 /logs
 logs/
 /logs/*.txt
+appsettings.json
+firebaseAuth.json
 /AvatarTelegramBot/AvatarTelegramBot.API/logs/ *.txt

@@ -226,8 +226,9 @@ namespace Avatar.App.Api
                         Credential = GoogleCredential.FromFile(path)
                     }, "FBApp");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Logger.Log.LogWarning("Firebase messaging has already started or not working" + ex);
                     app = FirebaseApp.GetInstance("FBApp");
                 }
 

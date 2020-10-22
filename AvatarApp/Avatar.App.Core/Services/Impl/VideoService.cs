@@ -319,6 +319,8 @@ namespace Avatar.App.Core.Services.Impl
 
         private async Task SendLikeNotification(Video video, User sender)
         {
+            return;
+
             var recipient = video.User;
 
             if (recipient == null || string.IsNullOrWhiteSpace(recipient.FireBaseId)) return;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Avatar.App.Api.Extensions;
+using Avatar.App.Casting.Extensions;
 using Avatar.App.Core.Entities;
 using Avatar.App.Infrastructure;
 using Avatar.App.SharedKernel;
@@ -13,9 +14,14 @@ using Avatar.App.Core.Semifinal.Interfaces;
 using Avatar.App.Core.Semifinal.Services;
 using Avatar.App.Core.Services;
 using Avatar.App.Core.Services.Impl;
+using Avatar.App.Final.Extensions;
+using Avatar.App.Infrastructure.Extensions;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
 using Avatar.App.Infrastructure.Repositories;
+using Avatar.App.Schedulers;
+using Avatar.App.Schedulers.Extensions;
+using Avatar.App.Semifinal.Extensions;
 using Avatar.App.SharedKernel.Interfaces;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
@@ -62,8 +68,6 @@ namespace Avatar.App.Api
 
             AddJwtAuthentication(services);
 
-            AddDbConnection(services);
-
             AddSwagger(services);
 
             AddSettings(services);
@@ -76,7 +80,11 @@ namespace Avatar.App.Api
 
             AddFireBaseMessaging(services);
 
-
+            services.AddCronSchedulers(ServiceLifetime.Scoped, typeof(ICronInvocable).Assembly);
+            services.AddSemifinalComponent();
+            services.AddFinalComponent(Configuration);
+            services.AddInfrastructure(Configuration);
+            services.AddCastingComponent();
         }
 
         private void AddJwtAuthentication(IServiceCollection services)
@@ -104,15 +112,6 @@ namespace Avatar.App.Api
                     ValidateLifetime = false
                 };
             });
-        }
-
-        private void AddDbConnection(IServiceCollection services)
-        {
-            var connection = Configuration["DB_CONNECTION"];
-            services.AddDbContextPool<AvatarAppContext>(options =>
-        //        options.UseSqlServer(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
-                options.UseNpgsql(connection, b => b.MigrationsAssembly("Avatar.App.Infrastructure")));
-
         }
 
         private static void AddSwagger(IServiceCollection services)
@@ -246,6 +245,8 @@ namespace Avatar.App.Api
             UseHttpContext(app);
 
             EnableSwagger(app);
+
+            app.UseCronSchedulers(Configuration, typeof(ICronInvocable).Assembly);
             
             if (env.IsDevelopment())
             {

@@ -8,9 +8,14 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Avatar.App.Api/Avatar.App.Api.csproj", "Avatar.App.Api/"]
+COPY ["Avatar.App.Schedulers/Avatar.App.Schedulers.csproj", "Avatar.App.Schedulers/"]
+COPY ["Avatar.App.Semifinal/Avatar.App.Semifinal.csproj", "Avatar.App.Semifinal/"]
+COPY ["Avatar.App.Casting/Avatar.App.Casting.csproj", "Avatar.App.Casting/"]
 COPY ["Avatar.App.Core/Avatar.App.Core.csproj", "Avatar.App.Core/"]
 COPY ["Avatar.App.SharedKernel/Avatar.App.SharedKernel.csproj", "Avatar.App.SharedKernel/"]
+COPY ["Avatar.App.Final/Avatar.App.Final.csproj", "Avatar.App.Final/"]
 COPY ["Avatar.App.Infrastructure/Avatar.App.Infrastructure.csproj", "Avatar.App.Infrastructure/"]
+COPY ["Avatar.App.Core.Semifinal/Avatar.App.Core.Semifinal.csproj", "Avatar.App.Core.Semifinal/"]
 RUN dotnet restore "Avatar.App.Api/Avatar.App.Api.csproj"
 COPY . .
 WORKDIR "/src/Avatar.App.Api"

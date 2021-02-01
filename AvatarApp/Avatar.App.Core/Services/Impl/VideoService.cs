@@ -321,20 +321,20 @@ namespace Avatar.App.Core.Services.Impl
         {
             return;
 
-            var recipient = video.User;
+            //var recipient = video.User;
 
-            if (recipient == null || string.IsNullOrWhiteSpace(recipient.FireBaseId)) return;
+            //if (recipient == null || string.IsNullOrWhiteSpace(recipient.FireBaseId)) return;
 
-            var message = FirebaseMessageManager.CreateLikeMessage(recipient, sender);
+            //var message = FirebaseMessageManager.CreateLikeMessage(recipient, sender);
 
-            try
-            {
-                await _notificationService.SendNotificationAsync(message);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-            }
+            //try
+            //{
+            //    await _notificationService.SendNotificationAsync(message);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.Log.LogError(ex.Message + ex.StackTrace);
+            //}
 
         }
 

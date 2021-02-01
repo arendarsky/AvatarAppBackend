@@ -9,6 +9,7 @@ namespace Avatar.App.Core.Entities
         public DateTime CreationDate { get; set; }
         public DateTime EndDate { get; set; }
         public int WinnersNumber { get; set; }
+        public bool Closed { get; set; }
 
         public ICollection<BattleVote> Votes { get; set; }
         public ICollection<BattleSemifinalist> BattleSemifinalists { get; set; }

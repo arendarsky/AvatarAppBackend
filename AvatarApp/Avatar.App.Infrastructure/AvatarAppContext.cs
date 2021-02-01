@@ -1,4 +1,5 @@
 ﻿using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
@@ -13,6 +14,9 @@ namespace Avatar.App.Infrastructure
         public DbSet<Semifinalist> Semifinalists { get; set; }
         public DbSet<Battle> Battles { get; set; }
         public DbSet<BattleSemifinalist> BattleSemifinalists { get; set; }
+        public DbSet<BattleVote> BattleVotes { get; set; }
+        public DbSet<FinalistDb> Finalists { get; set; }
+
         public AvatarAppContext(DbContextOptions options) : base(options)
         {
         }

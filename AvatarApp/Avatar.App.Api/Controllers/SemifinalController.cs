@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Avatar.App.Api.Models;
 using Avatar.App.Core.Semifinal.DTO;
 using Avatar.App.Core.Semifinal.Interfaces;
+using Avatar.App.Semifinal;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -23,11 +24,13 @@ namespace Avatar.App.Api.Controllers
     {
         private readonly IBattleService _battleService;
         private readonly IBattleVoteService _battleVoteService;
+        private readonly ISemifinalComponent _semifinalComponent;
 
-        public SemifinalController(IBattleService battleService, IBattleVoteService battleVoteService)
+        public SemifinalController(IBattleService battleService, IBattleVoteService battleVoteService, ISemifinalComponent semifinalComponent)
         {
             _battleService = battleService;
             _battleVoteService = battleVoteService;
+            _semifinalComponent = semifinalComponent;
         }
 
         /// <summary>
@@ -36,12 +39,11 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("GetBattles")]
         [Route("battles/get")]
         [HttpGet]
-        public ActionResult GetBattles()
+        public async Task<IEnumerable<BattleModel>> GetBattles()
         {
             var userGuid = GetUserGuid();
-            var battles =  _battleService.GetBattles();
-            var battleModels = battles.Select(battle => BattleModel.FromBattleWithUserLikeInfo(battle, userGuid));
-            return new JsonResult(battleModels);
+            var battles = await _semifinalComponent.GetBattles();
+            return battles.Select(battle => BattleModel.FromBattleWithUserLikeInfo(battle, userGuid));
         }
 
         /// <summary>

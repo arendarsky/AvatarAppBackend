@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Core.Entities;
+using Avatar.App.Semifinal.Models;
 
 namespace Avatar.App.Api.Models.UserModels
 {
@@ -15,7 +15,7 @@ namespace Avatar.App.Api.Models.UserModels
             return new BattleParticipantUserModel(semifinalist, userGuid);
         }
 
-        private BattleParticipantUserModel(Semifinalist semifinalist, Guid userGuid) : base(semifinalist.User)
+        private BattleParticipantUserModel(Semifinalist semifinalist, Guid userGuid) : base(semifinalist.Contestant)
         {
             Semifinalist = SemifinalistModel.FromSemifinalistWithUserLikeInfo(semifinalist, userGuid);
         }

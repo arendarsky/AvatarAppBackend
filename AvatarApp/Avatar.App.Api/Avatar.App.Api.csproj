@@ -51,8 +51,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avatar.App.Final\Avatar.App.Final.csproj" />
     <ProjectReference Include="..\Avatar.App.Infrastructure\Avatar.App.Infrastructure.csproj" />
     <ProjectReference Include="..\Avatar.App.Core\Avatar.App.Core.csproj" />
+    <ProjectReference Include="..\Avatar.App.Schedulers\Avatar.App.Schedulers.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

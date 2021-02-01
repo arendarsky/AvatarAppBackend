@@ -1,0 +1,2 @@
+﻿2021-02-01 12:46:12,969  INFO  Service started
+2021-02-01 12:46:12,982  INFO  Settings Development

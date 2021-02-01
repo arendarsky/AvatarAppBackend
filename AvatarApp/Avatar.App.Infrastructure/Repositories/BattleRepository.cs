@@ -15,7 +15,7 @@ namespace Avatar.App.Infrastructure.Repositories
         {
         }
 
-        public IEnumerable<Battle> GetWithRelations(Expression<Func<Battle, bool>> predicate)
+        public IQueryable<Battle> GetWithRelations(Expression<Func<Battle, bool>> predicate)
         {
             return DbContext.Battles
                 .Include(battle => battle.BattleSemifinalists)

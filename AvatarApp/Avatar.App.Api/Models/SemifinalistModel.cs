@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Core.Entities;
+using Avatar.App.Semifinal.Models;
 
 namespace Avatar.App.Api.Models
 {
@@ -12,6 +12,7 @@ namespace Avatar.App.Api.Models
         public string VideoName { get; set; }
         public int VotesNumber { get; set; }
         public bool IsLikedByUser { get; set; }
+        public bool IsFinalist { get; set; }
 
         public static SemifinalistModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid)
         {
@@ -20,7 +21,7 @@ namespace Avatar.App.Api.Models
 
         private SemifinalistModel(Semifinalist semifinalist, Guid userGuid): this(semifinalist)
         {
-            IsLikedByUser = semifinalist.Votes?.Any(vote => vote.User.Guid == userGuid) ?? false;
+            IsLikedByUser = semifinalist.Votes?.Any(vote => vote.Guid == userGuid) ?? false;
         }
 
         private SemifinalistModel(Semifinalist semifinalist)
@@ -28,6 +29,7 @@ namespace Avatar.App.Api.Models
             Id = semifinalist.Id;
             VideoName = semifinalist.VideoName;
             VotesNumber = semifinalist.Votes?.Count() ?? 0;
+            IsFinalist = semifinalist.IsFinalist;
         }
     }
 }

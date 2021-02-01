@@ -19,9 +19,6 @@ namespace Avatar.App.Core.Semifinal.Services
         private readonly IRepository<Semifinalist> _semifinalistRepository;
         private readonly IRatingService _ratingService;
 
-        private long UserId { get; set; }
-        private Semifinalist Semifinalist { get; set; }
-
         public SemifinalistService(IRepository<Semifinalist> semifinalistRepository, IRepository<User> userRepository,
             IRatingService ratingService)
         {
@@ -31,25 +28,19 @@ namespace Avatar.App.Core.Semifinal.Services
 
         public Semifinalist CreateFromUserId(long? userId)
         {
-
-            SetupUserId(userId);
-            Semifinalist = CreateFromUserId();
-            return Semifinalist;
+            var userIdNotNull = SetupUserId(userId);
+            var semifinalist = Create(userIdNotNull);
+            return semifinalist;
         }
 
-        private void SetupUserId(long? userId)
+        private long SetupUserId(long? userId)
         {
-            if (userId == null)
-            {
-                SetupUserIdFromFirstRatingPosition();
-                return;
-            }
-            UserId = userId.Value;
+            return userId ?? SetupUserIdFromFirstRatingPosition();
         }
 
-        private void SetupUserIdFromFirstRatingPosition()
+        private long SetupUserIdFromFirstRatingPosition()
         {
-            UserId = GetRatingFirstUserId();
+            return GetRatingFirstUserId();
         }
         private long GetRatingFirstUserId()
         {
@@ -63,11 +54,11 @@ namespace Avatar.App.Core.Semifinal.Services
             return userProfile.User.Id;
         }
 
-        private Semifinalist CreateFromUserId()
+        private static Semifinalist Create(long userId)
         {
             return new Semifinalist
             {
-                UserId = UserId,
+                UserId = userId,
                 Date = DateTime.Now
             };
         }

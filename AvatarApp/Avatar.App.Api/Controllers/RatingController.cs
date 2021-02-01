@@ -6,6 +6,7 @@ using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Services;
+using Avatar.App.Final;
 using Avatar.App.SharedKernel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,12 @@ namespace Avatar.App.Api.Controllers
     public class RatingController : BaseAuthorizeController
     {
         private readonly IRatingService _ratingService;
+        private readonly IFinalComponent _finalComponent;
 
-        public RatingController(IRatingService ratingService)
+        public RatingController(IRatingService ratingService, IFinalComponent finalComponent)
         {
             _ratingService = ratingService;
+            _finalComponent = finalComponent;
         }
 
         /// <summary>
@@ -35,21 +38,11 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("Get")]
         [Route("get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(ICollection<RatingUserModel>), description: "Rating Json")]
         [HttpGet]
-        public ActionResult Get(int number)
+        public IEnumerable<RatingUserModel> Get(int number)
         {
-            try
-            {
-                var userProfiles = _ratingService.GetCommonRating(number);
-                
-                return new JsonResult(ConvertModelHandler.UserProfilesToRatingUserModels(userProfiles));
-            }
-            catch(Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            var userProfiles = _ratingService.GetCommonRating(number);
+            return ConvertModelHandler.UserProfilesToRatingUserModels(userProfiles);
         }
 
         /// <summary>
@@ -60,27 +53,12 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetUserRating")]
         [Route("user/get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Rating Json")]
         [HttpGet]
-        public async Task<ActionResult> GetUserRating()
+        public async Task<int> GetUserRating()
         {
-            try
-            {
-                var userGuid = GetUserGuid();
-
-                var likesNumber = await _ratingService.GetUserRating(userGuid);
-
-                return new JsonResult(likesNumber);
-            }
-            catch (UserNotFoundException)
-            {
-                return Unauthorized();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            var userGuid = GetUserGuid();
+            var likesNumber = await _ratingService.GetUserRating(userGuid);
+            return likesNumber;
         }
 
         /// <summary>
@@ -91,32 +69,19 @@ namespace Avatar.App.Api.Controllers
         /// <response code="500">If something goes wrong on server</response>
         [SwaggerOperation("GetSemifinalists")]
         [Route("get_semifinalists")]
-        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Rating Json")]
         [HttpGet]
-        public ActionResult GetSemifinalists()
+        public IEnumerable<SemifinalistUserModel> GetSemifinalists()
         {
-            try
-            {
-                var semifinalistsProfiles = _ratingService.GetSemifinalists();
-
-                return new JsonResult(ConvertModelHandler
-                    .UserProfilesToSemifinalistUserModels(semifinalistsProfiles));
-            }
-            catch (UserNotFoundException)
-            {
-                return Unauthorized();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            var semifinalistsProfiles = _ratingService.GetSemifinalists();
+            return ConvertModelHandler.UserProfilesToSemifinalistUserModels(semifinalistsProfiles);
         }
 
-
-
-        #region Private Methods
-
-        #endregion
+        [HttpGet]
+        [Route("get_finalists")]
+        public async Task<IEnumerable<SemifinalistUserModel>> GetFinalists()
+        {
+            var finalists = await _finalComponent.GetFinalists();
+            return ConvertModelHandler.UserProfilesToSemifinalistUserModels(finalists.ToList());
+        }
     }
 }

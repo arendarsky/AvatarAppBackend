@@ -9,6 +9,7 @@ namespace Avatar.App.Core.Entities
         public long UserId { get; set; }
         public DateTime Date { get; set; }
         public string VideoName { get; set; }
+        public bool IsFinalist { get; set; }
 
         public User User { get; set; }
         public ICollection<BattleVote> Votes { get; set; }

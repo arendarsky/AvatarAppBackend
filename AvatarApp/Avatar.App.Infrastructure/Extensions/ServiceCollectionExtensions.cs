@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using Avatar.App.Infrastructure.AutoMapperProfiles;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +15,7 @@ namespace Avatar.App.Infrastructure.Extensions
             var connection = configuration["DB_CONNECTION"];
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseNpgsql(connection, b => b.MigrationsAssembly(typeof(AvatarAppContext).Assembly.FullName)));
-            services.AddAutoMapper(typeof(CastingProfile));
+            services.AddAutoMapper(typeof(CastingProfile), typeof(SemifinalProfile));
         }
     }
 }

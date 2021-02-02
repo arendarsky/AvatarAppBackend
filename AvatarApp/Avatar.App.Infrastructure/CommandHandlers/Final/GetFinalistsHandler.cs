@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Avatar.App.Casting.Commands;
 using Avatar.App.Core.Models;
 using Avatar.App.Final.Commands;
+using Avatar.App.Infrastructure.CommandHandlers.Basic;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Infrastructure.CommandHandlers.Final
 {
-    internal class GetFinalistsHandler: FinalCommandHandler, IRequestHandler<GetFinalists, IEnumerable<UserProfile>>
+    internal class GetFinalistsHandler: EFCommandHandler, IRequestHandler<GetFinalists, IEnumerable<UserProfile>>
     {
         private readonly IMediator _mediator;
 

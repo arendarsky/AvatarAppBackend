@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Avatar.App.Infrastructure.CommandHandlers.Basic;
 using Avatar.App.Semifinal.Commands;
 using Avatar.App.Semifinal.Models;
 using MediatR;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Infrastructure.CommandHandlers.Semifinal
 {
-    internal class GetExpiredBattlesHandler: AutoMapperSemifinalHandler, IRequestHandler<GetExpiredBattles, IEnumerable<Battle>>
+    internal class GetExpiredBattlesHandler: AutoMapperEFCommandHandler, IRequestHandler<GetExpiredBattles, IEnumerable<Battle>>
     {
         public GetExpiredBattlesHandler(AvatarAppContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {

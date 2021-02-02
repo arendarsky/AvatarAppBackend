@@ -18,6 +18,7 @@ using Avatar.App.Final.Extensions;
 using Avatar.App.Infrastructure.Extensions;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
+using Avatar.App.Infrastructure.Models.Semifinal;
 using Avatar.App.Infrastructure.Repositories;
 using Avatar.App.Schedulers;
 using Avatar.App.Schedulers.Extensions;
@@ -173,10 +174,10 @@ namespace Avatar.App.Api
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
             services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
-            services.AddScoped<IRepository<Semifinalist>, SemifinalistRepository>();
+            services.AddScoped<IRepository<SemifinalistDb>, SemifinalistRepository>();
             services.AddScoped<IBattleRepository, BattleRepository>();
-            services.AddScoped<IRepository<BattleSemifinalist>, BattleSemifinalistRepository>();
-            services.AddScoped<IRepository<BattleVote>, BattleVoteRepository>();
+            services.AddScoped<IRepository<BattleSemifinalistDb>, BattleSemifinalistRepository>();
+            services.AddScoped<IRepository<BattleVoteDb>, BattleVoteRepository>();
         }
 
         private static void AddServices(IServiceCollection services)

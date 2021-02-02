@@ -13,7 +13,6 @@ namespace Avatar.App.Semifinal.Extensions
         {
             services.AddMediatR(typeof(SemifinalComponent).Assembly);
             services.AddScoped<ISemifinalComponent, SemifinalComponent>();
-            services.AddAutoMapper(typeof(SemifinalProfile));
         }
     }
 }

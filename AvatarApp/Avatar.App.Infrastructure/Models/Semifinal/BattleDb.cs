@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using Avatar.App.SharedKernel;
 
-namespace Avatar.App.Core.Entities
+namespace Avatar.App.Infrastructure.Models.Semifinal
 {
-    public class Battle : BaseEntity
+    internal class BattleDb : BaseEntity
     {
         public DateTime CreationDate { get; set; }
         public DateTime EndDate { get; set; }
         public int WinnersNumber { get; set; }
         public bool Closed { get; set; }
 
-        public ICollection<BattleVote> Votes { get; set; }
-        public ICollection<BattleSemifinalist> BattleSemifinalists { get; set; }
+        public ICollection<BattleVoteDb> Votes { get; set; }
+        public ICollection<BattleSemifinalistDb> BattleSemifinalists { get; set; }
     }
 }

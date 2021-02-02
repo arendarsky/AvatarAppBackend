@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Avatar.App.Core.Entities;
 using Avatar.App.SharedKernel;
 
-namespace Avatar.App.Core.Entities
+namespace Avatar.App.Infrastructure.Models.Semifinal
 {
-    public class Semifinalist: BaseEntity
+    internal class SemifinalistDb: BaseEntity
     {
         public long UserId { get; set; }
         public DateTime Date { get; set; }
@@ -12,7 +13,7 @@ namespace Avatar.App.Core.Entities
         public bool IsFinalist { get; set; }
 
         public User User { get; set; }
-        public ICollection<BattleVote> Votes { get; set; }
-        public ICollection<BattleSemifinalist> BattleSemifinalists { get; set; }
+        public ICollection<BattleVoteDb> Votes { get; set; }
+        public ICollection<BattleSemifinalistDb> BattleSemifinalists { get; set; }
     }
 }

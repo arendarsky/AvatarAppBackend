@@ -1,7 +1,7 @@
 ﻿using Avatar.App.Core.Entities;
 using Avatar.App.SharedKernel;
 
-namespace Avatar.App.Infrastructure.Models
+namespace Avatar.App.Infrastructure.Models.Final
 {
     public class FinalistDb: BaseEntity
     {

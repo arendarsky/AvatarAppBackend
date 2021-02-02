@@ -120,23 +120,9 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("SendEmail")]
         [Route("send")]
         [HttpGet]
-        public async Task<ActionResult> SendEmail(string email)
+        public async Task SendEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email)) return BadRequest("Parameter 'email' is null or empty");
-            try
-            {
-                await _authenticationService.SendEmailAsync(email);
-                return Ok();
-            }
-            catch (UserNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            await _authenticationService.SendEmailAsync(email);
         }
 
         /// <summary>
@@ -180,23 +166,9 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("SendPasswordReset")]
         [Route("send_reset")]
         [HttpGet]
-        public async Task<ActionResult> SendPasswordReset(string email)
+        public async Task SendPasswordReset(string email)
         {
-            if (string.IsNullOrWhiteSpace(email)) return BadRequest("Parameter 'email' is null or empty");
-            try
-            {
-                await _authenticationService.SendPasswordReset(email);
-                return Ok();
-            }
-            catch (UserNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.LogError(ex.Message + ex.StackTrace);
-                return Problem();
-            }
+            await _authenticationService.SendPasswordReset(email);
         }
 
         /// <summary>

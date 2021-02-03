@@ -1,6 +1,4 @@
-﻿using Avatar.App.SharedKernel;
-
-namespace Avatar.App.Infrastructure.Models.Semifinal
+﻿namespace Avatar.App.Infrastructure.Models.Semifinal
 {
     internal class BattleSemifinalistDb: BaseEntity
     {

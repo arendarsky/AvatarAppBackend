@@ -1,11 +1,11 @@
 ﻿using System;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public class NotificationUserModel:BaseUserModel
     {
-        public NotificationUserModel(LikedVideo likedVideo) : base(likedVideo.User)
+        public NotificationUserModel(LikedVideoDb likedVideo) : base(likedVideo.User)
         {
             Date = likedVideo.Date;
         }

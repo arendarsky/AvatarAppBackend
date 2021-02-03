@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Avatar.App.SharedKernel;
 
 namespace Avatar.App.Infrastructure.Models.Semifinal
 {

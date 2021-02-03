@@ -51,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Avatar.App.Authentication\Avatar.App.Authentication.csproj" />
     <ProjectReference Include="..\Avatar.App.Final\Avatar.App.Final.csproj" />
     <ProjectReference Include="..\Avatar.App.Infrastructure\Avatar.App.Infrastructure.csproj" />
     <ProjectReference Include="..\Avatar.App.Core\Avatar.App.Core.csproj" />

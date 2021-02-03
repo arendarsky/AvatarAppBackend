@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Avatar.App.Core.Entities;
-using Avatar.App.Core.Semifinal.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.Models.Semifinal;
 using Microsoft.EntityFrameworkCore;

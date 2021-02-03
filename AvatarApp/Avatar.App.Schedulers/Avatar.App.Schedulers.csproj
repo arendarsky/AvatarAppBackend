@@ -6,10 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Coravel" Version="4.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Avatar.App.Semifinal\Avatar.App.Semifinal.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,11 @@
 ﻿using Avatar.App.Casting.Models;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public abstract class BaseUserModel
     {
-        protected BaseUserModel(User user)
+        protected BaseUserModel(UserDb user)
         {
             Id = user.Id;
             Name = user.Name;

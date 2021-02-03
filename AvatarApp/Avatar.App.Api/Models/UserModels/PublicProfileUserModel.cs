@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public class PublicProfileUserModel: BaseUserModel
     {
-        public PublicProfileUserModel(User user) : base(user)
+        public PublicProfileUserModel(UserDb user) : base(user)
         {
             InstagramLogin = user.InstagramLogin;
 

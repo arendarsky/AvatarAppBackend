@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper.Internal;
+using Avatar.App.Semifinal.CData;
 using Avatar.App.Semifinal.Commands;
 using Avatar.App.Semifinal.Models;
+using Avatar.App.SharedKernel.Commands;
 using MediatR;
 
 namespace Avatar.App.Semifinal
@@ -13,32 +11,25 @@ namespace Avatar.App.Semifinal
     internal class SemifinalComponent: ISemifinalComponent
     {
         private readonly IMediator _mediator;
-        private readonly IFinalistsSetter _finalComponent;
 
-        public SemifinalComponent(IMediator mediator, IFinalistsSetter finalComponent)
+        public SemifinalComponent(IMediator mediator)
         {
             _mediator = mediator;
-            _finalComponent = finalComponent;
         }
 
-        public async Task CloseBattlesAsync()
+        public async Task AddBattle(BattleCData battleDTO)
         {
-            var battles = await _mediator.Send(new GetExpiredBattles());
-
-            foreach (var battle in battles)
-            {
-                await CloseBattle(battle);
-            }
+            await _mediator.Send(new AddBattle(battleDTO));
         }
 
-        private async Task CloseBattle(Battle battle)
+        public async Task<VotingRoom> VoteTo(BattleVoteCData voteCData)
         {
-            await _mediator.Send(new CloseBattle(battle.Id));
-            var participants = battle.Participants;
-            var winners = participants.OrderByDescending(participant => participant.Votes.Count())
-                .Take(battle.WinnersNumber);
-            await _finalComponent.AddFinalists(winners);
+            var battle = await _mediator.Send(new GetById<Battle>(voteCData.BattleId));
+            var votingRoom = new VotingRoom(battle, voteCData);
+            await _mediator.Send(new UpdateVotes(votingRoom));
+            return votingRoom;
         }
+
         public async Task<IEnumerable<Battle>> GetBattles()
         {
             return await _mediator.Send(new GetBattles());

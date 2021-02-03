@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Avatar.App.Casting.Models;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Infrastructure.AutoMapperProfiles
 {
@@ -8,7 +8,7 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
     {
         public CastingProfile()
         {
-            CreateMap<User, Contestant>();
+            CreateMap<UserDb, Contestant>();
         }
     }
 }

@@ -1,19 +1,13 @@
-﻿using Avatar.App.Core.Entities;
-using Avatar.App.Core.Models;
-using Avatar.App.Core.Services;
-using Avatar.App.SharedKernel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Api.Models;
-using Avatar.App.Core.Semifinal.DTO;
-using Avatar.App.Core.Semifinal.Interfaces;
+using Avatar.App.Authentication;
 using Avatar.App.Semifinal;
+using Avatar.App.Semifinal.CData;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -22,14 +16,10 @@ namespace Avatar.App.Api.Controllers
     [ApiController]
     public class SemifinalController : BaseAuthorizeController
     {
-        private readonly IBattleService _battleService;
-        private readonly IBattleVoteService _battleVoteService;
         private readonly ISemifinalComponent _semifinalComponent;
 
-        public SemifinalController(IBattleService battleService, IBattleVoteService battleVoteService, ISemifinalComponent semifinalComponent)
+        public SemifinalController(IAuthenticationComponent authenticationComponent, ISemifinalComponent semifinalComponent): base(authenticationComponent)
         {
-            _battleService = battleService;
-            _battleVoteService = battleVoteService;
             _semifinalComponent = semifinalComponent;
         }
 
@@ -52,10 +42,11 @@ namespace Avatar.App.Api.Controllers
         [SwaggerOperation("VoteTo")]
         [Route("vote")]
         [HttpPost]
-        public async Task<BattleParticipantVotesDTO> VoteTo(BattleVoteDTO battleVoteDTO)
+        public async Task<BattleParticipantsVote> VoteTo(BattleVoteCData battleVoteCData)
         {
-            var userGuid = GetUserGuid();
-            return await _battleVoteService.VoteToAsync(userGuid, battleVoteDTO);
+            var user = await GetUser();
+            battleVoteCData.UserId = user.Id;
+            return new BattleParticipantsVote(await _semifinalComponent.VoteTo(battleVoteCData));
         }
     }
 }

@@ -4,7 +4,12 @@ using System.Text;
 
 namespace Avatar.App.Casting
 {
-    internal class CastingComponent
+    public interface ICastingComponent
+    {
+
+    }
+
+    internal class CastingComponent: ICastingComponent
     {
     }
 }

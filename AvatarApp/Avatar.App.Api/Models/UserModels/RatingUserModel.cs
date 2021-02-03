@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public class RatingUserModel: BaseUserModel
     {
-        public RatingUserModel(User user, int likesNumber) : base(user)
+        public RatingUserModel(UserDb user, int likesNumber) : base(user)
         {
             LikesNumber = likesNumber;
 

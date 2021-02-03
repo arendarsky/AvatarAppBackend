@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Avatar.App.Core.Entities;
+﻿using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public class ModerationUserModel: BaseUserModel
     {
-        public ModerationUserModel(Video video) : base(video.User)
+        public ModerationUserModel(VideoDb video) : base(video.User)
         {
             Video = new VideoModel(video);
             Email = video.User.Email;

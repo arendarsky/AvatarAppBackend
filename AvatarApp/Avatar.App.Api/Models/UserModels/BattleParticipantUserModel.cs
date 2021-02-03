@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Avatar.App.Semifinal.Models;
 
 namespace Avatar.App.Api.Models.UserModels
@@ -10,14 +7,14 @@ namespace Avatar.App.Api.Models.UserModels
     {
         public SemifinalistModel Semifinalist { get; set; }
 
-        public static BattleParticipantUserModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid)
+        public static BattleParticipantUserModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid, long battleId)
         {
-            return new BattleParticipantUserModel(semifinalist, userGuid);
+            return new BattleParticipantUserModel(semifinalist, userGuid, battleId);
         }
 
-        private BattleParticipantUserModel(Semifinalist semifinalist, Guid userGuid) : base(semifinalist.Contestant)
+        private BattleParticipantUserModel(Semifinalist semifinalist, Guid userGuid, long battleId) : base(semifinalist.Contestant)
         {
-            Semifinalist = SemifinalistModel.FromSemifinalistWithUserLikeInfo(semifinalist, userGuid);
+            Semifinalist = SemifinalistModel.FromSemifinalistWithUserLikeInfo(semifinalist, userGuid, battleId);
         }
     }
 }

@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Avatar.App.Api.Extensions;
+using Avatar.App.Authentication.Extensions;
+using Avatar.App.Casting;
 using Avatar.App.Casting.Extensions;
-using Avatar.App.Core.Entities;
-using Avatar.App.Infrastructure;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Settings;
 using Avatar.App.Core.Security;
 using Avatar.App.Core.Security.Impl;
-using Avatar.App.Core.Semifinal.Interfaces;
-using Avatar.App.Core.Semifinal.Services;
 using Avatar.App.Core.Services;
 using Avatar.App.Core.Services.Impl;
 using Avatar.App.Final.Extensions;
 using Avatar.App.Infrastructure.Extensions;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
 using Avatar.App.Infrastructure.FileStorage.Services;
+using Avatar.App.Infrastructure.Models.Casting;
 using Avatar.App.Infrastructure.Models.Semifinal;
 using Avatar.App.Infrastructure.Repositories;
 using Avatar.App.Schedulers;
@@ -31,8 +30,6 @@ using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -81,10 +78,11 @@ namespace Avatar.App.Api
 
             AddFireBaseMessaging(services);
 
-            services.AddCronSchedulers(ServiceLifetime.Scoped, typeof(ICronInvocable).Assembly);
+            services.AddCronSchedulers(ServiceLifetime.Scoped, typeof(ICronInvocable).Assembly, typeof(ICastingComponent).Assembly);
             services.AddSemifinalComponent();
             services.AddFinalComponent(Configuration);
             services.AddInfrastructure(Configuration);
+            services.AddAuthenticationComponent();
             services.AddCastingComponent();
         }
 
@@ -170,10 +168,10 @@ namespace Avatar.App.Api
         }
         private static void AddRepositories(IServiceCollection services)
         {
-            services.AddScoped<IRepository<Video>, VideoRepository>();
-            services.AddScoped<IRepository<User>, UserRepository>();
-            services.AddScoped<IRepository<WatchedVideo>, WatchedVideoRepository>();
-            services.AddScoped<IRepository<LikedVideo>, LikedVideoRepository>();
+            services.AddScoped<IRepository<VideoDb>, VideoRepository>();
+            services.AddScoped<IRepository<UserDb>, UserRepository>();
+            services.AddScoped<IRepository<WatchedVideoDb>, WatchedVideoRepository>();
+            services.AddScoped<IRepository<LikedVideoDb>, LikedVideoRepository>();
             services.AddScoped<IRepository<SemifinalistDb>, SemifinalistRepository>();
             services.AddScoped<IBattleRepository, BattleRepository>();
             services.AddScoped<IRepository<BattleSemifinalistDb>, BattleSemifinalistRepository>();

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avatar.App.Core.Entities;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models.UserModels
 {
     public class PrivateProfileUserModel: BaseUserModel
     {
-        public PrivateProfileUserModel(User user, int likesNumber) : base(user)
+        public PrivateProfileUserModel(UserDb user, int likesNumber) : base(user)
         {
             LikesNumber = likesNumber;
             Email = user.Email;

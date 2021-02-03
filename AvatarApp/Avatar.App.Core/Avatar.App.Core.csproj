@@ -19,4 +19,9 @@
     <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>

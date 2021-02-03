@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Avatar.App.Semifinal.Models;
 
 namespace Avatar.App.Api.Models
@@ -14,21 +12,21 @@ namespace Avatar.App.Api.Models
         public bool IsLikedByUser { get; set; }
         public bool IsFinalist { get; set; }
 
-        public static SemifinalistModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid)
+        public static SemifinalistModel FromSemifinalistWithUserLikeInfo(Semifinalist semifinalist, Guid userGuid, long battleId)
         {
-            return new SemifinalistModel(semifinalist, userGuid);
+            return new SemifinalistModel(semifinalist, userGuid, battleId);
         }
 
-        private SemifinalistModel(Semifinalist semifinalist, Guid userGuid): this(semifinalist)
+        private SemifinalistModel(Semifinalist semifinalist, Guid userGuid, long battleId) : this(semifinalist, battleId)
         {
-            IsLikedByUser = semifinalist.Votes?.Any(vote => vote.Guid == userGuid) ?? false;
+            IsLikedByUser = semifinalist.Votes?.Any(vote => vote.BattleId == battleId && vote.From.Guid == userGuid) ?? false;
         }
 
-        private SemifinalistModel(Semifinalist semifinalist)
+        private SemifinalistModel(Semifinalist semifinalist, long battleId)
         {
             Id = semifinalist.Id;
             VideoName = semifinalist.VideoName;
-            VotesNumber = semifinalist.Votes?.Count() ?? 0;
+            VotesNumber = semifinalist.Votes?.Count(vote => vote.Battle.Id == battleId) ?? 0;
             IsFinalist = semifinalist.IsFinalist;
         }
     }

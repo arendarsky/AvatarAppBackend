@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Avatar.App.Core\Avatar.App.Core.csproj" />
+    <ProjectReference Include="..\Avatar.App.Schedulers\Avatar.App.Schedulers.csproj" />
   </ItemGroup>
 
 </Project>

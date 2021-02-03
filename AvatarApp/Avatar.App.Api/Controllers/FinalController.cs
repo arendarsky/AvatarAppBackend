@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Avatar.App.Api.Handlers;
-using Avatar.App.Api.Models.UserModels;
-using Avatar.App.Final;
+﻿using Avatar.App.Final;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Avatar.App.Api.Controllers

@@ -1,6 +1,5 @@
 ﻿using System;
-using Avatar.App.Core.Entities;
-using Avatar.App.SharedKernel;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Infrastructure.Models.Semifinal
 {
@@ -12,7 +11,7 @@ namespace Avatar.App.Infrastructure.Models.Semifinal
         public DateTime Date { get; set; }
 
         public SemifinalistDb Semifinalist { get; set; }
-        public User User { get; set; }
+        public UserDb User { get; set; }
         public BattleDb Battle { get; set; }
     }
 }

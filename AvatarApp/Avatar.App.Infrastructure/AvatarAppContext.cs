@@ -1,5 +1,4 @@
-﻿using Avatar.App.Core.Entities;
-using Avatar.App.Infrastructure.Models;
+﻿using Avatar.App.Infrastructure.Models.Casting;
 using Avatar.App.Infrastructure.Models.Final;
 using Avatar.App.Infrastructure.Models.Semifinal;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +8,10 @@ namespace Avatar.App.Infrastructure
 {
     internal sealed class AvatarAppContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Video> Videos { get; set; }
-        public DbSet<WatchedVideo> WatchedVideos { get; set; }
-        public DbSet<LikedVideo> LikedVideos { get; set; }
+        public DbSet<UserDb> Users { get; set; }
+        public DbSet<VideoDb> Videos { get; set; }
+        public DbSet<WatchedVideoDb> WatchedVideos { get; set; }
+        public DbSet<LikedVideoDb> LikedVideos { get; set; }
         public DbSet<SemifinalistDb> Semifinalists { get; set; }
         public DbSet<BattleDb> Battles { get; set; }
         public DbSet<BattleSemifinalistDb> BattleSemifinalists { get; set; }
@@ -25,10 +24,10 @@ namespace Avatar.App.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserDb>()
                 .HasIndex(b => b.Guid)
                 .IsUnique();
-            modelBuilder.Entity<Video>()
+            modelBuilder.Entity<VideoDb>()
                 .HasIndex(b => b.Name)
                 .IsUnique();
         }

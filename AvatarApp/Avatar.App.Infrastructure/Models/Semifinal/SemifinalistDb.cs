@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Avatar.App.Core.Entities;
-using Avatar.App.SharedKernel;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Infrastructure.Models.Semifinal
 {
@@ -12,7 +11,7 @@ namespace Avatar.App.Infrastructure.Models.Semifinal
         public string VideoName { get; set; }
         public bool IsFinalist { get; set; }
 
-        public User User { get; set; }
+        public UserDb User { get; set; }
         public ICollection<BattleVoteDb> Votes { get; set; }
         public ICollection<BattleSemifinalistDb> BattleSemifinalists { get; set; }
     }

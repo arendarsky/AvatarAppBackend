@@ -5,14 +5,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Avatar.App.Infrastructure.FileStorage.Interfaces;
-using Avatar.App.SharedKernel;
+using Avatar.App.Infrastructure.Models;
 using Avatar.App.SharedKernel.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Infrastructure
 {
-    public abstract class EfBaseRepository<T> : IRepository<T> where T: BaseEntity
+    internal abstract class EfBaseRepository<T> : IRepository<T> where T: BaseEntity
     {
         protected readonly AvatarAppContext DbContext;
         protected readonly IStorageService StorageService;

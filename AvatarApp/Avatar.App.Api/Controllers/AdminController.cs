@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avatar.App.Api.Handlers;
 using Avatar.App.Api.Models.UserModels;
+using Avatar.App.Authentication;
 using Avatar.App.SharedKernel;
 using Avatar.App.Core.Exceptions;
 using Avatar.App.Core.Models;
-using Avatar.App.Core.Semifinal.DTO;
-using Avatar.App.Core.Semifinal.Interfaces;
 using Avatar.App.Core.Services;
+using Avatar.App.Semifinal;
+using Avatar.App.Semifinal.CData;
 using Avatar.App.SharedKernel.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,22 +27,18 @@ namespace Avatar.App.Api.Controllers
         private readonly IVideoService _videoService;
         private readonly IProfileService _profileService;
         private readonly IEmailService _emailService;
-        private readonly ISemifinalistService _semifinalistService;
-        private readonly IBattleService _battleService;
+        private readonly ISemifinalComponent _semifinalComponent;
         private readonly AvatarAppSettings _avatarAppSettings;
 
         public AdminController(IVideoService videoService, 
             IProfileService profileService,
             IOptions<AvatarAppSettings> avatarAppOptions, 
-            IEmailService emailService, 
-            ISemifinalistService semifinalistService,
-            IBattleService battleService)
+            IEmailService emailService, ISemifinalComponent semifinalComponent, IAuthenticationComponent authenticationComponent): base(authenticationComponent)
         {
             _videoService = videoService;
             _profileService = profileService;
             _emailService = emailService;
-            _semifinalistService = semifinalistService;
-            _battleService = battleService;
+            _semifinalComponent = semifinalComponent;
             _avatarAppSettings = avatarAppOptions.Value;
         }
 
@@ -173,31 +170,6 @@ namespace Avatar.App.Api.Controllers
         }
 
         /// <summary>
-        /// Set Semifinalist
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <response code="200">If video status successfully changes</response>
-        /// <response code="400">If some of the parameters are null</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="404">If video doesn't exist on server</response>
-        /// <response code="500">If something goes wrong on server</response>
-        [SwaggerOperation("SetSemifinalist")]
-        [Route("set_semifinalist")]
-        [HttpGet]
-        public async Task SetSemifinalist(long? userId = null)
-        {
-            try
-            {
-               CheckAdminRight();
-               var semifinalist = _semifinalistService.CreateFromUserId(userId);
-               await _semifinalistService.InsertSemifinalist(semifinalist);
-            }
-            catch (UserNotAllowedException)
-            {
-            }
-        }
-
-        /// <summary>
         /// Send general message
         /// </summary>
         /// <param name="generalMessage"></param>
@@ -228,15 +200,14 @@ namespace Avatar.App.Api.Controllers
         /// <summary>
         /// Creates new battle 
         /// </summary>
-        /// <param name="battleCreationDTO"></param>
+        /// <param name="battleCData"></param>
         [SwaggerOperation("CreateBattle")]
         [Route("battle/create")]
         [HttpPost]
-        public async Task CreateBattle(BattleCreationDTO battleCreationDTO)
+        public async Task CreateBattle(BattleCData battleCData)
         {
             CheckAdminRight();
-            var battle = await _battleService.CreateFromBattleCreationDTOAsync(battleCreationDTO);
-            await _battleService.InsertBattleAsync(battle);
+            await _semifinalComponent.AddBattle(battleCData);
         }
 
 

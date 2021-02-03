@@ -1,11 +1,11 @@
-﻿using Avatar.App.Core.Entities;
+﻿using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Models
 {
     public class VideoModel
     {
 
-        public VideoModel(Video video)
+        public VideoModel(VideoDb video)
         {
             Name = video.Name;
             StartTime = video.StartTime;

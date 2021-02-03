@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avatar.App.Api.Models.UserModels;
-using Avatar.App.Core.Entities;
 using Avatar.App.Core.Models;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Api.Handlers
 {
     public static class ConvertModelHandler
     {
-        public static ICollection<VideoUserModel> VideosToVideoUserModels(ICollection<Video> videos)
+        public static ICollection<VideoUserModel> VideosToVideoUserModels(ICollection<VideoDb> videos)
         {
             return videos.Select(v => new VideoUserModel(v)).ToList();
         }
 
-        public static ICollection<ModerationUserModel> VideosToModerationUserModels(ICollection<Video> videos)
+        public static ICollection<ModerationUserModel> VideosToModerationUserModels(ICollection<VideoDb> videos)
         {
             return videos.Select(v => new ModerationUserModel(v)).ToList();
         }
@@ -28,12 +28,12 @@ namespace Avatar.App.Api.Handlers
             return new PrivateProfileUserModel(userProfile.User, userProfile.LikesNumber);
         }
 
-        public static ICollection<NotificationUserModel> LikedVideosToNotificationUserModel(ICollection<LikedVideo> likedVideos)
+        public static ICollection<NotificationUserModel> LikedVideosToNotificationUserModel(ICollection<LikedVideoDb> likedVideos)
         {
             return likedVideos.Select(l => new NotificationUserModel(l)).ToList();
         }
 
-        public static PublicProfileUserModel UserToPublicUserProfile(User user)
+        public static PublicProfileUserModel UserToPublicUserProfile(UserDb user)
         {
             return new PublicProfileUserModel(user);
         }

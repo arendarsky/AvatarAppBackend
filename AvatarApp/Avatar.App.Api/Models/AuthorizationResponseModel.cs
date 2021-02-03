@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Avatar.App.Api.Models
+﻿namespace Avatar.App.Api.Models
 {
     public class AuthorizationResponseModel
     {

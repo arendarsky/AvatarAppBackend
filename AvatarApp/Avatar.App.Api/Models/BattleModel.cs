@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Avatar.App.Api.Models.UserModels;
 using Avatar.App.Semifinal.Models;
 
@@ -24,7 +23,7 @@ namespace Avatar.App.Api.Models
         private BattleModel(Battle battle, Guid userGuid): this(battle)
         {
             BattleParticipants = battle.Participants.Select(participant =>
-                BattleParticipantUserModel.FromSemifinalistWithUserLikeInfo(participant, userGuid));
+                BattleParticipantUserModel.FromSemifinalistWithUserLikeInfo(participant, userGuid, battle.Id));
         }
 
         private BattleModel(Battle battle)
@@ -34,7 +33,8 @@ namespace Avatar.App.Api.Models
             var timeNow = DateTime.Now;
             SecondsUntilTheEnd = battle.EndDate > timeNow ? (battle.EndDate - timeNow).Seconds : 0;
             WinnersNumber = battle.WinnersNumber;
-            TotalVotesNumber = battle.Participants.SelectMany(participant => participant.Votes).Count();
+            TotalVotesNumber = battle.Participants
+                .SelectMany(participant => participant.Votes.Where(vote => vote.Battle.Id == battle.Id)).Count();
         }
     }
 }

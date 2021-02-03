@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Avatar.App.Final
 {
-    public interface IFinalComponent: IFinalistsSetter
+    public interface IFinalComponent
     {
         Task<IEnumerable<UserProfile>> GetFinalists();
     }
@@ -22,11 +22,6 @@ namespace Avatar.App.Final
         public FinalComponent(IMediator mediator)
         {
             _mediator = mediator;
-        }
-
-        public Task AddFinalists(IEnumerable<Semifinalist> semifinalists)
-        {
-            return _mediator.Send(new AddFinalists(semifinalists));
         }
 
         public async Task<IEnumerable<UserProfile>> GetFinalists()

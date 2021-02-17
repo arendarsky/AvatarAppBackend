@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Infrastructure.Models.Casting
 {
@@ -14,5 +18,13 @@ namespace Avatar.App.Infrastructure.Models.Casting
         public UserDb User { get; set; }
         public ICollection<WatchedVideoDb> WatchedBy { get; set; }
         public ICollection<LikedVideoDb> LikedBy { get; set; }
+
+        public static async Task<VideoDb> GetByNameAndUserGuidAsync(AvatarAppContext context, Guid userGuid, string fileName,
+            CancellationToken cancellationToken = default)
+        {
+            return await context.Videos.FirstOrDefaultAsync(
+                video => string.Equals(video.Name, fileName) && video.User.Guid == userGuid,
+                cancellationToken);
+        }
     }
 }

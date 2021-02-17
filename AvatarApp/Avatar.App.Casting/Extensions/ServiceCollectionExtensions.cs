@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using Avatar.App.Schedulers.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Avatar.App.Casting.Extensions
@@ -8,7 +9,13 @@ namespace Avatar.App.Casting.Extensions
     {
         public static void AddCastingComponent(this IServiceCollection services)
         {
-            services.AddMediatR(typeof(CastingComponent).Assembly);
+            services.AddCronSchedulers(ServiceLifetime.Scoped, typeof(CastingComponent).Assembly);
+            services.AddScoped<ICastingComponent, CastingComponent>();
+        }
+
+        public static void UseCastingComponent(this IApplicationBuilder app, IConfiguration configuration)
+        {
+            app.UseCronSchedulers(configuration, typeof(CastingComponent).Assembly);
         }
     }
 }

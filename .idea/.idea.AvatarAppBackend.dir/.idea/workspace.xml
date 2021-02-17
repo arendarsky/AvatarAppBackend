@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="063c2cf2-a782-42ff-83ff-303a8075d517" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Avatar.App.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Avatar.App.Api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/AdminController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/AdminController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/AuthenticationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/AuthenticationController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/BaseAuthorizeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Controllers/BaseAuthorizeController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Extensions/HttpContextExtensions.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Models/AuthorizationResponseModel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Api/Startup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/AuthenticationComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/AuthenticationComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Avatar.App.Authentication.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Avatar.App.Authentication.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Authentication/Models/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Avatar.App.Casting.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Avatar.App.Casting.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/CastingComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/CastingComponent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Models/Contestant.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Casting/Models/Contestant.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Constants/EmailMessages.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Helpers/ConfirmCodeHelper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Helpers/PasswordHelper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Models/AuthorizationDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Models/UserDto.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Security/IJwtSigningKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Security/Impl/SigningSymmetricKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Services/IAuthenticationService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Services/IEmailService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Services/Impl/AuthenticationService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Core/Services/Impl/EmailService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Final/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Final/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/AutoMapperProfiles/AuthenticationProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/AutoMapperProfiles/AuthenticationProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/AutoMapperProfiles/CastingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/AutoMapperProfiles/CastingProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Avatar.App.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Avatar.App.Infrastructure.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/FileStorage/Services/LocalStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/FileStorage/Services/LocalStorageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Handlers/Abstract/EFHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Handlers/Abstract/EFHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20200921080329_PGInitialCreate.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20200921080329_PGInitialCreate.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20200921080329_PGInitialCreate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20200921080329_PGInitialCreate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20210201102454_FinalComponentMigration.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20210201102454_FinalComponentMigration.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20210201105005_FinalComponentMigration2.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Migrations/20210201105005_FinalComponentMigration2.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Models/BaseDbEntitiy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Models/BaseDbEntitiy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Models/Casting/UserDb.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Infrastructure/Models/Casting/UserDb.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.Semifinal/Extensions/ServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.Semifinal/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Commands/GetById.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Commands/GetById.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Commands/RemoveById.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Commands/RemoveById.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Settings/AvatarAppHttpContext.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Settings/AvatarAppSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Settings/AvatarAppSettings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Settings/EmailSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/Avatar.App.SharedKernel/Settings/EnvironmentConfig.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AvatarApp/AvatarApp.sln" beforeDir="false" afterPath="$PROJECT_DIR$/AvatarApp/AvatarApp.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/README.md" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1oFYWdjZLbHSZmqPasX96SfTFyn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="063c2cf2-a782-42ff-83ff-303a8075d517" name="Default Changelist" comment="" />
+      <created>1612883841384</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1612883841384</updated>
+      <workItem from="1612883848624" duration="158000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

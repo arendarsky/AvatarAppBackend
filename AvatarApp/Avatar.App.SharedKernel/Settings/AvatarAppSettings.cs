@@ -13,7 +13,5 @@ namespace Avatar.App.SharedKernel.Settings
         public string AcceptedVideoExtension { get; set; }
         public List<string> AcceptedImageExtensions { get; set; }
         public string AdminGuid { get; set; }
-
-        public string WebUrl { get; set; }
     }
 }

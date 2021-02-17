@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Avatar.App.Casting.Models;
 using Avatar.App.Semifinal.CData;
 
 namespace Avatar.App.Semifinal.Models
@@ -9,6 +10,8 @@ namespace Avatar.App.Semifinal.Models
         public long Id { get; set; }
         public string VideoName { get; set; }
         public bool IsFinalist { get; set; }
+        
+        public BaseContestant Contestant { get; set; } 
         public ICollection<BattleVote> Votes { get; set; }
 
         public IEnumerable<BattleVote> GetBattleVotes(long battleId)

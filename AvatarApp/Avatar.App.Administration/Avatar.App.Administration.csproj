@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
+    <ProjectReference Include="..\Avatar.App.Schedulers\Avatar.App.Schedulers.csproj" />
+    <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

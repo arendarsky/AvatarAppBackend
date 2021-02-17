@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
+    <ProjectReference Include="..\Avatar.App.Content\Avatar.App.Content.csproj" />
+    <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

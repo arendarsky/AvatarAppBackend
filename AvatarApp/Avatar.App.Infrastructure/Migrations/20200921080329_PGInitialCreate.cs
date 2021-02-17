@@ -253,7 +253,7 @@ namespace Avatar.App.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Videos_Name",
                 table: "Videos",
-                column: "Name",
+                column: "FileName",
                 unique: true);
 
             migrationBuilder.CreateIndex(

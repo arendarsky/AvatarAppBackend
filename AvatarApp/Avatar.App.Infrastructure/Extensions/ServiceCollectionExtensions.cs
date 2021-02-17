@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using Avatar.App.Infrastructure.Handlers.Abstract;
+using Avatar.App.Infrastructure.Settings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,38 +21,64 @@ namespace Avatar.App.Infrastructure.Extensions
             services.AddDbContext<AvatarAppContext>(options =>
                 options.UseNpgsql(connection, b => b.MigrationsAssembly(typeof(AvatarAppContext).Assembly.FullName)));
             services.AddAutoMapper(typeof(AvatarAppContext).Assembly);
-            services.AddGenericHandlers<IGenericQueryHandler>(typeof(IRequestHandler<,>));
-            services.AddGenericHandlers<IGenericCommandHandler>(typeof(IRequestHandler<>));
+            services.AddGenericHandlers();
+            services.Configure<EnvironmentConfig>(configuration);
         }
 
-        private static void AddGenericHandlers<TDefinitionInterface>(this IServiceCollection services, Type handlerInterfaceType)
+        private static void AddGenericHandlers(this IServiceCollection services)
         {
             var provider = services.BuildServiceProvider();
             var mapperProvider = provider.GetService<IMapper>().ConfigurationProvider;
             var typeMaps = mapperProvider.GetAllTypeMaps();
-
-            foreach (var typeMap in typeMaps)
-            {
-                services.AddGenericHandlers<TDefinitionInterface>(handlerInterfaceType, typeMap.SourceType, typeMap.DestinationType);
-            }
+            services.AddGenericHandlers(typeMaps);
         }
 
-        private static void AddGenericHandlers<TDefinitionInterface>(this IServiceCollection services, Type handlerInterfaceType, Type sourceType, Type destinationType)
+        private static void AddGenericHandlers(this IServiceCollection services, TypeMap[] typeMaps)
         {
-            var basicHandlerTypes = typeof(AvatarAppContext).Assembly.DefinedTypes.Where(type =>
-                type.IsClass && !type.IsAbstract && type.GetInterface(nameof(TDefinitionInterface)) != null);
+            var openHandlerTypes = typeof(ServiceCollectionExtensions).Assembly.DefinedTypes.Where(type =>
+                type.IsClass && !type.IsAbstract && type.IsAssignableToGenericType(typeof(IGenericHandler<,>)));
 
-            foreach (var basicHandlerType in basicHandlerTypes)
+            foreach (var openHandlerType in openHandlerTypes)
             {
-                services.AddGenericHandler(handlerInterfaceType, basicHandlerType, sourceType, destinationType);
+                services.AddGenericHandler(openHandlerType, typeMaps);
             }
         }
 
-        private static void AddGenericHandler(this IServiceCollection services, Type handlerInterfaceType, Type handlerType, Type sourceType, Type destinationType)
+        private static void AddGenericHandler(this IServiceCollection services, TypeInfo openHandlerType,
+            IEnumerable<TypeMap> typeMaps)
+        {
+            var constraints = openHandlerType.ImplementedInterfaces.Last().GenericTypeArguments;
+            var filteredMaps = typeMaps.Where(typeMap =>
+                constraints[0].IsAssignableFrom(typeMap.SourceType) &&
+                constraints[1].IsAssignableFrom(typeMap.DestinationType));
+            foreach (var typeMap in filteredMaps)
+            {
+                services.AddGenericHandler(openHandlerType, typeMap.SourceType, typeMap.DestinationType);
+            }
+
+        }
+
+        private static void AddGenericHandler(this IServiceCollection services, Type handlerType, Type sourceType, Type destinationType)
         {
             var closedHandlerType = handlerType.MakeGenericType(sourceType, destinationType);
-            var interfaceHandlerType = closedHandlerType.GetInterfaces().First(inter => inter.IsAssignableFrom(handlerInterfaceType));
+            var interfaceHandlerType = closedHandlerType.GetInterfaces()[0];
             services.Add(ServiceDescriptor.Transient(interfaceHandlerType, closedHandlerType));
+        }
+
+        private static bool IsAssignableToGenericType(this Type givenType, Type genericType)
+        {
+            var interfaceTypes = givenType.GetInterfaces();
+
+            if (interfaceTypes.Any(it => it.IsGenericType && it.GetGenericTypeDefinition() == genericType))
+            {
+                return true;
+            }
+
+            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
+                return true;
+
+            var baseType = givenType.BaseType;
+            return baseType != null && IsAssignableToGenericType(baseType, genericType);
         }
     }
 }

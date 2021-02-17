@@ -5,14 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
-    <ProjectReference Include="..\Avatar.App.Core\Avatar.App.Core.csproj" />
-    <ProjectReference Include="..\Avatar.App.Semifinal\Avatar.App.Semifinal.csproj" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

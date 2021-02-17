@@ -171,7 +171,7 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FileName")
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
@@ -204,7 +204,7 @@ namespace Avatar.App.Infrastructure.Migrations
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FileName")
                         .HasColumnType("text");
 
                     b.Property<double>("StartTime")
@@ -215,7 +215,7 @@ namespace Avatar.App.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("FileName")
                         .IsUnique();
 
                     b.HasIndex("UserId");

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Avatar.App.Schedulers.Settings;
 using Coravel;
 using Coravel.Scheduling.Schedule.Interfaces;

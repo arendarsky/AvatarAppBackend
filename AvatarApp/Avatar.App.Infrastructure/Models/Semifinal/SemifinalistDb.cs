@@ -9,8 +9,6 @@ namespace Avatar.App.Infrastructure.Models.Semifinal
         public long UserId { get; set; }
         public DateTime Date { get; set; }
         public string VideoName { get; set; }
-        public bool IsFinalist { get; set; }
-
         public UserDb User { get; set; }
         public ICollection<BattleVoteDb> Votes { get; set; }
         public ICollection<BattleSemifinalistDb> BattleSemifinalists { get; set; }

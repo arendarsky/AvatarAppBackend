@@ -1,13 +1,15 @@
-﻿using AutoMapper;
+﻿using Avatar.App.Authentication.CData;
 using Avatar.App.Authentication.Models;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Infrastructure.AutoMapperProfiles
 {
-    internal class AuthenticationProfile: Profile
+    internal class AuthenticationProfile: AutoMapper.Profile
     {
         public AuthenticationProfile()
         {
-            CreateMap<Models.Casting.UserDb, User>();
+            CreateMap<UserDb, User>();
+            CreateMap<UserCData, UserDb>();
         }
     }
 }

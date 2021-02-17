@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Avatar.App.Semifinal.CData;
 
 namespace Avatar.App.Semifinal.Models
@@ -39,7 +40,14 @@ namespace Avatar.App.Semifinal.Models
                 return;
             }
 
-            _semifinalist.Votes.Add((BattleVote) _voteCData);
+            var battleVote = new BattleVote
+            {
+                BattleId = _voteCData.BattleId,
+                SemifinalistId = _voteCData.SemifinalistId,
+                UserId = _voteCData.UserId,
+                Date = DateTime.Now
+            };
+            _semifinalist.Votes.Add(battleVote);
             VoteToAdd = _voteCData;
         }
     }

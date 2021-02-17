@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Linq;
-using AutoMapper;
 using Avatar.App.Infrastructure.Models.Semifinal;
 using Avatar.App.Semifinal.CData;
 using Avatar.App.Semifinal.Models;
 
 namespace Avatar.App.Infrastructure.AutoMapperProfiles
 {
-    internal class SemifinalProfile: Profile
+    internal class SemifinalProfile: AutoMapper.Profile
     {
         public SemifinalProfile()
         {
-            CreateMap<SemifinalistDb, Semifinalist>();
+            CreateMap<SemifinalistDb, Semifinalist>()
+                .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => src.User));
 
             CreateMap<BattleDb, Battle>()
                 .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.BattleSemifinalists.Select(batSem => batSem.Semifinalist)));

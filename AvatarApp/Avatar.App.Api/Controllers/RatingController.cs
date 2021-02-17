@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Api.Handlers;
-using Avatar.App.Api.Models.UserModels;
-using Avatar.App.Core.Services;
-using Avatar.App.Final;
+using Avatar.App.Api.Models.Rating;
+using Avatar.App.Authentication;
+using Avatar.App.Rating;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Avatar.App.Api.Controllers
 {
@@ -16,68 +14,43 @@ namespace Avatar.App.Api.Controllers
     [ApiController]
     public class RatingController : BaseAuthorizeController
     {
-        private readonly IRatingService _ratingService;
-        private readonly IFinalComponent _finalComponent;
+        private readonly IRatingComponent _ratingComponent;
 
-        public RatingController(IRatingService ratingService, IFinalComponent finalComponent)
+        public RatingController(IRatingComponent ratingComponent, IAuthenticationComponent authenticationComponent): base(authenticationComponent)
         {
-            _ratingService = ratingService;
-            _finalComponent = finalComponent;
+            _ratingComponent = ratingComponent;
         }
 
-        /// <summary>
-        /// Get overall rating
-        /// </summary>
-        /// <param name="number"></param>
-        /// <response code="200">Returns overall rating</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="500">If something goes wrong on server</response>
-        [SwaggerOperation("Get")]
         [Route("get")]
         [HttpGet]
-        public IEnumerable<RatingUserModel> Get(int number)
+        public async Task<IEnumerable<RatingContestantPerformanceView>> Get(int number)
         {
-            var userProfiles = _ratingService.GetCommonRating(number);
-            return ConvertModelHandler.UserProfilesToRatingUserModels(userProfiles);
+            var ratingContestants = await _ratingComponent.GetCommonRating(number);
+            return ratingContestants.Select(contestant => new RatingContestantPerformanceView(contestant));
         }
 
-        /// <summary>
-        /// Get personal rating
-        /// </summary>
-        /// <response code="200">Returns personal rating</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="500">If something goes wrong on server</response>
-        [SwaggerOperation("GetUserRating")]
         [Route("user/get")]
         [HttpGet]
         public async Task<int> GetUserRating()
         {
             var userGuid = GetUserGuid();
-            var likesNumber = await _ratingService.GetUserRating(userGuid);
-            return likesNumber;
+            return await _ratingComponent.GetUserRating(userGuid);
         }
 
-        /// <summary>
-        /// Get semifinalists
-        /// </summary>
-        /// <response code="200">Returns semifinalists</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="500">If something goes wrong on server</response>
-        [SwaggerOperation("GetSemifinalists")]
         [Route("get_semifinalists")]
         [HttpGet]
-        public IEnumerable<SemifinalistUserModel> GetSemifinalists()
+        public async Task<IEnumerable<RatingContestantView>> GetSemifinalists()
         {
-            var semifinalistsProfiles = _ratingService.GetSemifinalists();
-            return ConvertModelHandler.UserProfilesToSemifinalistUserModels(semifinalistsProfiles);
+            var semifinalistsProfiles = await _ratingComponent.GetSemifinalists();
+            return semifinalistsProfiles.Select(semifinalist => new RatingContestantView(semifinalist));
         }
 
         [HttpGet]
         [Route("get_finalists")]
-        public async Task<IEnumerable<SemifinalistUserModel>> GetFinalists()
+        public async Task<IEnumerable<RatingContestantView>> GetFinalists()
         {
-            var finalists = await _finalComponent.GetFinalists();
-            return ConvertModelHandler.UserProfilesToSemifinalistUserModels(finalists.ToList());
+            var finalistsProfiles = await _ratingComponent.GetFinalists();
+            return finalistsProfiles.Select(finalist => new RatingContestantView(finalist));
         }
     }
 }

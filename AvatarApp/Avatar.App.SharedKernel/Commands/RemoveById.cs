@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MediatR;
+﻿using MediatR;
 
 namespace Avatar.App.SharedKernel.Commands
 {
-    public class RemoveById<T>: IRequest
+    public class RemoveById<T>: ByIdCommand, IRequest
     {
-        public long Id { get; }
-
-        public RemoveById(long id)
+        public RemoveById(long id) : base(id)
         {
-            Id = id;
         }
     }
 }

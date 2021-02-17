@@ -1,15 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Avatar.App.Casting.Models
 {
-    public class Contestant
+    public class BaseContestant
     {
         public long Id { get; set; }
         public Guid Guid { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string ProfilePhoto { get; set; }
+    }
+
+    public class Contestant: BaseContestant
+    {
+        public int VideosNumber { get; set; }
+    }
+
+    public class ContestantPerformance : BaseContestant
+    {
+        public Video ActiveVideo { get; set; }
     }
 }

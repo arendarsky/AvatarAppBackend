@@ -5,6 +5,7 @@ using Avatar.App.Semifinal.Commands;
 using Avatar.App.Semifinal.Models;
 using Avatar.App.SharedKernel.Commands;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Semifinal
 {
@@ -32,7 +33,8 @@ namespace Avatar.App.Semifinal
 
         public async Task<IEnumerable<Battle>> GetBattles()
         {
-            return await _mediator.Send(new GetBattles());
+            var query = await _mediator.Send(new GetQuery<Battle>());
+            return await query.ToListAsync();
         }
     }
 }

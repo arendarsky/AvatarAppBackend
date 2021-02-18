@@ -9,8 +9,7 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
         {
             CreateMap<UserDb, NotificationAuthor>();
             CreateMap<WatchedVideoDb, LikeNotification>()
-                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User))
-                .ForAllMembers(opt => opt.PreCondition(src => src.IsLiked));
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User));
         }
     }
 }

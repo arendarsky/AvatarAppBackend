@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avatar.App.Communications.Commands;
 using Avatar.App.Communications.Models;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Commands;
 using FirebaseAdmin.Messaging;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Communications
 {
@@ -20,16 +20,16 @@ namespace Avatar.App.Communications
     {
         private readonly FirebaseMessaging _firebaseMessaging;
 
-        public CommunicationsComponent(IMediator mediator, FirebaseMessaging firebaseMessaging) : base(mediator)
+        public CommunicationsComponent(IMediator mediator, FirebaseMessaging firebaseMessaging, IQueryManager queryManager) : base(mediator, queryManager)
         {
             _firebaseMessaging = firebaseMessaging;
         }
 
         public async Task<IEnumerable<LikeNotification>> GetNotificationsAsync(Guid userGuid, int take, int skip)
         {
-            var likeNotifications = await Mediator.Send(new GetQuery<LikeNotification>());
-            var partOfNotifications = likeNotifications.OrderByDescending(l => l.Date).Take(take).Skip(skip);
-            return  await partOfNotifications.ToListAsync();
+            var likeNotificationsQuery = await Mediator.Send(new GetLikeNotificationsQuery(userGuid));
+            var partOfNotifications = likeNotificationsQuery.OrderByDescending(l => l.Date).Take(take).Skip(skip);
+            return  await QueryManager.ToListAsync(partOfNotifications);
         }
 
         public async Task<string> SendNotificationAsync(Message message)

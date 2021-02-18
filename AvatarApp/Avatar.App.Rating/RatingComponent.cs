@@ -7,7 +7,6 @@ using Avatar.App.Rating.Models;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Commands;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Rating
 {
@@ -21,14 +20,14 @@ namespace Avatar.App.Rating
 
     internal class RatingComponent: AvatarAppComponent, IRatingComponent
     {
-        public RatingComponent(IMediator mediator) : base(mediator)
+        public RatingComponent(IMediator mediator, IQueryManager queryManager) : base(mediator, queryManager)
         {
         }
 
         public async Task<IEnumerable<RatingContestantPerformance>> GetCommonRating(int number)
         {
             var ratingQuery = await Mediator.Send(new GetQuery<RatingContestantPerformance>());
-            var rating = await ratingQuery.Where(r => !r.IsSemifinalist).ToListAsync();
+            var rating = await QueryManager.ToListAsync(ratingQuery.Where(r => !r.IsSemifinalist));
             return rating.OrderByDescending(r => r.LikesNumber).Take(number);
         }
 
@@ -39,12 +38,12 @@ namespace Avatar.App.Rating
 
         public async Task<ICollection<RatingSemifinalist>> GetSemifinalists()
         {
-            return await (await Mediator.Send(new GetQuery<RatingSemifinalist>())).ToListAsync();
+            return await QueryManager.ToListAsync(await Mediator.Send(new GetSemifinalistsQuery()));
         }
 
         public async Task<ICollection<RatingFinalist>> GetFinalists()
         {
-            return await (await Mediator.Send(new GetQuery<RatingFinalist>())).ToListAsync();
+            return await QueryManager.ToListAsync(await Mediator.Send(new GetFinalistsQuery()));
         }
     }
 }

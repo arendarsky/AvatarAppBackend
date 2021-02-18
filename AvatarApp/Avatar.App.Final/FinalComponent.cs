@@ -9,7 +9,7 @@ namespace Avatar.App.Final
 
     internal class FinalComponent: AvatarAppComponent, IFinalComponent
     {
-        public FinalComponent(IMediator mediator) : base(mediator)
+        public FinalComponent(IMediator mediator, IQueryManager queryManager) : base(mediator, queryManager)
         {
         }
     }

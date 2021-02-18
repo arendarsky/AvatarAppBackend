@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avatar.App.Infrastructure.Handlers.Abstract;
@@ -18,7 +19,8 @@ namespace Avatar.App.Infrastructure.Handlers.Final
         {
             var finalists = request.Semifinalists.Select(semifinalist => new FinalistDb
             {
-                UserId = semifinalist.Contestant.Id
+                UserId = semifinalist.Contestant.Id,
+                Date = DateTime.Now
             });
 
             await DbContext.Finalists.AddRangeAsync(finalists, cancellationToken);

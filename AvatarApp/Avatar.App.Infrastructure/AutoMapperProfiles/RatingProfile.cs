@@ -20,10 +20,10 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
 
             CreateMap<UserDb, RatingSemifinalist>()
                 .ForMember(dest => dest.LikesNumber,
-                    opt => opt.MapFrom(src => src.LoadedVideos.Sum(video => video.WatchedBy.Count(view => view.IsLiked))))
-                .ForAllMembers(opt => opt.PreCondition(src => src.Semifinalist != null));
-            CreateMap<FinalistDb, RatingFinalist>()
-                .ForMember(dest => dest.LikesNumber, opt => opt.MapFrom(src => src.User.Semifinalist.Votes.Count));
+                    opt => opt.MapFrom(
+                        src => src.LoadedVideos.Sum(video => video.WatchedBy.Count(view => view.IsLiked))));
+            CreateMap<UserDb, RatingFinalist>()
+                .ForMember(dest => dest.LikesNumber, opt => opt.MapFrom(src => src.Semifinalist.Votes.Count));
         }
     }
 }

@@ -12,7 +12,6 @@ using Avatar.App.SharedKernel.Commands;
 using Avatar.App.SharedKernel.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Avatar.App.Casting
@@ -31,7 +30,7 @@ namespace Avatar.App.Casting
     {
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public CastingComponent(IMediator mediator, IOptions<AvatarAppSettings> avatarAppSettingsOptions) : base(mediator)
+        public CastingComponent(IMediator mediator, IOptions<AvatarAppSettings> avatarAppSettingsOptions, IQueryManager queryManager) : base(mediator, queryManager)
         {
             _avatarAppSettings = avatarAppSettingsOptions.Value;
         }
@@ -55,8 +54,8 @@ namespace Avatar.App.Casting
 
         private async Task<Contestant> GetContestantByGuid(Guid guid)
         {
-            return await (await Mediator.Send(new GetQuery<Contestant>())).FirstOrDefaultAsync(contestant =>
-                contestant.Guid == guid);
+            return await QueryManager.FirstOrDefaultAsync((await Mediator.Send(new GetQuery<Contestant>())).Where(contestant =>
+                contestant.Guid == guid));
         }
 
         private bool CheckForAvailableVideoSlots(Contestant contestant)
@@ -86,7 +85,7 @@ namespace Avatar.App.Casting
         public async Task<IEnumerable<ContestantPerformance>> GetUnwatchedVideosAsync(Guid userGuid, int number)
         {
             var unwatchedVideoQuery = await Mediator.Send(new GetUnwatchedVideoQuery(userGuid));
-            return (await unwatchedVideoQuery.ToListAsync()).OrderBy(c => Guid.NewGuid()).Take(number); ;
+            return (await QueryManager.ToListAsync(unwatchedVideoQuery)).OrderBy(c => Guid.NewGuid()).Take(number); ;
         }
 
         public async Task SetLikeAsync(Guid userGuid, string fileName, bool isLike)

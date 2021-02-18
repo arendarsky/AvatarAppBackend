@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
     <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
   </ItemGroup>

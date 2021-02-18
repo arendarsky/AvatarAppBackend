@@ -5,6 +5,7 @@ using System.Reflection;
 using AutoMapper;
 using Avatar.App.Infrastructure.Handlers.Abstract;
 using Avatar.App.Infrastructure.Settings;
+using Avatar.App.SharedKernel;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ namespace Avatar.App.Infrastructure.Extensions
             services.AddAutoMapper(typeof(AvatarAppContext).Assembly);
             services.AddGenericHandlers();
             services.Configure<EnvironmentConfig>(configuration);
+            services.AddSingleton<IQueryManager, QueryManager>();
         }
 
         private static void AddGenericHandlers(this IServiceCollection services)

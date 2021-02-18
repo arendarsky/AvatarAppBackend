@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Authentication.CData;
 using Avatar.App.Authentication.Commands;
@@ -7,7 +8,6 @@ using Avatar.App.Authentication.Security;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Commands;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Avatar.App.Authentication
 {
@@ -30,7 +30,7 @@ namespace Avatar.App.Authentication
     {
         private readonly IJwtSigningEncodingKey _signingEncodingKey;
 
-        public AuthenticationComponent(IMediator mediator, IJwtSigningEncodingKey signingEncodingKey) : base(mediator)
+        public AuthenticationComponent(IMediator mediator, IJwtSigningEncodingKey signingEncodingKey, IQueryManager queryManager) : base(mediator, queryManager)
         {
             _signingEncodingKey = signingEncodingKey;
         }
@@ -64,8 +64,7 @@ namespace Avatar.App.Authentication
         private async Task<bool> CheckUserExistenceAsync(string email)
         {
             var userQuery = await Mediator.Send(new GetQuery<User>());
-            return await userQuery.AnyAsync(
-                user => string.Equals(user.Email, email, StringComparison.OrdinalIgnoreCase));
+            return await QueryManager.AnyAsync(userQuery.Where(user => string.Equals(user.Email, email)));
         }
 
         public async Task<JwtUser> GetAuthorizationToken(string email, string password)

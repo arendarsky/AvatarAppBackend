@@ -27,11 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{C3C49020-7543-4847-9D68-8AFD3FB55960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Administration", "Avatar.App.Administration\Avatar.App.Administration.csproj", "{61EDEA8B-6396-4E88-A5DD-F4B6E3EBD2E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Administration", "Avatar.App.Administration\Avatar.App.Administration.csproj", "{61EDEA8B-6396-4E88-A5DD-F4B6E3EBD2E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Profile", "Avatar.App.Profile\Avatar.App.Profile.csproj", "{74EA9F86-2EED-491C-A647-F0BEAD71EC63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Profile", "Avatar.App.Profile\Avatar.App.Profile.csproj", "{74EA9F86-2EED-491C-A647-F0BEAD71EC63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avatar.App.Rating", "Avatar.App.Rating\Avatar.App.Rating.csproj", "{B11DD0F2-006A-4D8D-8446-78539838C6EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.App.Rating", "Avatar.App.Rating\Avatar.App.Rating.csproj", "{B11DD0F2-006A-4D8D-8446-78539838C6EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +97,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB389796-115E-4205-9753-F50E6BB788D9} = {E58F3055-A398-4426-82D7-8CABFFD662CF}
+		{12E6B885-2CEB-47C9-803A-D0B26B3B4853} = {C3C49020-7543-4847-9D68-8AFD3FB55960}
 		{AC135C77-431C-481E-AD98-531171F5E052} = {C3C49020-7543-4847-9D68-8AFD3FB55960}
 		{6D3BD692-B7F2-4BE3-97AD-615489529809} = {C3C49020-7543-4847-9D68-8AFD3FB55960}
 		{45B91D44-B156-4531-9FB6-68D7027A1363} = {C3C49020-7543-4847-9D68-8AFD3FB55960}

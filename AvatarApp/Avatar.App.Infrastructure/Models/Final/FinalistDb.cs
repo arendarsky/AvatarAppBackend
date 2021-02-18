@@ -1,4 +1,5 @@
-﻿using Avatar.App.Infrastructure.Models.Casting;
+﻿using System;
+using Avatar.App.Infrastructure.Models.Casting;
 
 namespace Avatar.App.Infrastructure.Models.Final
 {
@@ -6,5 +7,6 @@ namespace Avatar.App.Infrastructure.Models.Final
     {
         public long UserId { get; set; }
         public UserDb User { get; set; }
+        public DateTime Date { get; set; }
     }
 }

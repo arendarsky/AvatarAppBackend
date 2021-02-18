@@ -27,7 +27,7 @@ namespace Avatar.App.Profile
     {
         private readonly AvatarAppSettings _avatarAppSettings;
 
-        public ProfileComponent(IMediator mediator, IOptions<AvatarAppSettings> avatarAppSettingsOptions) : base(mediator)
+        public ProfileComponent(IMediator mediator, IOptions<AvatarAppSettings> avatarAppSettingsOptions, IQueryManager queryManager) : base(mediator, queryManager)
         {
             _avatarAppSettings = avatarAppSettingsOptions.Value;
         }

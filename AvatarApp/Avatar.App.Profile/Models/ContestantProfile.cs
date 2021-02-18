@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Avatar.App.Casting.Models;
+using Avatar.App.SharedKernel.Models;
 
 namespace Avatar.App.Profile.Models
 {

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Avatar.App.Content.Commands;
 using Avatar.App.Infrastructure.Settings;
+using Avatar.App.SharedKernel.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;

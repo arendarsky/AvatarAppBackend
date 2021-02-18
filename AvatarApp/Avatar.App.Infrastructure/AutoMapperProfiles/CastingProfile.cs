@@ -2,6 +2,7 @@
 using Avatar.App.Casting.CreationData;
 using Avatar.App.Casting.Models;
 using Avatar.App.Infrastructure.Models.Casting;
+using Avatar.App.SharedKernel.Models;
 
 namespace Avatar.App.Infrastructure.AutoMapperProfiles
 {
@@ -9,7 +10,6 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
     {
         public CastingProfile()
         {
-            CreateMap<UserDb, BaseContestant>();
             CreateMap<UserDb, Contestant>().IncludeBase<UserDb, BaseContestant>().ForMember(dest => dest.VideosNumber,
                 opt => opt.MapFrom(src => src.LoadedVideos.Count));
 

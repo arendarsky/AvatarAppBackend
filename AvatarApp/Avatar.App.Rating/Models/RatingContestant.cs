@@ -1,4 +1,5 @@
 ﻿using Avatar.App.Casting.Models;
+using Avatar.App.SharedKernel.Models;
 
 namespace Avatar.App.Rating.Models
 {

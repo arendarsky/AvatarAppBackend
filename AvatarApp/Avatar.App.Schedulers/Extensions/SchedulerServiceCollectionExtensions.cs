@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Avatar.App.Schedulers.Extensions
 {
-    public static class ServiceCollectionExtensions
+    public static class SchedulerServiceCollectionExtensions
     {
         private const string SchedulerSection = "SchedulersStartTimeSettings";
 

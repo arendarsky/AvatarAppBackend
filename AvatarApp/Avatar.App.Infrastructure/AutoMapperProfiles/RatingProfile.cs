@@ -3,7 +3,6 @@
 using System.Linq;
 using Avatar.App.Casting.Models;
 using Avatar.App.Infrastructure.Models.Casting;
-using Avatar.App.Infrastructure.Models.Final;
 using Avatar.App.Rating.Models;
 
 namespace Avatar.App.Infrastructure.AutoMapperProfiles

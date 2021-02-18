@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Avatar.App.Content.Commands;
 using Avatar.App.Profile.Commands;
 using Avatar.App.Profile.Models;
 using Avatar.App.SharedKernel;

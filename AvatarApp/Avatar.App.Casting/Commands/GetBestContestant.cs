@@ -1,4 +1,4 @@
-﻿using Avatar.App.Casting.Models;
+﻿using Avatar.App.SharedKernel.Models;
 using MediatR;
 
 namespace Avatar.App.Casting.Commands

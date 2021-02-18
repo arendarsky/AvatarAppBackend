@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Avatar.App.Communications.Commands;
 using Avatar.App.Communications.Models;
 using Avatar.App.SharedKernel;
-using Avatar.App.SharedKernel.Commands;
 using FirebaseAdmin.Messaging;
 using MediatR;
 

@@ -1,4 +1,4 @@
-﻿using Avatar.App.Schedulers.Extensions;
+﻿using Avatar.App.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

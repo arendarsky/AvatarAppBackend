@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Avatar.App.Casting.Models;
 using Avatar.App.Semifinal.CData;
+using Avatar.App.SharedKernel.Models;
 
 namespace Avatar.App.Semifinal.Models
 {

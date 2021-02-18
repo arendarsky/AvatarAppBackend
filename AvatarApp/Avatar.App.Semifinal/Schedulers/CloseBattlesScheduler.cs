@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Avatar.App.Schedulers;
 using Avatar.App.Semifinal.Commands;
 using Avatar.App.Semifinal.Models;
+using Avatar.App.SharedKernel;
 using MediatR;
 
 namespace Avatar.App.Semifinal.Schedulers

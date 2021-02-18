@@ -1,4 +1,4 @@
-﻿namespace Avatar.App.Schedulers.Settings
+﻿namespace Avatar.App.SharedKernel.Settings
 {
     internal class SchedulerSettings
     {

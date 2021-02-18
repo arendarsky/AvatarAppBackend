@@ -32,7 +32,6 @@
     <ProjectReference Include="..\Avatar.App.Authentication\Avatar.App.Authentication.csproj" />
     <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
     <ProjectReference Include="..\Avatar.App.Communications\Avatar.App.Communications.csproj" />
-    <ProjectReference Include="..\Avatar.App.Content\Avatar.App.Content.csproj" />
     <ProjectReference Include="..\Avatar.App.Profile\Avatar.App.Profile.csproj" />
     <ProjectReference Include="..\Avatar.App.Rating\Avatar.App.Rating.csproj" />
     <ProjectReference Include="..\Avatar.App.Semifinal\Avatar.App.Semifinal.csproj" />

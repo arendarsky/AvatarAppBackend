@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Avatar.App.Casting.Commands;
-using Avatar.App.Schedulers;
+using Avatar.App.SharedKernel;
 using MediatR;
 
 namespace Avatar.App.Casting.Schedulers

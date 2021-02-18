@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using MediatR;
 
-namespace Avatar.App.Content.Commands
+namespace Avatar.App.SharedKernel.Commands
 {
     public class GetContent: IRequest<FileStream>
     {

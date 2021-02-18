@@ -5,8 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avatar.App.Casting\Avatar.App.Casting.csproj" />
-    <ProjectReference Include="..\Avatar.App.Content\Avatar.App.Content.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
   </ItemGroup>
 

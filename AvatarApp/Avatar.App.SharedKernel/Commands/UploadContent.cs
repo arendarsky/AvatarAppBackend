@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Avatar.App.Content.Commands
+namespace Avatar.App.SharedKernel.Commands
 {
     public class UploadContent: IRequest<string>
     {

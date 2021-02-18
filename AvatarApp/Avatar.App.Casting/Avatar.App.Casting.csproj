@@ -12,8 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Avatar.App.Content\Avatar.App.Content.csproj" />
-    <ProjectReference Include="..\Avatar.App.Schedulers\Avatar.App.Schedulers.csproj" />
     <ProjectReference Include="..\Avatar.App.SharedKernel\Avatar.App.SharedKernel.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Avatar.App.Administration.Commands;
-using Avatar.App.Casting.Models;
-using Avatar.App.Schedulers;
 using Avatar.App.SharedKernel;
 using Avatar.App.SharedKernel.Commands;
+using Avatar.App.SharedKernel.Models;
 using Avatar.App.SharedKernel.Settings;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -40,7 +39,7 @@ namespace Avatar.App.Administration.Schedulers
 
         public async Task RemoveImageFiles()
         {
-            var userQuery = await _mediator.Send(new GetQuery<Contestant>());
+            var userQuery = await _mediator.Send(new GetQuery<BaseContestant>());
             var existedImageFileNames = await _queryManager.ToListAsync(userQuery.Select(user => user.ProfilePhoto));
             await _mediator.Send(new RemoveUnusedFiles(existedImageFileNames, _settings.ImageStoragePrefix));
         }

@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Avatar.App.Casting.Commands;
-using Avatar.App.Casting.Models;
 using Avatar.App.Infrastructure.Handlers.Abstract;
 using Avatar.App.Rating.Models;
 using Avatar.App.SharedKernel.Commands;
+using Avatar.App.SharedKernel.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

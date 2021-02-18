@@ -14,7 +14,7 @@ namespace Avatar.App.Semifinal.Models
         public BattleVoteCData VoteToAdd{ get; set; }
         public int BattleVotesNumber => _battle.TotalVotesNumber;
         public int SemifinalistVotesNumber => _semifinalist.GetBattleVotes(_battle.Id).Count();
-        public bool IsVoted => VoteToAdd != null || VoteToRemove == null;
+        public bool IsVoted { get; private set; }
 
         public VotingRoom(Battle battle, BattleVoteCData voteCData)
         {
@@ -32,11 +32,13 @@ namespace Avatar.App.Semifinal.Models
             {
                 _semifinalist.Votes.Remove(existedVote);
                 VoteToRemove = existedVote;
+                IsVoted = false;
                 return;
             }
 
-            if (_battle.IsVoteLimitExpired(_voteCData.UserId))
+            if (_voteCData.UserId.HasValue && _battle.IsVoteLimitExpired(_voteCData.UserId.Value))
             {
+                IsVoted = false;
                 return;
             }
 
@@ -49,6 +51,7 @@ namespace Avatar.App.Semifinal.Models
             };
             _semifinalist.Votes.Add(battleVote);
             VoteToAdd = _voteCData;
+            IsVoted = true;
         }
     }
 }

@@ -4,6 +4,6 @@
     {
         public long BattleId { get; set; }
         public long SemifinalistId { get; set; }
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
     }
 }

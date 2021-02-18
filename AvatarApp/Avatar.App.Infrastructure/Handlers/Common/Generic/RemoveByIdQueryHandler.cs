@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Avatar.App.Infrastructure.Handlers.Common.Generic
 {
-    internal class RemoveByIdQueryHandler<TSource, TDestination>: EFHandler, IRequestHandler<RemoveById<TDestination>>, IGenericHandler where TSource: class
+    internal class RemoveByIdQueryHandler<TSource, TDestination>: EFHandler, IRequestHandler<RemoveById<TDestination>, Unit>, IGenericHandler where TSource: class
     {
 
         public RemoveByIdQueryHandler(AvatarAppContext dbContext) : base(dbContext)

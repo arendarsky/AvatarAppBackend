@@ -53,7 +53,7 @@ namespace Avatar.App.Profile
 
         public async Task<FileStream> GetPhotoStreamAsync(string fileName)
         {
-            return await Mediator.Send(new GetContent(fileName, _avatarAppSettings.ImageStoragePrefix));
+            return await Mediator.Send(new GetContent(_avatarAppSettings.ImageStoragePrefix, fileName));
         }
 
         public async Task UpdateProfileAsync(Guid userGuid, ProfileUpdate profileUpdate)

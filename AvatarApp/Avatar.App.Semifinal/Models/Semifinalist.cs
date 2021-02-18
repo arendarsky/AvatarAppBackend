@@ -21,7 +21,9 @@ namespace Avatar.App.Semifinal.Models
 
         public BattleVote GetUserVote(BattleVoteCData battleVoteCData)
         {
-            return GetUserVote(battleVoteCData.UserId, battleVoteCData.BattleId);
+            return battleVoteCData.UserId.HasValue
+                ? GetUserVote(battleVoteCData.UserId.Value, battleVoteCData.BattleId)
+                : null;
         } 
 
         private BattleVote GetUserVote(long userId, long battleId)

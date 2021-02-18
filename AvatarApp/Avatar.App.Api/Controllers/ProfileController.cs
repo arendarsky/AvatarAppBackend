@@ -92,24 +92,16 @@ namespace Avatar.App.Api.Controllers
         [Route("photo/get/{name}")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<FileStreamResult> GetPhotoByName(string name)
+        public async Task<ActionResult> GetPhotoByName(string name)
         {
-            try
-            {
-                var fileStream = await _profileComponent.GetPhotoStreamAsync(name);
+            var fileStream = await _profileComponent.GetPhotoStreamAsync(name);
 
-                if (fileStream != null)
-                {
-                    return File(fileStream, "image/*", true);
-                }
-            }
-            catch (IOException)
+            if (fileStream != null)
             {
-
+                return File(fileStream, "image/*", true);
             }
 
-            HttpContext.Response.StatusCode = 404;
-            return null;
+            return NotFound();
         }
 
         [Route("update_profile")]

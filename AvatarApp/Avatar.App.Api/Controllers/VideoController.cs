@@ -62,24 +62,16 @@ namespace Avatar.App.Api.Controllers
         [AllowAnonymous]
         [Route("{name}")]
         [HttpGet]
-        public async Task<FileStreamResult> GetVideoByName(string name)
+        public async Task<ActionResult> GetVideoByName(string name)
         {
-            try
-            {
-                var videoStream = await _castingComponent.GetVideoStreamAsync(name);
+            var videoStream = await _castingComponent.GetVideoStreamAsync(name);
 
-                if (videoStream != null)
-                {
-                    return File(videoStream, "video/*", true);
-                }
-            }
-            catch (IOException)
+            if (videoStream != null)
             {
-               
+                return File(videoStream, "video/*", true);
             }
 
-            HttpContext.Response.StatusCode = 404;
-            return null;
+            return NotFound();
         }
 
         [Route("set_like")]

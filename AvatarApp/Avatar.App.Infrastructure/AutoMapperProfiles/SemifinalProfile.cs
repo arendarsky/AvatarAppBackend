@@ -18,6 +18,8 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
 
             CreateMap<BattleVoteDb, BattleVote>();
 
+            CreateMap<BattleVoteDb, BattleVote>();
+
             CreateMap<BattleCData, BattleDb>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.BattleSemifinalists, opt => opt.MapFrom(src => src.SemifinalistsId));

@@ -18,13 +18,13 @@ namespace Avatar.App.Infrastructure.Handlers.Rating
         {
             if (request.UserId.HasValue)
             {
-                return await DbContext.LikedVideos.Where(video => video.Video.UserId == request.UserId)
+                return await DbContext.WatchedVideos.Where(video => video.IsLiked && video.Video.UserId == request.UserId)
                     .CountAsync(cancellationToken);
             }
 
             if (request.UserGuid.HasValue)
             {
-                return await DbContext.LikedVideos.Where(video => video.Video.User.Guid == request.UserGuid)
+                return await DbContext.WatchedVideos.Where(video => video.IsLiked && video.Video.User.Guid == request.UserGuid)
                     .CountAsync(cancellationToken);
             }
 

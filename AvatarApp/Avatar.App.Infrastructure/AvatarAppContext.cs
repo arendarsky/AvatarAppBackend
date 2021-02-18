@@ -11,7 +11,6 @@ namespace Avatar.App.Infrastructure
         public DbSet<UserDb> Users { get; set; }
         public DbSet<VideoDb> Videos { get; set; }
         public DbSet<WatchedVideoDb> WatchedVideos { get; set; }
-        public DbSet<LikedVideoDb> LikedVideos { get; set; }
         public DbSet<SemifinalistDb> Semifinalists { get; set; }
         public DbSet<BattleDb> Battles { get; set; }
         public DbSet<BattleSemifinalistDb> BattleSemifinalists { get; set; }

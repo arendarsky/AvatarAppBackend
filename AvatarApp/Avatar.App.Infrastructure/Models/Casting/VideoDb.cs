@@ -17,7 +17,6 @@ namespace Avatar.App.Infrastructure.Models.Casting
 
         public UserDb User { get; set; }
         public ICollection<WatchedVideoDb> WatchedBy { get; set; }
-        public ICollection<LikedVideoDb> LikedBy { get; set; }
 
         public static async Task<VideoDb> GetByNameAndUserGuidAsync(AvatarAppContext context, Guid userGuid, string fileName,
             CancellationToken cancellationToken = default)

@@ -23,8 +23,6 @@ namespace Avatar.App.Infrastructure.Models.Casting
         public SemifinalistDb Semifinalist { get; set; }
         public ICollection<VideoDb> LoadedVideos { get; set; }
         public ICollection<WatchedVideoDb> WatchedVideos { get; set; }
-        public ICollection<LikedVideoDb> LikedVideos { get; set; }
-        public ICollection<BattleVoteDb> BattleVotes { get; set; }
 
         public static async Task<UserDb> GetByGuidAsync(AvatarAppContext context, Guid userGuid)
         {

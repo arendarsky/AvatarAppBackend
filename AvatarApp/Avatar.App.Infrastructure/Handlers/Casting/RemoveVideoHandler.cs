@@ -19,9 +19,7 @@ namespace Avatar.App.Infrastructure.Handlers.Casting
             var videoDb =
                 await VideoDb.GetByNameAndUserGuidAsync(DbContext, request.UserGuid, request.FileName, cancellationToken);
             if (videoDb == null) return Unit.Value;
-            var likedVideos = DbContext.LikedVideos.Where(likedVideo => likedVideo.VideoId == videoDb.Id);
-            DbContext.LikedVideos.RemoveRange(likedVideos);
-            var watchedVideos = DbContext.WatchedVideos.Where(likedVideo => likedVideo.VideoId == videoDb.Id);
+            var watchedVideos = DbContext.WatchedVideos.Where(view => view.VideoId == view.Id);
             DbContext.WatchedVideos.RemoveRange(watchedVideos);
             DbContext.Videos.Remove(videoDb);
             await DbContext.SaveChangesAsync(cancellationToken);

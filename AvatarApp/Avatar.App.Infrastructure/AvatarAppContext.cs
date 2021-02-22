@@ -16,6 +16,8 @@ namespace Avatar.App.Infrastructure
         public DbSet<BattleSemifinalistDb> BattleSemifinalists { get; set; }
         public DbSet<BattleVoteDb> BattleVotes { get; set; }
         public DbSet<FinalistDb> Finalists { get; set; }
+        public DbSet<FinalDb> Finals { get; set; }
+        public DbSet<FinalVoteDb> FinalVotes { get; set; }
 
         public AvatarAppContext(DbContextOptions options) : base(options)
         {

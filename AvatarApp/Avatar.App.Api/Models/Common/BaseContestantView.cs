@@ -2,9 +2,9 @@
 
 namespace Avatar.App.Api.Models.Common
 {
-    public abstract class BaseContestantView
+    public class BaseContestantView
     {
-        protected BaseContestantView(BaseContestant user)
+        public BaseContestantView(BaseContestant user)
         {
             Id = user.Id;
             Name = user.Name;

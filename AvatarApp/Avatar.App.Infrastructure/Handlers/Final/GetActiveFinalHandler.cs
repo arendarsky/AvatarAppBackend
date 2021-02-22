@@ -24,6 +24,7 @@ namespace Avatar.App.Infrastructure.Handlers.Final
             var finalQuery = DbContext.Finals.Where(fin => fin.IsActive);
             var final = await Mapper.ProjectTo<App.Final.Models.Final>(finalQuery)
                 .FirstOrDefaultAsync(cancellationToken);
+            if (final == null) return null;
             var finalists = await Mapper.ProjectTo<Finalist>(DbContext.Finalists.AsQueryable())
                 .ToListAsync(cancellationToken);
             final.Finalists = finalists;

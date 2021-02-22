@@ -9,6 +9,7 @@ namespace Avatar.App.Infrastructure.Models.Final
     {
         public long UserId { get; set; }
         public long FinalistId { get; set; }
+        public DateTime Date { get; set; }
         public UserDb User { get; set; }
         public FinalistDb Finalist { get; set; }
     }

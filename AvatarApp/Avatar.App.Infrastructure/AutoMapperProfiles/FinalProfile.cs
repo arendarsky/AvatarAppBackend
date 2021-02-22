@@ -14,7 +14,8 @@ namespace Avatar.App.Infrastructure.AutoMapperProfiles
             CreateMap<FinalDb, Final.Models.Final>().ForMember(dest => dest.Finalists, opt => opt.Ignore());
             CreateMap<FinalVoteDb, FinalVote>();
             CreateMap<FinalistDb, Finalist>().ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => src.User));
-            CreateMap<FinalVoteCreation, FinalVoteDb>();
+            CreateMap<FinalVoteCreation, FinalVoteDb>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Now));
         }
     }
 }

@@ -7,7 +7,8 @@ namespace Avatar.App.Final.Models
     public class Final
     {
         public string VideoUrl { get; set; }
-        public bool IsVotingStarted { get; set; }
+        public DateTime? VotingStartTime { get; set; }
+        public DateTime? VotingEndTime { get; set; }
         public int WinnersNumber { get; set; }
         public IEnumerable<Finalist> Finalists { get; set; }
     }

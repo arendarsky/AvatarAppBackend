@@ -25,7 +25,7 @@ namespace Avatar.App.Api.Models.Semifinal
             Id = battle.Id;
             EndDate = battle.EndDate;
             var timeNow = DateTime.Now;
-            SecondsUntilTheEnd = battle.EndDate > timeNow ? (battle.EndDate - timeNow).Seconds : 0;
+            SecondsUntilTheEnd = battle.EndDate > timeNow ? (int) (battle.EndDate - timeNow).TotalSeconds : 0;
             WinnersNumber = battle.WinnersNumber;
             TotalVotesNumber = battle.TotalVotesNumber;
         }

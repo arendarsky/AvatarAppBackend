@@ -8,7 +8,8 @@ namespace Avatar.App.Infrastructure.Models.Final
     {
         public string VideoUrl { get; set; }
         public bool IsActive { get; set; }
-        public bool IsVotingStarted { get; set; }
+        public DateTime? VotingStartTime { get; set; }
+        public DateTime? VotingEndTime { get; set; }
         public int WinnersNumber { get; set; }
     }
 }
